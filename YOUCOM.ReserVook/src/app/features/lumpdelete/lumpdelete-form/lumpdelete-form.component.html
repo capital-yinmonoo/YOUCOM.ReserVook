@@ -1,0 +1,61 @@
+<div id="lumpdelete">
+  <h1 mat-dialog-title class="Title">一括削除</h1>
+  <div mat-dialog-content fxLayout="column">
+    <div fxFlex="auto">
+
+      <form [formGroup]="lostItemListForm">
+
+        <mat-form-field>
+          <span matPrefix>忘れ物状態 ： </span>
+          <mat-select formControlName="itemState">
+            <mat-option *ngFor="let op of states" [value]="op.itemStateCode">{{ op.itemStateName }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+        &nbsp;&nbsp;
+
+        <mat-form-field class="mat-column-before-dateTimePicker">
+          <span matPrefix>更新日 ： </span>
+          <input type="text" matInput formControlName="udtBefore" [matDatepicker]="dtpArrival">
+          <mat-datepicker-toggle matSuffix [for]="dtpArrival"></mat-datepicker-toggle>
+          <mat-datepicker #dtpArrival></mat-datepicker>
+        </mat-form-field>
+
+        &nbsp;
+        <span>～</span>
+        &nbsp;
+
+        <mat-form-field class="mat-column-after-dateTimePicker">
+          <input type="text" matInput formControlName="udtAfter" [matDatepicker]="dtpDeparture">
+          <mat-datepicker-toggle matSuffix [for]="dtpDeparture"></mat-datepicker-toggle>
+          <mat-datepicker #dtpDeparture></mat-datepicker>
+
+        </mat-form-field>
+        &nbsp;&nbsp;
+
+        <mat-card-actions class="pa-1">
+          <button mat-raised-button color="warn" (click)="Delete()" [disabled]="lostItemListForm.invalid">削除</button>
+          &nbsp;
+          <button mat-raised-button (click)="Clear()">クリア</button>
+        </mat-card-actions>
+
+      </form>
+
+      <div fxLayout="row wrap">
+        <div fxLayout="column">
+          <div *ngIf="lostItemListForm.controls['udtAfter'].invalid && (lostItemListForm.controls['udtAfter'].touched || lostItemListForm.controls['udtAfter'].dirty)">
+            <small *ngIf="lostItemListForm.controls['udtAfter'].hasError('required')" class="mat-text-warn">{{msgRequid}}
+            </small>
+          </div>
+          <small *ngIf="lostItemListForm.controls.udtAfter.errors?.FromToError" class="mat-text-warn">{{UdtBefore}}{{msgIs}}{{UdtAfter}}{{msgFromToError}}
+          </small>
+        </div>
+      </div>
+
+    </div>
+  </div>
+  <mat-dialog-actions align="end">
+    <button mat-raised-button color="accent" (click)="CloseDialog()">戻る</button>
+  </mat-dialog-actions>
+</div>
+

@@ -1,0 +1,101 @@
+  <div fxLay fxLayout="row wrap" fxLayoutAlign="center start">
+    <div id="editP" fxFlex.gt-sm="30" fxFlex="100" >
+      <mat-card class="mat-card-top pa-0">
+        <mat-tab-group >
+          <mat-tab>
+            <ng-template matTabLabel>商品マスタ</ng-template>
+            <mat-card-content class="pa-1">
+              <form fxLayout="column" [formGroup]="itemForm">
+                <mat-form-field class="mb-1">
+                  <mat-select placeholder="商品分類" [disabled]="updateFlg" formControlName="itemDivision" required>
+                    <mat-option *ngFor="let op of itemDivisions" [value]="op.code">{{ op.codeName }}</mat-option>
+                  </mat-select>
+                  <div *ngIf="itemForm.controls['itemDivision'].invalid && (itemForm.controls['itemDivision'].touched || itemForm.controls['itemDivision'].dirty)">
+                    <small *ngIf="itemForm.controls['itemDivision'].hasError('required')" class="mat-text-warn">{{msgRequid}}</small>
+                  </div>
+                </mat-form-field>
+
+                <mat-form-field *ngIf="itemForm.controls['itemDivision'].value == ITEM_DIVISION_MEAL" class="mb-1">
+                  <mat-select placeholder="料理区分" formControlName="mealDivision" required>
+                    <mat-option *ngFor="let op of mealDivisions" [value]="op.code">{{ op.codeName }}</mat-option>
+                  </mat-select>
+                  <div *ngIf="itemForm.controls['mealDivision'].invalid && (itemForm.controls['mealDivision'].touched || itemForm.controls['mealDivision'].dirty)">
+                    <small *ngIf="itemForm.controls['mealDivision'].hasError('required')" class="mat-text-warn">{{msgRequid}}</small>
+                  </div>
+                </mat-form-field>
+
+                <mat-form-field class="mb-1">
+                  <input matInput placeholder="商品コード" [readonly]="updateFlg" [ngClass]="{'readonly':updateFlg}" formControlName="itemCode" required>
+                  <div *ngIf="itemForm.controls['itemCode'].invalid && (itemForm.controls['itemCode'].touched || itemForm.controls['itemCode'].dirty)">
+                    <small *ngIf="itemForm.controls['itemCode'].hasError('required')" class="mat-text-warn">{{msgRequid}}</small>
+                    <small *ngIf="itemForm.controls['itemCode'].hasError('maxlength')" class="mat-text-warn">{{msgMaxLengthItemCode}}</small>
+                    <small *ngIf="itemForm.controls['itemCode'].hasError('pattern')" class="mat-text-warn">{{msgPatternAlphabetUpper}}</small>
+                  </div>
+                </mat-form-field>
+                <mat-form-field class="mb-1">
+                  <input matInput placeholder="名称" formControlName="itemName" required>
+                  <div *ngIf="itemForm.controls['itemName'].invalid && (itemForm.controls['itemName'].touched || itemForm.controls['itemName'].dirty)">
+                    <small *ngIf="itemForm.controls['itemName'].hasError('required')" class="mat-text-warn">{{msgRequid}}</small>
+                    <small *ngIf="itemForm.controls['itemName'].hasError('maxlength')" class="mat-text-warn">{{msgMaxLengthItemName}}</small>
+                  </div>
+                </mat-form-field>
+                <mat-form-field class="mb-1">
+                    <input matInput placeholder="カナ" formControlName="itemKana" required>
+                    <div *ngIf="itemForm.controls['itemKana'].invalid && (itemForm.controls['itemKana'].touched || itemForm.controls['itemKana'].dirty)">
+                      <small *ngIf="itemForm.controls['itemKana'].hasError('required')" class="mat-text-warn">{{msgRequid}}</small>
+                      <small *ngIf="itemForm.controls['itemKana'].hasError('pattern')" class="mat-text-warn">{{msgPatternKana}}</small>
+                      <small *ngIf="itemForm.controls['itemKana'].hasError('maxlength')" class="mat-text-warn">{{msgMaxLengthItemName}}</small>
+                    </div>
+                </mat-form-field>
+                <mat-form-field class="mb-1">
+                    <input matInput placeholder="印字用名称" formControlName="printName" required>
+                    <div *ngIf="itemForm.controls['printName'].invalid && (itemForm.controls['printName'].touched || itemForm.controls['printName'].dirty)">
+                      <small *ngIf="itemForm.controls['printName'].hasError('required')" class="mat-text-warn">{{msgRequid}}</small>
+                      <small *ngIf="itemForm.controls['printName'].hasError('maxlength')" class="mat-text-warn">{{msgMaxLengthPrintName}}</small>
+                    </div>
+                </mat-form-field>
+                <mat-form-field class="mb-1">
+                    <input type ="number" matInput placeholder="単価" formControlName="unitPrice" required>
+                    <div *ngIf="itemForm.controls['unitPrice'].invalid && (itemForm.controls['unitPrice'].touched || itemForm.controls['unitPrice'].dirty)">
+                      <small *ngIf="itemForm.controls['unitPrice'].hasError('required')" class="mat-text-warn">{{msgRequid}}</small>
+                      <small *ngIf="itemForm.controls['unitPrice'].hasError('min')" class="mat-text-warn">{{msgMin99999999}}</small>
+                      <small *ngIf="itemForm.controls['unitPrice'].hasError('max')" class="mat-text-warn">{{msgMax99999999}}</small>
+                      <small *ngIf="itemForm.controls['unitPrice'].hasError('pattern')" class="mat-text-warn">{{msgPatternNumber}}</small>
+                    </div>
+                </mat-form-field>
+                <mat-form-field class="mb-1">
+                  <mat-select placeholder="税サ区分" formControlName="taxServiceDivision" required>
+                    <mat-option *ngFor="let op of taxServiceDivision" [value]="op.taxServiceDivision">{{ op.displayName }}</mat-option>
+                  </mat-select>
+                  <div *ngIf="itemForm.controls['taxServiceDivision'].invalid && (itemForm.controls['taxServiceDivision'].touched || itemForm.controls['taxServiceDivision'].dirty)">
+                    <small *ngIf="itemForm.controls['taxServiceDivision'].hasError('required')" class="mat-text-warn">{{msgRequid}}</small>
+                  </div>
+                </mat-form-field>
+                <mat-form-field class="mb-1">
+                  <mat-select placeholder="税率区分" formControlName="taxrateDivision" required>
+                    <mat-option *ngFor="let op of taxrateDivision" [value]="op.key">{{ op.value }}</mat-option>
+                  </mat-select>
+                  <div *ngIf="itemForm.controls['taxrateDivision'].invalid && (itemForm.controls['taxrateDivision'].touched || itemForm.controls['taxrateDivision'].dirty)">
+                    <small *ngIf="itemForm.controls['taxrateDivision'].hasError('required')" class="mat-text-warn">{{msgRequid}}</small>
+                  </div>
+                </mat-form-field>
+                <mat-form-field class="mb-1">
+                  <input type ="number" matInput placeholder="表示順" formControlName="displayOrder" required>
+                  <div *ngIf="itemForm.controls['displayOrder'].invalid && (itemForm.controls['displayOrder'].touched || itemForm.controls['displayOrder'].dirty)">
+                    <small *ngIf="itemForm.controls['displayOrder'].hasError('required')" class="mat-text-warn">{{msgRequid}}</small>
+                    <small *ngIf="itemForm.controls['displayOrder'].hasError('min')" class="mat-text-warn">{{msgMin1}}</small>
+                    <small *ngIf="itemForm.controls['displayOrder'].hasError('max')" class="mat-text-warn">{{msgMax9999}}</small>
+                    <small *ngIf="itemForm.controls['displayOrder'].hasError('pattern')" class="mat-text-warn">{{msgPatternNumber}}</small>
+                  </div>
+                </mat-form-field>
+              </form>
+            </mat-card-content>
+          </mat-tab>
+        </mat-tab-group>
+        <mat-card-actions class="pa-1">
+          <button mat-raised-button color="primary" (click)="onSubmit()"  [disabled]="itemForm.invalid">保存</button>
+          <button mat-raised-button color="accent" (click)="cancel()">中止</button>
+        </mat-card-actions>
+      </mat-card>
+    </div>
+  </div>

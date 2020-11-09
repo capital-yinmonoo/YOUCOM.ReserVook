@@ -1,0 +1,128 @@
+<div fxLayout="row wrap" fxLayoutAlign="center start">
+  <div fxFlex.gt-sm="30" fxFlex="100">
+    <mat-card class="pa-0">
+      <mat-tab-group >
+        <mat-tab>
+          <ng-template matTabLabel>顧客マスタ</ng-template>
+            <mat-card-content class="pa-1">
+              <form fxLayout="column" [formGroup]="customerForm">
+
+                <mat-form-field class="mb-1">
+                  <input matInput placeholder="顧客番号" [readonly]="true" class="readonly"  formControlName="customerNo" >
+                  <div fxFlexOffset="auto">
+                    <button mat-raised-button color="accent" *ngIf="this.updateFlg" (click)="OpenUseResults()">
+                      <span>利用実績</span>
+                    </button>
+                  </div>
+                </mat-form-field>
+
+                <mat-form-field class="mb-1">
+                  <input matInput placeholder="顧客名" formControlName="customerName" required>
+                  <div *ngIf="customerForm.controls['customerName'].invalid && (customerForm.controls['customerName'].touched || customerForm.controls['customerName'].dirty)">
+                    <small *ngIf="customerForm.controls['customerName'].hasError('required')" class="mat-text-warn">{{msgRequid}}</small>
+                    <small *ngIf="customerForm.controls['customerName'].hasError('maxlength')" class="mat-text-warn">{{msgMaxLength100}}</small>
+                  </div>
+                </mat-form-field>
+
+                <mat-form-field class="mb-1">
+                  <input matInput placeholder="顧客名カナ" formControlName="customerKana" required>
+                  <div *ngIf="customerForm.controls['customerKana'].invalid && (customerForm.controls['customerKana'].touched || customerForm.controls['customerKana'].dirty)">
+                    <small *ngIf="customerForm.controls['customerKana'].hasError('required')" class="mat-text-warn">{{msgRequid}}</small>
+                    <small *ngIf="customerForm.controls['customerKana'].hasError('pattern')" class="mat-text-warn msg-error">{{msgPatternKana}}</small>
+                    <small *ngIf="customerForm.controls['customerKana'].hasError('maxlength')" class="mat-text-warn">{{msgMaxLength100}}</small>
+                  </div>
+                </mat-form-field>
+
+                <mat-form-field class="mb-1">
+                  <input matInput placeholder="郵便番号" formControlName="zipCode" >
+                  <div *ngIf="customerForm.controls['zipCode'].invalid && (customerForm.controls['zipCode'].touched || customerForm.controls['zipCode'].dirty)">
+                    <small *ngIf="customerForm.controls['zipCode'].hasError('pattern')" class="mat-text-warn msg-error">{{msgPatternZip}}</small>
+                    <small *ngIf="customerForm.controls['zipCode'].hasError('maxlength')" class="mat-text-warn">{{msgMaxLength8}}</small>
+                  </div>
+                </mat-form-field>
+
+                <mat-form-field class="mb-1">
+                  <input matInput placeholder="住所" formControlName="address" >
+                  <div *ngIf="customerForm.controls['address'].invalid && (customerForm.controls['address'].touched || customerForm.controls['address'].dirty)">
+                    <small *ngIf="customerForm.controls['address'].hasError('maxlength')" class="mat-text-warn">{{msgMaxLength100}}</small>
+                  </div>
+                </mat-form-field>
+
+                <mat-form-field class="mb-1">
+                  <input matInput placeholder="電話番号" formControlName="phoneNo" required>
+                  <div *ngIf="customerForm.controls['phoneNo'].invalid && (customerForm.controls['phoneNo'].touched || customerForm.controls['phoneNo'].dirty)">
+                    <small *ngIf="customerForm.controls['phoneNo'].hasError('required')" class="mat-text-warn">{{msgRequid}}</small>
+                    <small *ngIf="customerForm.controls['phoneNo'].hasError('pattern')" class="mat-text-warn msg-error">{{msgPatternPhone}}</small>
+                    <small *ngIf="customerForm.controls['phoneNo'].hasError('maxlength')" class="mat-text-warn">{{msgMaxLength20}}</small>
+                  </div>
+                </mat-form-field>
+
+                <mat-form-field class="mb-1">
+                  <input matInput placeholder="携帯電話番号" formControlName="mobilePhoneNo" >
+                  <div *ngIf="customerForm.controls['mobilePhoneNo'].invalid && (customerForm.controls['mobilePhoneNo'].touched || customerForm.controls['mobilePhoneNo'].dirty)">
+                    <small *ngIf="customerForm.controls['mobilePhoneNo'].hasError('pattern')" class="mat-text-warn msg-error">{{msgPatternPhone}}</small>
+                    <small *ngIf="customerForm.controls['mobilePhoneNo'].hasError('maxlength')" class="mat-text-warn">{{msgMaxLength20}}</small>
+                  </div>
+                </mat-form-field>
+
+                <mat-form-field class="mb-1">
+                  <input matInput placeholder="メールアドレス" formControlName="email" >
+                  <div *ngIf="customerForm.controls['email'].invalid && (customerForm.controls['email'].touched || customerForm.controls['email'].dirty)">
+                    <small *ngIf="customerForm.controls['email'].hasError('pattern')" class="mat-text-warn msg-error">{{msgPatternEmail}}</small>
+                    <small *ngIf="customerForm.controls['email'].hasError('maxlength')" class="mat-text-warn">{{msgMaxLength60}}</small>
+                  </div>
+                </mat-form-field>
+
+                <mat-form-field class="mb-1">
+                  <input matInput placeholder="会社名" formControlName="companyName" >
+                  <div *ngIf="customerForm.controls['companyName'].invalid && (customerForm.controls['companyName'].touched || customerForm.controls['companyName'].dirty)">
+                    <small *ngIf="customerForm.controls['companyName'].hasError('maxlength')" class="mat-text-warn">{{msgMaxLength100}}</small>
+                  </div>
+                </mat-form-field>
+
+                <mat-form-field class="mb-1">
+                  <input matInput placeholder="備考1" formControlName="remarks1" >
+                  <div *ngIf="customerForm.controls['remarks1'].invalid && (customerForm.controls['remarks1'].touched || customerForm.controls['remarks1'].dirty)">
+                    <small *ngIf="customerForm.controls['remarks1'].hasError('maxlength')" class="mat-text-warn">{{msgMaxLength100}}</small>
+                  </div>
+                </mat-form-field>
+
+                <mat-form-field class="mb-1">
+                  <input matInput placeholder="備考2" formControlName="remarks2" >
+                  <div *ngIf="customerForm.controls['remarks2'].invalid && (customerForm.controls['remarks2'].touched || customerForm.controls['remarks2'].dirty)">
+                    <small *ngIf="customerForm.controls['remarks2'].hasError('maxlength')" class="mat-text-warn">{{msgMaxLength100}}</small>
+                  </div>
+                </mat-form-field>
+
+                <mat-form-field class="mb-1">
+                  <input matInput placeholder="備考3" formControlName="remarks3" >
+                  <div *ngIf="customerForm.controls['remarks3'].invalid && (customerForm.controls['remarks3'].touched || customerForm.controls['remarks3'].dirty)">
+                    <small *ngIf="customerForm.controls['remarks3'].hasError('maxlength')" class="mat-text-warn">{{msgMaxLength100}}</small>
+                  </div>
+                </mat-form-field>
+
+                <mat-form-field class="mb-1">
+                  <input matInput placeholder="備考4" formControlName="remarks4" >
+                  <div *ngIf="customerForm.controls['remarks4'].invalid && (customerForm.controls['remarks4'].touched || customerForm.controls['remarks4'].dirty)">
+                    <small *ngIf="customerForm.controls['remarks4'].hasError('maxlength')" class="mat-text-warn">{{msgMaxLength100}}</small>
+                  </div>
+                </mat-form-field>
+
+                <mat-form-field class="mb-1">
+                  <input matInput placeholder="備考5" formControlName="remarks5" >
+                  <div *ngIf="customerForm.controls['remarks5'].invalid && (customerForm.controls['remarks5'].touched || customerForm.controls['remarks5'].dirty)">
+                    <small *ngIf="customerForm.controls['remarks5'].hasError('maxlength')" class="mat-text-warn">{{msgMaxLength100}}</small>
+                  </div>
+                </mat-form-field>
+              </form>
+
+            </mat-card-content>
+          </mat-tab>
+        </mat-tab-group>
+      <mat-card-actions class="pa-1">
+        <button mat-raised-button color="primary"(click)="onSubmit()"[disabled]="customerForm.invalid">保存</button>
+        <button mat-raised-button color="accent" (click)="cancel()">中止</button>
+      </mat-card-actions>
+    </mat-card>
+  </div>
+</div>

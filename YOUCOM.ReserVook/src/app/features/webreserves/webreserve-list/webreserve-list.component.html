@@ -1,0 +1,84 @@
+  <!-- ヘッダ部 -->
+  <div id="search">
+    <div class="left" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="5px" style=" margin-left: 20px;">
+
+      <!-- Title -->
+      <span style="font-size: 24px;font-weight: bold;">WEB予約一覧</span>
+
+      <!-- DatePicker -->
+      <span style="font-size: 20px;font-weight: normal;">(予約日指定)</span>
+      <mat-form-field>
+        <input matInput style="text-align: center;font-size: 20px;" [matDatepicker]="picker" [(ngModel)]="inputDate" (dateChange)="datepickerDateChanged($event)">
+        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+      </mat-form-field>
+
+      <!-- DatePickerBtn -->
+      <div class="con-float datetool-parent">
+        <datetool [CurrDate]="inputDate" (DateChange)="getChangeDate($event)"></datetool>
+      </div>
+    </div>
+  </div>
+
+<div fxLayout="row wrap" fxLayoutAlign="center start">
+  <div fxFlex.gt-sm="100" fxFlex="100">
+    <!-- <div>
+      <div style="width:160px;">
+          <output style="text-align:center; background-color: rgb(157, 157, 157); display:inline-block; width:50px;"> 新規 </output>
+          <output style="text-align:right; background-color: rgb(107, 208, 241); display:inline-block; width:30px;">{{ newCount }}</output>
+          <output style="text-align:center; background-color: rgb(157, 157, 157); display:inline-block; width:50px;"> 取消 </output>
+          <output style="text-align:right; background-color: rgb(241, 89, 28); display:inline-block; width:30px;"> {{ cancelCount }} </output>
+        </div>
+    </div> -->
+    <ngx-datatable class="material" [columnMode]="'force'" [headerHeight]="50" [footerHeight]="0"
+          [rowHeight]="50" [scrollbarV]="true" [scrollbarH]="true" [rows]="webReserveBaseList" [messages]="ngx_table_messages">
+      <ngx-datatable-column name="SEQ" [width]="100">
+        <ng-template let-row="row" ngx-datatable-cell-template>
+          <button mat-raised-button color="{{row.typeColor}}" [routerLink]="['.', row.scCd, row.scRcvSeq]">{{row.scRcvSeq}}</button>
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column name="種別" [width]="30" prop="type"></ngx-datatable-column>
+      <ngx-datatable-column name="予約番号" [width]="60" prop="reservationNo"></ngx-datatable-column>
+      <ngx-datatable-column name="コード" [width]="40" prop="xSalesOfcCompanyCd"></ngx-datatable-column>
+      <ngx-datatable-column name="サイト名" [width]="120" prop="xSalesOfcCompanyNm"></ngx-datatable-column>
+      <ngx-datatable-column name="営業所名" [width]="130" prop="xSalesOfcNm"></ngx-datatable-column>
+      <ngx-datatable-column name="サイト予約番号" [width]="120" prop="xTravelAgncBkngNum"></ngx-datatable-column>
+      <ngx-datatable-column name="到着日" [width]="100" prop="xCheckInDate">
+        <ng-template let-value="value" ngx-datatable-cell-template>
+          {{value.substr(0,4) + '/' + value.substr(4,2) + '/' + value.substr(6,2) }}
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column name="泊数" [width]="30" prop="xNights">
+        <ng-template let-value="value" ngx-datatable-cell-template>
+          <div class="numeric">
+            {{value}}
+          </div>
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column name="利用者名" [width]="100" prop="xGstOrGpNmKanjiNm"></ngx-datatable-column>
+      <ngx-datatable-column name="部屋数" [width]="50" prop="xTtlRmCnt">
+        <ng-template let-value="value" ngx-datatable-cell-template>
+          <div class="numeric">
+            {{value}}
+          </div>
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column name="人数" [width]="30" prop="xGrandTtlPaxCnt">
+        <ng-template let-value="value" ngx-datatable-cell-template>
+          <div class="numeric">
+            {{value}}
+          </div>
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column name="企画(パッケージ)名" [width]="200" prop="xPackagePlanNm"></ngx-datatable-column>
+      <ngx-datatable-column name="処理コード" [width]="60" prop="scProcessedCd"></ngx-datatable-column>
+      <ngx-datatable-column name="処理内容" [width]="100" prop="scProcessedMessage"></ngx-datatable-column>
+      <ngx-datatable-column name="処理日時" [width]="100" prop="updateDatetime">
+        <ng-template let-value="value" ngx-datatable-cell-template>
+          {{value.substr(4,2) + '/' + value.substr(6,2) + ' ' + value.substr(9,2) + ':' + value.substr(11,2)}}
+        </ng-template>
+      </ngx-datatable-column>
+    </ngx-datatable>
+  </div>
+</div>
+

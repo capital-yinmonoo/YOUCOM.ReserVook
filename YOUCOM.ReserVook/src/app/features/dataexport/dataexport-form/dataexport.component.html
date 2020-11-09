@@ -1,0 +1,214 @@
+<div id="container">
+
+  <!-- ヘッダ部 -->
+  <div id="search">
+    <div class="left" fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="10px" style=" margin-left: 20px;">
+      <!-- Title -->
+      <span style="font-size: 24px;font-weight: bold;">データエクスポート</span>
+    </div>
+  </div>
+
+  <!-- 予約エクスポート -->
+  <div fxLayoutAlign="start start" fxLayoutGap="5px"  class="myDiv"  style="margin-left:20px; margin-right:20px; width: auto;">
+    <div fxLayout="row wrap">
+      <!-- 予約抽出条件 -->
+      <div class="left" style="width: auto;">
+        <form [formGroup]="reserveCondForm">
+          <mat-card fxLayoutGap="10px">
+
+            <mat-card-title>予約抽出条件</mat-card-title>
+            <!-- 予約抽出条件 -->
+            <div fxLayout="column wrap">
+              <div fxLayout="row wrap">
+                <mat-form-field class="mat-column-dateTimePickerFrom">
+                  <div matPrefix class="Prefix FixedWidth">
+                    <span class="required">到着日</span>
+                    <span fxFlex fxLayoutAlign="end center">:</span>
+                  </div>
+                  <input matInput [matDatepicker]="dtpArrivalFrom" formControlName="arrivalDateFrom">
+                  <mat-datepicker-toggle matSuffix [for]="dtpArrivalFrom"></mat-datepicker-toggle>
+                  <mat-datepicker #dtpArrivalFrom></mat-datepicker>
+                </mat-form-field>
+
+                <span style="margin-top:15px;">&nbsp; ～ &nbsp;</span>
+
+                <mat-form-field class="mat-column-dateTimePickerTo">
+                  <input matInput [matDatepicker]="dtpArrivalTo" formControlName="arrivalDateTo">
+                  <mat-datepicker-toggle matSuffix [for]="dtpArrivalTo"></mat-datepicker-toggle>
+                  <mat-datepicker #dtpArrivalTo></mat-datepicker>
+                </mat-form-field>
+              </div>
+
+              <div fxLayout="row wrap">
+                <mat-form-field class="mat-column-dateTimePickerFrom">
+                  <div matPrefix class="Prefix FixedWidth">
+                    <span class="required">出発日</span>
+                    <span fxFlex fxLayoutAlign="end center">:</span>
+                  </div>
+                  <input matInput [matDatepicker]="dtpDepartureFrom" formControlName="departureDateFrom">
+                  <mat-datepicker-toggle matSuffix [for]="dtpDepartureFrom"></mat-datepicker-toggle>
+                  <mat-datepicker #dtpDepartureFrom></mat-datepicker>
+                </mat-form-field>
+
+                <span style="margin-top:15px;">&nbsp; ～ &nbsp;</span>
+
+                <mat-form-field class="mat-column-dateTimePickerTo">
+                  <input matInput [matDatepicker]="dtpDepartureTo" formControlName="departureDateTo">
+                  <mat-datepicker-toggle matSuffix [for]="dtpDepartureTo"></mat-datepicker-toggle>
+                  <mat-datepicker #dtpDepartureTo></mat-datepicker>
+                </mat-form-field>
+
+                <span>&nbsp;&nbsp;</span>
+
+                <div fxLayout="column" class="mat-column-customer-customerNoButton">
+                  <div fxFlexOffset="top">
+                    <button mat-raised-button color="accent" [disabled]="this.reserveCondForm.invalid" (click)="ExportReserveData()">
+                      <span>抽出</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Validate-->
+              <div fxLayout="row wrap">
+                <div fxLayout="column">
+                  <div *ngIf="reserveCondForm.controls['arrivalDateFrom'].invalid && (reserveCondForm.controls['arrivalDateFrom'].touched || reserveCondForm.controls['arrivalDateFrom'].dirty)">
+                    <small *ngIf="reserveCondForm.controls['arrivalDateFrom'].hasError('pattern')" class="mat-text-warn msg-error">{{msgPatternDate}}</small>
+                  </div>
+                  <div *ngIf="reserveCondForm.controls['arrivalDateTo'].invalid && (reserveCondForm.controls['arrivalDateTo'].touched || reserveCondForm.controls['arrivalDateTo'].dirty)">
+                    <small *ngIf="reserveCondForm.controls['arrivalDateTo'].hasError('pattern')" class="mat-text-warn msg-error">{{msgPatternDate}}</small>
+                  </div>
+                  <div *ngIf="reserveCondForm.controls['departureDateFrom'].invalid && (reserveCondForm.controls['departureDateFrom'].touched || reserveCondForm.controls['departureDateFrom'].dirty)">
+                    <small *ngIf="reserveCondForm.controls['departureDateFrom'].hasError('pattern')" class="mat-text-warn msg-error">{{msgPatternDate}}</small>
+                  </div>
+                  <div *ngIf="reserveCondForm.controls['departureDateTo'].invalid && (reserveCondForm.controls['departureDateTo'].touched || reserveCondForm.controls['departureDateTo'].dirty)">
+                    <small *ngIf="reserveCondForm.controls['departureDateTo'].hasError('pattern')" class="mat-text-warn msg-error">{{msgPatternDate}}</small>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </mat-card>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- 顧客エクスポート -->
+  <div fxLayoutAlign="start start" style="margin-left:20px; margin-right:20px; width: auto;">
+    <div fxLayout="row wrap">
+      <!-- 顧客抽出条件 -->
+      <div class="left" style="width: auto;">
+        <form [formGroup]="customerCondForm">
+          <mat-card fxLayoutGap="10px">
+
+            <mat-card-title>顧客抽出条件</mat-card-title>
+            <!-- 顧客抽出条件 -->
+            <div fxLayout="column wrap">
+              <div fxLayout="row wrap">
+                <div fxLayout="column" class="mat-column-customer-phone">
+                  <mat-form-field>
+                    <div matPrefix class="Prefix FixedWidth">
+                      <span>電話番号</span>
+                      <span fxFlex fxLayoutAlign="end center">:</span>
+                    </div>
+                    <input type="tel" matInput formControlName="phoneNo">
+                  </mat-form-field>
+                  <div *ngIf="customerCondForm.controls['phoneNo'].invalid && (customerCondForm.controls['phoneNo'].touched || customerCondForm.controls['phoneNo'].dirty)">
+                    <small *ngIf="customerCondForm.controls['phoneNo'].hasError('pattern')" class="mat-text-warn msg-error">{{msgPatternPhone}}</small>
+                    <small *ngIf="customerCondForm.controls['phoneNo'].hasError('maxlength')" class="mat-text-warn msg-error">{{msgMaxLengthPhone}}</small>
+                  </div>
+                </div>
+
+                <div fxLayout="column" class="mat-column-customer-namekana">
+                  <mat-form-field>
+                    <div matPrefix class="Prefix FixedWidth">
+                      <span>フリガナ</span>
+                      <span fxFlex fxLayoutAlign="end center">:</span>
+                    </div>
+                    <input type="text" matInput formControlName="guestKana">
+                  </mat-form-field>
+                  <div *ngIf="customerCondForm.controls['guestKana'].invalid && (customerCondForm.controls['guestKana'].touched || customerCondForm.controls['guestKana'].dirty)">
+                    <small *ngIf="customerCondForm.controls['guestKana'].hasError('pattern')" class="mat-text-warn msg-error">{{msgPatternKana}}</small>
+                    <small *ngIf="customerCondForm.controls['guestKana'].hasError('maxlength')" class="mat-text-warn msg-error">{{msgMaxLengthName}}</small>
+                  </div>
+                </div>
+              </div>
+
+              <div fxLayout="row wrap">
+                <mat-form-field class="mat-column-dateTimePickerFrom">
+                  <div matPrefix class="Prefix FixedWidth">
+                    <span>利用日</span>
+                    <span fxFlex fxLayoutAlign="end center">:</span>
+                  </div>
+                  <input type="text" matInput formControlName="useDateFrom" [matDatepicker]="dtpUseFrom" (dateChange)="ChangeUseDate()">
+                  <mat-datepicker-toggle matSuffix [for]="dtpUseFrom"></mat-datepicker-toggle>
+                  <mat-datepicker #dtpUseFrom></mat-datepicker>
+                </mat-form-field>
+
+                <span style="margin-top:15px;">&nbsp; ～ &nbsp;</span>
+
+                <mat-form-field class="mat-column-dateTimePickerTo">
+                  <input type="text" matInput formControlName="useDateTo" [matDatepicker]="dtpUseTo" (dateChange)="ChangeUseDate()">
+                  <mat-datepicker-toggle matSuffix [for]="dtpUseTo"></mat-datepicker-toggle>
+                  <mat-datepicker #dtpUseTo></mat-datepicker>
+                </mat-form-field>
+              </div>
+
+              <div fxLayout="row wrap">
+
+                <fieldset [disabled]="!useDateInputs ?'disabled':null"style="border: none; padding-left:0px;">
+                  <mat-form-field class="mat-column-useamount-min" [ngStyle]="{'background-color':!useDateInputs ?'#dadada':null}">
+                    <div matPrefix class="Prefix">
+                      <span>利用金額</span>
+                      <span fxFlex fxLayoutAlign="end center">:</span>
+                    </div>
+                    <input type="text" class="number" matInput formControlName="useAmountMin">
+                  </mat-form-field>
+                  <div *ngIf="customerCondForm.controls['useAmountMin'].invalid && (customerCondForm.controls['useAmountMin'].touched || customerCondForm.controls['useAmountMin'].dirty)">
+                    <small *ngIf="customerCondForm.controls['useAmountMin'].hasError('pattern')" class="mat-text-warn msg-error">{{msgPatternNumber}}</small>
+                    <small *ngIf="customerCondForm.controls['useAmountMin'].hasError('min')" class="mat-text-warn msg-error">{{msgMinAmount}}</small>
+                    <small *ngIf="customerCondForm.controls['useAmountMin'].hasError('max')" class="mat-text-warn msg-error">{{msgMaxAmount}}</small>
+                  </div>
+
+                  <span style="margin-top:15px;">&nbsp; ～ &nbsp;</span>
+
+                  <mat-form-field class="mat-column-useamount-max" [ngStyle]="{'background-color':!useDateInputs ?'LightGray':null}">
+                    <input type="text" class="number" matInput formControlName="useAmountMax">
+                  </mat-form-field>
+                  <div *ngIf="customerCondForm.controls['useAmountMax'].invalid && (customerCondForm.controls['useAmountMax'].touched || customerCondForm.controls['useAmountMax'].dirty)">
+                    <small *ngIf="customerCondForm.controls['useAmountMax'].hasError('pattern')" class="mat-text-warn msg-error">{{msgPatternNumber}}</small>
+                    <small *ngIf="customerCondForm.controls['useAmountMax'].hasError('min')" class="mat-text-warn msg-error">{{msgMinAmount}}</small>
+                    <small *ngIf="customerCondForm.controls['useAmountMax'].hasError('max')" class="mat-text-warn msg-error">{{msgMaxAmount}}</small>
+                  </div>
+                </fieldset>
+
+                <div fxLayout="column" class="mat-column-customer-customerNoButton">
+                  <div fxFlexOffset="top">
+                    <button mat-raised-button color="accent" [disabled]="this.customerCondForm.invalid" (click)="ExportCustomerData()">
+                      <span>抽出</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Validate-->
+              <div fxLayout="row wrap">
+                <div fxLayout="column">
+                  <div *ngIf="customerCondForm.controls['useDateFrom'].invalid && (customerCondForm.controls['useDateFrom'].touched || customerCondForm.controls['useDateFrom'].dirty)">
+                    <small *ngIf="customerCondForm.controls['useDateFrom'].hasError('pattern')" class="mat-text-warn msg-error">{{msgPatternDate}}</small>
+                  </div>
+                  <div *ngIf="customerCondForm.controls['useDateTo'].invalid && (customerCondForm.controls['useDateTo'].touched || customerCondForm.controls['useDateTo'].dirty)">
+                    <small *ngIf="customerCondForm.controls['useDateTo'].hasError('pattern')" class="mat-text-warn msg-error">{{msgPatternDate}}</small>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </mat-card>
+        </form>
+      </div>
+    </div>
+  </div>
+
+</div>
+

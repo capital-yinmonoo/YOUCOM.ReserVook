@@ -1,0 +1,99 @@
+<div class="dishreport-list">
+
+  <!-- ヘッダ -->
+  <div class="grid-list" fxLayout="row" fxLayoutGap="5px" style=" margin-left: 20px;">
+
+    <div class="left" fxLayoutAlign="start center" fxLayoutGap="5px" fxFlex="grow">
+      <!-- Title -->
+      <span style="font-size: 24px; font-weight: bold;">料理日報</span>
+
+      <!-- DatePicker -->
+      <mat-form-field>
+        <input matInput style="text-align: center; font-size: 20px;" [matDatepicker]="picker" [(ngModel)]="inputDate" (dateInput)="getData()">
+        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+      </mat-form-field>
+
+      <!-- DatePickerBtn -->
+      <div class="con-float datetool-parent">
+        <datetool [CurrDate]="inputDate" (DateChange)="onChangeDate($event)"></datetool>
+      </div>
+    </div>
+
+    <div class="center" fxLayoutAlign="start center" fxFlex="0 0 100px"></div>
+
+    <div class="right" fxLayoutAlign="start center" fxFlex="0 0 100px">
+      <!-- 印刷 -->
+      <button mat-raised-button fxLayout="right" color="primary" [disabled]="!printable()" (click)="print()">印刷</button>
+    </div>
+
+  </div>
+
+  <!-- 一覧 -->
+  <ngx-datatable class="material selection-cell"
+    [rows]="dishReportList"
+    [columnMode]="'force'"
+    [headerHeight]="40"
+    [rowHeight]="30"
+    [footerHeight]="50"
+    [limit]="15"
+    [messages]="ngx_table_messages" >
+
+    <!-- 基本情報列 -->
+    <ngx-datatable-column *ngFor="let col of displayColumns" [name]="col.name" [width]="col.width" [prop]="col.prop">
+      <ng-template ngx-datatable-header-template>
+        <div *ngIf="col.prop == 'sumMealNumber'" style="text-align: right;">{{col.name}}</div>
+        <div *ngIf="col.prop != 'sumMealNumber'" style="text-align: left;">{{col.name}}</div>
+      </ng-template>
+      <ng-template let-rowIndex="rowIndex" let-value="value" let-row="row" ngx-datatable-cell-template>
+        <div *ngIf="col.prop == 'sumMealNumber'" style="text-align: right;">{{value}}</div>
+        <div *ngIf="col.prop != 'sumMealNumber'" style="text-align: left;">{{value}}</div>
+      </ng-template>
+    </ngx-datatable-column>
+
+    <!-- 日別情報列 -->
+    <ngx-datatable-column *ngFor="let col of displayDayColumns; let i = index" [name]="col.name" [width]="col.width" [prop]="col.prop">
+      <ng-template ngx-datatable-header-template>
+        <div style="text-align: right;">{{col.name}}</div>
+      </ng-template>
+      <ng-template let-rowIndex="rowIndex" let-value="value" let-row="row" ngx-datatable-cell-template>
+        <div style="text-align: right;">{{value[i].mealNumber}}</div>
+      </ng-template>
+    </ngx-datatable-column>
+
+  </ngx-datatable>
+
+  <!-- 合計行 -->
+  <ngx-datatable class="material selection-cell"
+  [rows]="dishReportSum"
+  [columnMode]="'force'"
+  [headerHeight]="0"
+  [rowHeight]="40"
+  [footerHeight]="0"
+  [messages]="ngx_table_sumrow_messages" >
+
+  <!-- 基本情報列 -->
+  <ngx-datatable-column *ngFor="let col of displayColumns" [name]="col.name" [width]="col.width" [prop]="col.prop">
+    <ng-template ngx-datatable-header-template>
+      <div *ngIf="col.prop == 'sumMealNumber'" style="text-align: right;">{{col.name}}</div>
+      <div *ngIf="col.prop != 'sumMealNumber'" style="text-align: left;">{{col.name}}</div>
+    </ng-template>
+    <ng-template let-rowIndex="rowIndex" let-value="value" let-row="row" ngx-datatable-cell-template>
+      <div *ngIf="col.prop == 'sumMealNumber'" style="text-align: right;">{{value}}</div>
+      <div *ngIf="col.prop != 'sumMealNumber'" style="text-align: left;">{{value}}</div>
+    </ng-template>
+  </ngx-datatable-column>
+
+  <!-- 日別情報列 -->
+  <ngx-datatable-column *ngFor="let col of displayDayColumns; let i = index" [name]="col.name" [width]="col.width" [prop]="col.prop">
+    <ng-template ngx-datatable-header-template>
+      <div style="text-align: right;">{{col.name}}</div>
+    </ng-template>
+    <ng-template let-rowIndex="rowIndex" let-value="value" let-row="row" ngx-datatable-cell-template>
+      <div style="text-align: right;">{{value[i].mealNumber}}</div>
+    </ng-template>
+  </ngx-datatable-column>
+
+</ngx-datatable>
+
+</div>

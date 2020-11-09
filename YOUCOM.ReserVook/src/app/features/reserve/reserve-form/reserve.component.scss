@@ -1,0 +1,162 @@
+mat-card-title{
+  font-size: 140% !important;
+  font-weight: bold !important;
+}
+label{
+  font-size: 120%;
+}
+.Prefix, .Suffix, .Message{
+  font-size: 120%;
+}
+input, mat-select-value-text, button{
+  font-size: 110%;
+}
+th{
+  font-size: 100%;
+}
+ngx-datatable{
+  *{
+    font-size: 110%;
+  }
+}
+
+:host ::ng-deep .mat-form-field-infix{
+  /* 上 | 右 | 下 | 左 */
+  padding: 0.3em 0 0.4375em 0 !important;
+}
+
+:host ::ng-deep .mat-card-header-text {
+  margin: 0 !important;
+}
+
+input.number{
+  text-align: right;
+}
+mat-form-field{
+  padding-left: 5px !important;
+  padding-right: 5px !important;
+}
+button{
+  padding-left: 10px;
+  padding-right: 10px;
+}
+
+
+.Prefix{
+  padding-right: 10px;
+}
+.Suffix{
+  padding-left: 10px;
+}
+.msg-error{
+  padding-left: 15px;
+}
+
+.FixedWidth{
+  width: 110px;
+}
+
+// タイトル
+.title {
+  padding: 10px;
+}
+.title-left, .title-center {
+  margin-right: 10px !important;
+}
+
+// 宿泊情報
+.mat-column-stay-dateTimePicker {
+  width: 240px;
+}
+.mat-column-stay-stayDays {
+  width: 100px;
+}
+.mat-column-stay-member {
+  width: 130px;
+}
+.mat-column-stay-member-total {
+  width: 130px;
+}
+
+// 希望部屋タイプ
+.mat-column-roomtype-roomtype {
+  width: 150px;
+}
+.mat-column-roomtype-roomcount {
+  width: 80px;
+}
+
+// エージェント
+.mat-column-agent-name {
+  width: 200px;
+}
+.mat-column-agent-remarks {
+  width: 400px;
+}
+
+// 利用者情報
+.mat-column-customer-phone, .mat-column-customer-cellphone {
+  width: 35%;
+}
+.mat-column-customer-search{
+  width: 30%;
+}
+
+.mat-column-customer-name, .mat-column-customer-namekana {
+  width: 50%;
+}
+.mat-column-customer-company {
+  width: 100%;
+}
+.mat-column-customer-email {
+  width: 65%;
+}
+.mat-column-customer-zipcode {
+  width: 35%;
+}
+.mat-column-customer-address {
+  width: 100%;
+}
+.mat-column-customer-customerNo {
+  width: 35%;
+}
+.mat-column-customer-customerNoButton {
+  width: 35%;
+}
+// 会場情報
+ngx-datatable{
+  &.facility {
+    // position: absolute !important;
+    width: auto !important;
+    min-width: 1000px;
+    height: auto !important;
+    // top: 70px;
+    top: auto !important;
+    left: 0;
+    right: 0;
+    bottom: 0;
+  }
+}
+
+
+// 備考
+.mat-column-remarks {
+  width: 100%;
+}
+
+// 入金情報
+.mat-column-deposit-dateTimePicker {
+  width: 140px;
+}
+.mat-column-deposit-denomination, .mat-column-deposit-billingRemarks  {
+  width: 200px;
+}
+.mat-column-deposit-price {
+  width: 120px;
+}
+.mat-column-deposit-billSeparateSeq {
+  width: 50px;
+}
+
+
+

@@ -1,0 +1,46 @@
+<h1 mat-dialog-title class="Title">利用実績</h1>
+<div mat-dialog-content fxLayout="column">
+
+  <div fxFlex="auto">
+    <div class="left" fxLayoutAlign="start center" fxFlex="grow">
+      <div style="font-size: medium;">顧客番号:{{this.customerNo}} </div>
+      &nbsp;&nbsp;
+      <div style="font-size: medium;">顧客名:{{this.customerName}} </div>
+    </div>
+  </div>
+
+  <div fxFlex="grow">
+    <ngx-datatable class="material list" [rows]="searchResultList" [columnMode]="'ColumnMode.standard'"
+      [scrollbarV]="true" [scrollbarH]="false" [headerHeight]="50" [footerHeight]="0" [rowHeight]="35" [messages]="ngx_table_messages" >
+      <ngx-datatable-column *ngFor="let col of guestListColumns" [name]="col.name" [prop]="col.prop" [width]="col.width">
+        <ng-template let-value="value" let-row="row" ngx-datatable-cell-template>
+
+          <ng-container *ngIf="col.prop == 'reserveNo'">
+            <div [ngStyle]="{'text-align': col.textalign}">
+              <a class="nav-link" style="color: #0000ee;" (click)="onClickReserveNo(value)">
+                {{ value }}
+              </a>
+            </div>
+          </ng-container>
+
+          <ng-container *ngIf="col.prop != 'reserveNo' && col.prop != 'useAmount'">
+            <div [ngStyle]="{'text-align': col.textalign}">
+              {{value}}
+            </div>
+          </ng-container>
+
+          <ng-container *ngIf="col.prop == 'useAmount'">
+            <div [ngStyle]="{'text-align': col.textalign}">
+              {{value.toLocaleString()}}
+            </div>
+          </ng-container>
+
+        </ng-template>
+      </ngx-datatable-column>
+    </ngx-datatable>
+  </div>
+</div>
+
+<mat-dialog-actions align="end">
+  <button mat-raised-button color="accent" (click)="CloseDialog()">戻る</button>
+</mat-dialog-actions>

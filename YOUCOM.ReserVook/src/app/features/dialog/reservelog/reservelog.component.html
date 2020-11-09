@@ -1,0 +1,61 @@
+<h1 mat-dialog-title class="Title">予約変更履歴</h1>
+<div mat-dialog-content fxLayout="column">
+
+  <div fxFlex="auto">
+    <div class="left" fxLayoutAlign="start center" fxFlex="grow">
+      <div style="font-size: medium;">予約番号:{{this.reserveNo}} </div>
+    </div>
+  </div>
+
+  <div fxFlex="grow">
+    <ngx-datatable class="material list"
+      [rows]="reserveLogList"
+      [columnMode]="'ColumnMode.standard'"
+      [scrollbarV]="true"
+      [scrollbarH]="false"
+      [headerHeight]="40"
+      [footerHeight]="0"
+      [rowHeight]="30"
+      [messages]="ngx_table_messages"
+      [rowClass]="getRowClass">
+
+      <ngx-datatable-column *ngFor="let col of reserveLogListColumns" [name]="col.name" [prop]="col.prop" [width]="col.width">
+        <ng-template let-value="value" let-row="row" ngx-datatable-cell-template>
+
+          <ng-container *ngIf="col.prop == 'changeDate'">
+            {{value}}
+          </ng-container>
+
+          <ng-container *ngIf="col.prop == 'changeTime'">
+            {{value}}
+          </ng-container>
+
+          <ng-container *ngIf="col.prop == 'creator'">
+            {{value}}
+          </ng-container>
+
+          <ng-container *ngIf="col.prop == 'processDivName'">
+            {{value}}
+          </ng-container>
+
+          <ng-container *ngIf="col.prop == 'changeItem'">
+            {{value}}
+          </ng-container>
+
+          <ng-container *ngIf="col.prop == 'beforeValue'">
+            {{value}}
+          </ng-container>
+
+          <ng-container *ngIf="col.prop == 'afterValue'">
+            {{value}}
+          </ng-container>
+
+        </ng-template>
+      </ngx-datatable-column>
+    </ngx-datatable>
+  </div>
+</div>
+
+<mat-dialog-actions align="end">
+  <button mat-raised-button color="accent" (click)="closeDialog()">戻る</button>
+</mat-dialog-actions>

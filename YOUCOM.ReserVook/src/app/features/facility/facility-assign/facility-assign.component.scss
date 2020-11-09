@@ -1,0 +1,112 @@
+mat-icon{
+  display: inline-flex;
+  vertical-align: middle;
+}
+
+#body {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+
+  // table section
+  .left {
+    width: 80%;
+    margin-right: 10px;
+  }
+
+  // input section
+  .right {
+    width: 20%;
+  }
+
+}
+
+.datetool-parent {
+  height: 100%;
+}
+
+table {
+  width: 100%;
+  border-spacing: 0 0px !important;
+  border-collapse: collapse;
+
+  user-select: none;
+}
+th.mat-header-cell,
+td.mat-cell {
+  text-align: center;
+  font-weight: bold;
+}
+
+th.mat-header-cell,
+td.mat-cell {
+  /* row padding */
+  padding: 0px 0px;
+  /* row border */
+  border-top: 1px solid #dddddd;
+  border-right: 1px solid #dddddd;
+  border-bottom: 1px solid #dddddd;
+  border-left: 1px solid #dddddd;
+}
+
+td.mat-cell:first-of-type
+, td.mat-footer-cell:first-of-type
+, th.mat-header-cell:first-of-type {
+  padding-left: 0px;
+}
+
+td.mat-cell:last-child {
+  /* row border */
+  border-right: 1px solid #dddddd;
+  border-bottom: 1px solid #dddddd;
+}
+
+td.mat-cell:last-of-type,
+td.mat-footer-cell:last-of-type,
+th.mat-header-cell:last-of-type {
+  padding-right: 0px;
+}
+
+// table on mouse cursor
+.cell{
+  cursor: cell;
+}
+.noTouchCursor{
+  cursor: not-allowed;
+}
+
+// hovering menu
+.submenu {
+  position: absolute;
+  min-width: 150px;
+  max-width: 300px;
+  min-height: 20px;
+  z-index: 99;
+  background-color: white;
+  border: 1px solid black;
+  padding: 10px;
+  .menu-group {
+    border-bottom: 1px solid grey;
+    padding-bottom: 10px;
+    > div {
+      height: 40px;
+      text-align: left;
+      line-height: 40px;
+      cursor: pointer;
+    }
+  }
+}
+
+.overwrite{
+  border : 1px solid gray;
+  opacity: 0.75;              // 不透明度
+  position: absolute;         // 絶対値
+  word-break: break-all;      // 折り返して表示
+  overflow: hidden;           // スクロールしない
+}
+
+// 折り返して表示
+.breakall{
+  word-break: break-all;
+}
+

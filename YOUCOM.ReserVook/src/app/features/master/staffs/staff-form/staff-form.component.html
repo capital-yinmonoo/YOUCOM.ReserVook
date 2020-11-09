@@ -1,0 +1,78 @@
+<div fxLay fxLayout="row wrap" fxLayoutAlign="center start">
+  <div id="editP" fxFlex.gt-sm="30" fxFlex="100" >
+    <mat-card class="mat-card-top pa-0">
+      <mat-tab-group>
+        <mat-tab>
+          <ng-template matTabLabel>ユーザー管理</ng-template>
+          <mat-card-content class="pa-1">
+            <form fxLayout="column" [formGroup]="staffForm">
+              <mat-form-field class="mb-1">
+                <input matInput placeholder="ユーザー名" formControlName="userName" required>
+                <div *ngIf="staffForm.controls['userName'].invalid && (staffForm.controls['userName'].touched || staffForm.controls['userName'].dirty)">
+                  <small *ngIf="staffForm.controls['userName'].hasError('required')" class="mat-text-warn">{{msgRequid}}</small>
+                  <small *ngIf="staffForm.controls['userName'].hasError('maxlength')" class="mat-text-warn">40{{msgMaxLength}}</small>
+                </div>
+              </mat-form-field>
+
+              <mat-form-field class="mb-1">
+                <input matInput placeholder="メールアドレス" formControlName="userEmail" required>
+                <div *ngIf="staffForm.controls['userEmail'].invalid && (staffForm.controls['userEmail'].touched || staffForm.controls['userEmail'].dirty)">
+                  <small *ngIf="staffForm.controls['userEmail'].hasError('required')" class="mat-text-warn">{{msgRequid}}</small>
+                  <small *ngIf="staffForm.controls['userEmail'].hasError('maxlength')" class="mat-text-warn">60{{msgMaxLength}}</small>
+                  <small *ngIf="staffForm.controls['userEmail'].hasError('pattern')" class="mat-text-warn">{{msgPatternEmail}}</small>
+                  <div>
+                    <small *ngIf="staffForm.controls['userEmail'].hasError('email')" class="mat-text-warn">{{msgValidityEmail}}</small>
+                  </div>
+                </div>
+              </mat-form-field>
+
+              <mat-form-field class="mb-1">
+                <input matInput placeholder="パスワード" formControlName="password" required>
+                <div *ngIf="staffForm.controls['password'].invalid && (staffForm.controls['password'].touched || staffForm.controls['password'].dirty)">
+                  <small *ngIf="staffForm.controls['password'].hasError('required')" class="mat-text-warn">{{msgRequid}}</small>
+                  <small *ngIf="staffForm.controls['password'].hasError('maxlength')" class="mat-text-warn">20{{msgMaxLength}}</small>
+                  <small *ngIf="staffForm.controls['password'].hasError('minlength')" class="mat-text-warn">8{{msgMinLength}}</small>
+                  <small *ngIf="staffForm.controls['password'].hasError('pattern')" class="mat-text-warn">{{patterAlphabetMark}}</small>
+                </div>
+              </mat-form-field>
+
+              <mat-form-field class="mb-1">
+                <mat-select placeholder="会社名" [disabled]="!isSuperAdmin" [ngClass]="{'readonly':!isSuperAdmin}" formControlName="companyNo" (selectionChange)="selectCompany()" required>
+                  <mat-option *ngFor="let op of M_Companys" [value]="op.companyNo">{{ op.companyName }}</mat-option>
+                </mat-select>
+                <div *ngIf="staffForm.controls['companyNo'].invalid && (staffForm.controls['companyNo'].touched || staffForm.controls['companyNo'].dirty)">
+                  <small *ngIf="staffForm.controls['companyNo'].hasError('required')" class="mat-text-warn">{{msgRequid}}</small>
+                </div>
+              </mat-form-field>
+
+              <mat-form-field class="mb-1">
+                <mat-select placeholder="権限" [disabled]="!isSuperAdmin" [ngClass]="{'readonly':!isSuperAdmin}" formControlName="roleDivision" required>
+                  <mat-option *ngFor="let op of M_RoleDivs" [value]="op.code">{{ op.codeName }}</mat-option>
+                </mat-select>
+                <div *ngIf="staffForm.controls['roleDivision'].invalid && (staffForm.controls['roleDivision'].touched || staffForm.controls['roleDivision'].dirty)">
+                  <small *ngIf="staffForm.controls['roleDivision'].hasError('required')" class="mat-text-warn">{{msgRequid}}</small>
+                </div>
+              </mat-form-field>
+
+              <mat-form-field class="mb-1">
+                <mat-select placeholder="清掃・忘れ物管理使用" [disabled]="!isSuperAdmin || !isUsedCleanLostCompany" [ngClass]="{'readonly':!isSuperAdmin || !isUsedCleanLostCompany}" formControlName="lostFlg" required>
+                  <mat-option *ngFor="let op of M_CleanLostUseDivs" [value]="op.code">{{ op.codeName }}</mat-option>
+                </mat-select>
+                <div *ngIf="staffForm.controls['lostFlg'].invalid && (staffForm.controls['lostFlg'].touched || staffForm.controls['lostFlg'].dirty)">
+                  <small *ngIf="staffForm.controls['lostFlg'].hasError('required')" class="mat-text-warn">{{msgRequid}}</small>
+                </div>
+              </mat-form-field>
+
+            </form>
+          </mat-card-content>
+        </mat-tab>
+      </mat-tab-group>
+
+      <mat-card-actions class="pa-1">
+        <button mat-raised-button color="primary" (click)="onSubmit()" [disabled]="staffForm.invalid">保存</button>
+        <button mat-raised-button color="accent" (click)="cancel()">中止</button>
+      </mat-card-actions>
+
+    </mat-card>
+  </div>
+</div>

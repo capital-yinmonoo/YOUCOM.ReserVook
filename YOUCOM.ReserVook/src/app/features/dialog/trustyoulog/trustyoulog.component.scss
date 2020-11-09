@@ -1,0 +1,22 @@
+::ng-deep .cdk-overlay-container {
+  /* Do you changes here */
+  position: fixed;
+  z-index: 9999;
+}
+
+.Title {
+  font-weight: bold !important;
+}
+
+.Prefix {
+  font-size: 120%;
+  padding-right: 10px;
+}
+
+ngx-datatable{
+  &.list {
+    max-height: 560px;
+    min-height: 150px;
+    height: 45vh !important;
+  }
+}

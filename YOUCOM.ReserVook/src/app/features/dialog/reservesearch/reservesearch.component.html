@@ -1,0 +1,102 @@
+<h1 mat-dialog-title class="Title">予約検索</h1>
+
+<div mat-dialog-content fxLayout="column">
+
+  <div fxFlex="auto" [formGroup]="conditionForm">
+
+    <mat-form-field>
+      <span matPrefix class="Prefix">利用者名(漢字・カナ){{PrefixDelimiter}}</span>
+      <input type="text" matInput formControlName="guestName">
+      <div *ngIf="conditionForm.controls['guestName'].invalid && (conditionForm.controls['guestName'].touched || conditionForm.controls['guestName'].dirty)">
+        <small *ngIf="conditionForm.controls['guestName'].hasError('maxlength')" class="mat-text-warn msg-error">{{msgMaxLengthName}}</small>
+      </div>
+    </mat-form-field>
+    &nbsp;&nbsp;
+    <mat-form-field>
+      <span matPrefix class="Prefix">電話番号{{PrefixDelimiter}}</span>
+      <input type="tel" matInput formControlName="guestPhone">
+      <div *ngIf="conditionForm.controls['guestPhone'].invalid && (conditionForm.controls['guestPhone'].touched || conditionForm.controls['guestPhone'].dirty)">
+        <small *ngIf="conditionForm.controls['guestPhone'].hasError('maxlength')" class="mat-text-warn msg-error">{{msgMaxLengthName}}</small>
+        <small *ngIf="conditionForm.controls['guestPhone'].hasError('pattern')" class="mat-text-warn msg-error">{{msgPatternPhone}}</small>
+      </div>
+    </mat-form-field>
+    &nbsp;&nbsp;
+
+    <div>
+      <mat-form-field>
+        <div matPrefix class="Prefix">
+          <span class="required">利用期間</span>
+          <span>{{PrefixDelimiter}}</span>
+        </div>
+        <input matInput [matDatepicker]="pickerUseDateFrom" formControlName="useDateFrom" readonly (dateChange)="datepickerDateFromChanged($event)">
+        <mat-datepicker-toggle matSuffix [for]="pickerUseDateFrom"></mat-datepicker-toggle>
+        <mat-datepicker #pickerUseDateFrom></mat-datepicker>
+        <div *ngIf="conditionForm.controls['useDateFrom'].invalid && (conditionForm.controls['useDateFrom'].touched || conditionForm.controls['useDateFrom'].dirty)">
+          <small *ngIf="conditionForm.controls['useDateFrom'].hasError('required')" class="mat-text-warn msg-error">{{msgRequid}}</small>
+        </div>
+      </mat-form-field>
+      &nbsp;
+
+      <mat-form-field>
+        <span matPrefix class="Prefix">　～　</span>
+        <input matInput [matDatepicker]="pickerUseDateTo" formControlName="useDateTo" readonly (dateChange)="datepickerDateToChanged($event)">
+        <mat-datepicker-toggle matSuffix [for]="pickerUseDateTo"></mat-datepicker-toggle>
+        <mat-datepicker #pickerUseDateTo></mat-datepicker>
+        <div *ngIf="conditionForm.controls['useDateTo'].invalid && (conditionForm.controls['useDateTo'].touched || conditionForm.controls['useDateTo'].dirty)">
+          <small *ngIf="conditionForm.controls['useDateTo'].hasError('required')" class="mat-text-warn msg-error">{{msgRequid}}</small>
+        </div>
+      </mat-form-field>
+    </div>
+
+    <div class="search-keywords">
+      <mat-form-field>
+        <span matPrefix class="Prefix">キーワード(住所・備考){{PrefixDelimiter}}　</span>
+        <input type="text" matInput formControlName="keywords">
+        <div *ngIf="conditionForm.controls['keywords'].invalid && (conditionForm.controls['keywords'].touched || conditionForm.controls['keywords'].dirty)">
+          <small *ngIf="conditionForm.controls['keywords'].hasError('maxlength')" class="mat-text-warn msg-error">{{msgMaxLengthKeywords}}</small>
+        </div>
+      </mat-form-field>
+
+      &nbsp;&nbsp;
+      <button mat-raised-button color="primary" (click)="Search()" [disabled]="conditionForm.invalid">検索</button>
+      &nbsp;
+      <button mat-raised-button (click)="Clear()">入力クリア</button>
+    </div>
+  </div>
+
+  <div fxFlex="grow">
+    <ngx-datatable class="material list" [rows]="nameSearchList" [columnMode]="'ColumnMode.standard'"
+      [scrollbarV]="true" [scrollbarH]="false" [headerHeight]="50" [footerHeight]="50" [rowHeight]="45" [messages]="ngx_table_messages" >
+
+      <ngx-datatable-column *ngFor="let col of reserveListColumns" [name]="col.name" [prop]="col.prop" [width]="col.width">
+        <ng-template let-value="value" let-row="row" ngx-datatable-cell-template>
+
+          <!-- ボタンクリックで会場状況画面へ予約番号,利用者名を反映 -->
+          <ng-container *ngIf="col.prop === 'select'">
+              <button mat-raised-button color="primary" [mat-dialog-close]="row">選択</button>
+          </ng-container>
+
+          <!-- ボタン以外-->
+          <ng-container *ngIf="col.prop !== 'select'">
+            <div *ngIf="col.textformat === 'string'" [ngStyle]="{'text-align': col.textalign}">
+              {{value}}
+            </div>
+            <div *ngIf="col.textformat === 'number'" [ngStyle]="{'text-align': col.textalign}">
+              {{value.toLocaleString()}}
+            </div>
+            <div *ngIf="col.textformat === 'date'" [ngStyle]="{'text-align': col.textalign}">
+              {{value.substr(0,4) + '/' + value.substr(4,2) + '/' + value.substr(6,2) }}
+            </div>
+          </ng-container>
+
+        </ng-template>
+      </ngx-datatable-column>
+
+    </ngx-datatable>
+  </div>
+
+</div>
+
+<mat-dialog-actions align="end">
+  <button mat-raised-button (click)="CloseDialog()">戻る</button>
+</mat-dialog-actions>

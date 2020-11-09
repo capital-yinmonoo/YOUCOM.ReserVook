@@ -1,0 +1,127 @@
+<!-- ヘッダ部 -->
+<div class="searchCondition">
+  <div class="left" style="width: 800px;">
+    <div fxLayout="column" [formGroup]="conditionForm" fxLayoutAlign="start Left" fxLayoutGap="5px" style="margin-left: 20px; margin-Top: 20px;">
+      <mat-card-title>
+        <div class="searchTitle">
+          氏名検索
+        </div>
+      </mat-card-title>
+
+      <div fxLayout="row">
+        <div fxLayout="column" class="search-name">
+          <mat-form-field>
+            <span matPrefix class="Prefix">利用者名(漢字・カナ){{PrefixDelimiter}}</span>
+            <input type="text" matInput formControlName="guestName">
+            <div *ngIf="conditionForm.controls['guestName'].invalid && (conditionForm.controls['guestName'].touched || conditionForm.controls['guestName'].dirty)">
+              <small *ngIf="conditionForm.controls['guestName'].hasError('maxlength')" class="mat-text-warn msg-error">{{msgMaxLengthName}}</small>
+            </div>
+          </mat-form-field>
+        </div>
+        &nbsp;&nbsp;
+
+        <div fxLayout="column" class="search-phone">
+          <mat-form-field>
+            <span matPrefix class="Prefix">電話番号{{PrefixDelimiter}}</span>
+            <input type="tel" matInput formControlName="guestPhone">
+            <div *ngIf="conditionForm.controls['guestPhone'].invalid && (conditionForm.controls['guestPhone'].touched || conditionForm.controls['guestPhone'].dirty)">
+              <small *ngIf="conditionForm.controls['guestPhone'].hasError('pattern')" class="mat-text-warn msg-error">{{msgPatternPhone}}</small>
+              <small *ngIf="conditionForm.controls['guestPhone'].hasError('maxlength')" class="mat-text-warn msg-error">{{msgMaxLengthPhone}}</small>
+            </div>
+          </mat-form-field>
+        </div>
+        &nbsp;&nbsp;
+
+        <div fxLayout="column" class="search-date">
+          <div fxLayout="row">
+            <mat-form-field>
+              <div matPrefix class="Prefix">
+                <span class="required">利用期間</span>
+                <span>{{PrefixDelimiter}}</span>
+              </div>
+              <input matInput [matDatepicker]="pickerUseDateFrom" formControlName="useDateFrom" (dateChange)="datepickerDateFromChanged($event)">
+              <mat-datepicker-toggle matSuffix [for]="pickerUseDateFrom"></mat-datepicker-toggle>
+              <mat-datepicker #pickerUseDateFrom></mat-datepicker>
+              <div *ngIf="conditionForm.controls['useDateFrom'].invalid && (conditionForm.controls['useDateFrom'].touched || conditionForm.controls['useDateFrom'].dirty)">
+                <small *ngIf="conditionForm.controls['useDateFrom'].hasError('required')" class="mat-text-warn msg-error">{{msgRequid}}</small>
+              </div>
+            </mat-form-field>
+            &nbsp;
+
+            <mat-form-field>
+              <span matPrefix class="Prefix">　～　</span>
+              <input matInput [matDatepicker]="pickerUseDateTo" formControlName="useDateTo" (dateChange)="datepickerDateToChanged($event)">
+              <mat-datepicker-toggle matSuffix [for]="pickerUseDateTo"></mat-datepicker-toggle>
+              <mat-datepicker #pickerUseDateTo></mat-datepicker>
+              <div *ngIf="conditionForm.controls['useDateTo'].invalid && (conditionForm.controls['useDateTo'].touched || conditionForm.controls['useDateTo'].dirty)">
+                <small *ngIf="conditionForm.controls['useDateTo'].hasError('required')" class="mat-text-warn msg-error">{{msgRequid}}</small>
+              </div>
+            </mat-form-field>
+          </div>
+        </div>
+      </div>
+
+      <div fxLayout="row">
+        <div class="search-keywords">
+          <mat-form-field>
+            <span matPrefix class="Prefix">キーワード(住所・備考){{PrefixDelimiter}}</span>
+            <input type="text" matInput formControlName="keywords">
+            <div *ngIf="conditionForm.controls['keywords'].invalid && (conditionForm.controls['keywords'].touched || conditionForm.controls['keywords'].dirty)">
+              <small *ngIf="conditionForm.controls['keywords'].hasError('maxlength')" class="mat-text-warn msg-error">{{msgMaxLengthKeywords}}</small>
+            </div>
+          </mat-form-field>
+        </div>
+        &nbsp;&nbsp;
+
+        <div>
+          <button mat-raised-button class="material-icons" color="primary" (click)="search()" [disabled]="conditionForm.invalid">検索</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div fxLayout="row wrap" fxLayoutAlign="center start">
+  <div fxFlex.gt-sm="100" fxFlex="100">
+    <ngx-datatable class="material" [columnMode]="'force'" [headerHeight]="50" [footerHeight]="0"
+          [rowHeight]="50" [scrollbarV]="true" [scrollbarH]="true" [rows]="nameSearchList" [messages]="ngx_table_messages">
+      <ngx-datatable-column name="利用者名" [width]="150" prop="nameKanji"></ngx-datatable-column>
+      <ngx-datatable-column name="利用者名カナ" [width]="150" prop="nameKana"></ngx-datatable-column>
+      <ngx-datatable-column name="電話番号" [width]="120" prop="phone"></ngx-datatable-column>
+      <ngx-datatable-column name="到着日" [width]="100" prop="arrivalDate">
+        <ng-template let-value="value" ngx-datatable-cell-template>
+          {{value.substr(0,4) + '/' + value.substr(4,2) + '/' + value.substr(6,2) }}
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column name="泊数" [width]="50" prop="stayDays">
+        <ng-template let-value="value" ngx-datatable-cell-template>
+          <div class="numeric">
+            {{value}}
+          </div>
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column name="出発日" [width]="100" prop="departureDate">
+        <ng-template let-value="value" ngx-datatable-cell-template>
+          {{value.substr(0,4) + '/' + value.substr(4,2) + '/' + value.substr(6,2) }}
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column name="人数" [width]="50" prop="persons">
+        <ng-template let-value="value" ngx-datatable-cell-template>
+          <div class="numeric">
+            {{value}}
+          </div>
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column name="状態" [width]="80" prop="status"></ngx-datatable-column>
+      <ngx-datatable-column name = "予約番号" [width]="80" prop="reserveNo">
+        <ng-template let-value="value" ngx-datatable-cell-template>
+          <a class="nav-link" style="color: #0000ee;" (click)="onClickReserveNo(value)">
+            {{ value }}
+          </a>
+        </ng-template>
+      </ngx-datatable-column>
+    </ngx-datatable>
+  </div>
+</div>
+

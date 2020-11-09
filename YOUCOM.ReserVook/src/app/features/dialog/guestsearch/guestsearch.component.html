@@ -1,0 +1,51 @@
+<h1 mat-dialog-title class="Title">利用者検索</h1>
+<div mat-dialog-content fxLayout="column">
+
+  <div fxFlex="auto">
+
+    <mat-form-field>
+      <span matPrefix class="Prefix">電話番号{{PrefixDelimiter}}</span>
+      <input type="tel" matInput [(ngModel)]="phone">
+    </mat-form-field>
+    &nbsp;&nbsp;
+    <mat-form-field>
+      <span matPrefix class="Prefix">フリガナ{{PrefixDelimiter}}</span>
+      <input type="text" matInput [(ngModel)]="guestNameKana">
+    </mat-form-field>
+    &nbsp;&nbsp;
+
+    <button mat-raised-button color="primary" (click)="Search()">検索</button>
+    &nbsp;
+    <button mat-raised-button (click)="Clear()">入力クリア</button>
+
+  </div>
+  <div fxFlex="grow">
+    <ngx-datatable class="material list" [rows]="searchResultList" [columnMode]="'ColumnMode.standard'"
+      [scrollbarV]="true" [scrollbarH]="false" [headerHeight]="50" [footerHeight]="50" [rowHeight]="45" [messages]="ngx_table_messages" >
+
+      <ngx-datatable-column *ngFor="let col of guestListColumns" [name]="col.name" [prop]="col.prop" [width]="col.width">
+        <ng-template let-value="value" let-row="row" ngx-datatable-cell-template>
+
+          <!-- ボタンクリックで予約登録画面へ利用者情報を反映 -->
+          <ng-container *ngIf="col.prop === 'select'">
+              <button mat-raised-button color="accent" [mat-dialog-close]="row">選択</button>
+          </ng-container>
+
+          <!-- ボタン以外-->
+          <ng-container *ngIf="col.prop !== 'select'">
+            <div [ngStyle]="{'text-align': col.textalign}">
+              {{value}}
+            </div>
+          </ng-container>
+
+        </ng-template>
+      </ngx-datatable-column>
+
+    </ngx-datatable>
+  </div>
+
+</div>
+
+<mat-dialog-actions align="end">
+  <button mat-raised-button color="accent" (click)="CloseDialog()">戻る</button>
+</mat-dialog-actions>

@@ -1,0 +1,226 @@
+<div fxLay fxLayout="row wrap" fxLayoutAlign="center start">
+  <div id="body">
+    <!-- Parent Inputs -->
+    <div class="left">
+      <mat-card class="mat-card-top pa-0">
+        <mat-tab-group>
+          <mat-tab>
+            <ng-template matTabLabel>セット商品マスタ</ng-template>
+            <mat-card-content class="pa-1">
+              <form fxLayout="column" [formGroup]="parentForm">
+
+                <mat-form-field class="mb-1">
+                  <input matInput placeholder="セット商品コード" [readonly]="isUpdate" [ngClass]="{'readonly':isUpdate}" formControlName="itemCode" required>
+                  <div *ngIf="parentForm.controls['itemCode'].invalid && (parentForm.controls['itemCode'].touched || parentForm.controls['itemCode'].dirty)">
+                    <small *ngIf="parentForm.controls['itemCode'].hasError('required')" class="mat-text-warn">{{msgRequid}}</small>
+                    <small *ngIf="parentForm.controls['itemCode'].hasError('maxlength')" class="mat-text-warn">{{msgMaxLengthItemCode}}</small>
+                    <small *ngIf="parentForm.controls['itemCode'].hasError('pattern')" class="mat-text-warn">{{msgPatternAlphabetUpper}}</small>
+                  </div>
+                </mat-form-field>
+
+                <mat-form-field class="mb-1">
+                  <input matInput placeholder="セット商品名称" formControlName="itemName" required>
+                  <div *ngIf="parentForm.controls['itemName'].invalid && (parentForm.controls['itemName'].touched || parentForm.controls['itemName'].dirty)">
+                    <small *ngIf="parentForm.controls['itemName'].hasError('required')" class="mat-text-warn">{{msgRequid}}</small>
+                    <small *ngIf="parentForm.controls['itemName'].hasError('maxlength')" class="mat-text-warn">{{msgMaxLengthItemName}}</small>
+                  </div>
+                </mat-form-field>
+
+                <mat-form-field class="mb-1">
+                  <input matInput placeholder="セット商品カナ" formControlName="itemKana" required>
+                  <div *ngIf="parentForm.controls['itemKana'].invalid && (parentForm.controls['itemKana'].touched || parentForm.controls['itemKana'].dirty)">
+                    <small *ngIf="parentForm.controls['itemKana'].hasError('required')" class="mat-text-warn">{{msgRequid}}</small>
+                    <small *ngIf="parentForm.controls['itemKana'].hasError('pattern')" class="mat-text-warn">{{msgPatternKana}}</small>
+                    <small *ngIf="parentForm.controls['itemKana'].hasError('maxlength')" class="mat-text-warn">{{msgMaxLengthItemName}}</small>
+                  </div>
+                </mat-form-field>
+
+                <mat-form-field class="mb-1">
+                    <input matInput placeholder="印字用名称" formControlName="printName" required>
+                    <div *ngIf="parentForm.controls['printName'].invalid && (parentForm.controls['printName'].touched || parentForm.controls['printName'].dirty)">
+                      <small *ngIf="parentForm.controls['printName'].hasError('required')" class="mat-text-warn">{{msgRequid}}</small>
+                      <small *ngIf="parentForm.controls['printName'].hasError('maxlength')" class="mat-text-warn">{{msgMaxLengthPrintName}}</small>
+                    </div>
+                </mat-form-field>
+
+                <mat-form-field class="mb-1">
+                    <input type ="number" matInput placeholder="金額" formControlName="unitPrice" required>
+                    <div *ngIf="parentForm.controls['unitPrice'].invalid && (parentForm.controls['unitPrice'].touched || parentForm.controls['unitPrice'].dirty)">
+                      <small *ngIf="parentForm.controls['unitPrice'].hasError('required')" class="mat-text-warn">{{msgRequid}}</small>
+                      <small *ngIf="parentForm.controls['unitPrice'].hasError('min')" class="mat-text-warn">{{msgMin99999999}}</small>
+                      <small *ngIf="parentForm.controls['unitPrice'].hasError('max')" class="mat-text-warn">{{msgMax99999999}}</small>
+                      <small *ngIf="parentForm.controls['unitPrice'].hasError('pattern')" class="mat-text-warn">{{msgPatternNumber}}</small>
+                    </div>
+                </mat-form-field>
+
+                <mat-form-field class="mb-1">
+                  <mat-select placeholder="税サ区分" formControlName="taxServiceDivision" required>
+                    <mat-option *ngFor="let div of M_TaxServiceDivision" [value]="div.taxServiceDivision">{{ div.displayName }}</mat-option>
+                  </mat-select>
+                  <div *ngIf="parentForm.controls['taxServiceDivision'].invalid && (parentForm.controls['taxServiceDivision'].touched || parentForm.controls['taxServiceDivision'].dirty)">
+                    <small *ngIf="parentForm.controls['taxServiceDivision'].hasError('required')" class="mat-text-warn">{{msgRequid}}</small>
+                  </div>
+                </mat-form-field>
+
+                <mat-form-field class="mb-1">
+                  <mat-select placeholder="税率区分" formControlName="taxrateDivision" required>
+                    <mat-option *ngFor="let div of taxrateDivision" [value]="div.key">{{ div.value }}</mat-option>
+                  </mat-select>
+                  <div *ngIf="parentForm.controls['taxrateDivision'].invalid && (parentForm.controls['taxrateDivision'].touched || parentForm.controls['taxrateDivision'].dirty)">
+                    <small *ngIf="parentForm.controls['taxrateDivision'].hasError('required')" class="mat-text-warn">{{msgRequid}}</small>
+                  </div>
+                </mat-form-field>
+
+                <mat-form-field class="mb-1">
+                  <input type ="number" matInput placeholder="表示順" formControlName="displayOrder" required>
+                  <div *ngIf="parentForm.controls['displayOrder'].invalid && (parentForm.controls['displayOrder'].touched || parentForm.controls['displayOrder'].dirty)">
+                    <small *ngIf="parentForm.controls['displayOrder'].hasError('required')" class="mat-text-warn">{{msgRequid}}</small>
+                    <small *ngIf="parentForm.controls['displayOrder'].hasError('min')" class="mat-text-warn">{{msgMin1}}</small>
+                    <small *ngIf="parentForm.controls['displayOrder'].hasError('max')" class="mat-text-warn">{{msgMax9999}}</small>
+                    <small *ngIf="parentForm.controls['displayOrder'].hasError('pattern')" class="mat-text-warn">{{msgPatternNumber}}</small>
+                  </div>
+                </mat-form-field>
+              </form>
+            </mat-card-content>
+          </mat-tab>
+        </mat-tab-group>
+
+        <mat-card-actions class="pa-1">
+          <button mat-raised-button color="primary" (click)="onSubmit()" [disabled]="parentForm.invalid || childForm.invalid">保存</button>
+          <button mat-raised-button color="accent" (click)="cancel()">中止</button>
+        </mat-card-actions>
+
+      </mat-card>
+    </div>
+
+    <!-- Childs Inputs -->
+    <div class="right">
+      <mat-card class="mat-card-top pa-0">
+        <mat-tab-group>
+          <mat-tab>
+            <ng-template matTabLabel>セット商品 内訳</ng-template>
+            <form [formGroup]="childForm">
+              <table mat-table class="mat-elevation-z8" [dataSource]="itemSource">
+                <!-- columns -->
+                <ng-container matColumnDef="addItemInfo">
+                  <th mat-header-cell *matHeaderCellDef></th>
+                  <td *matCellDef="let element" fxLayout="row">
+                    <span>
+                      <button mat-icon-button (click)="addItemInfo()" style="padding: 0">
+                        <mat-icon>add</mat-icon>
+                      </button>
+                    </span>
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="item">
+                  <th mat-header-cell *matHeaderCellDef>商品</th>
+                  <td mat-cell *matCellDef="let element" [formGroup]="element">
+                    <mat-form-field class="mat-column-item-item" floatLabel="never">
+                      <mat-label>選択</mat-label>
+                      <mat-select formControlName="item" id="1" (selectionChange)="selectItem(element)">
+                        <div *ngFor="let itemDiv of M_ItemList">
+                          <mat-optgroup [label]="itemDiv.itemDivisionName + '商品'">
+                            <mat-option *ngFor="let item of itemDiv.itemList" [value]="item.itemCode">{{ item.itemName }}</mat-option>
+                          </mat-optgroup>
+                        </div>
+                      </mat-select>
+                    </mat-form-field>
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="unitPrice">
+                  <th mat-header-cell *matHeaderCellDef>単価</th>
+                  <td mat-cell *matCellDef="let element" [formGroup]="element">
+                    <mat-form-field class="mat-column-item-unitPrice">
+                      <input class="number" matInput formControlName="unitPrice">
+                    </mat-form-field>
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="itemDivision">
+                  <th mat-header-cell *matHeaderCellDef>商品分類</th>
+                  <td mat-cell *matCellDef="let element" [formGroup]="element">
+                    <mat-form-field class="mat-column-item-itemDivision readonly">
+                      <mat-select formControlName="itemDivision">
+                        <mat-option *ngFor="let div of M_ItemDivision" [value]="div.code">{{ div.codeName }}</mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="mealDivision">
+                  <th mat-header-cell *matHeaderCellDef>料理区分</th>
+                  <td mat-cell *matCellDef="let element" [formGroup]="element">
+                    <mat-form-field class="mat-column-item-mealDivision readonly">
+                      <mat-select formControlName="mealDivision">
+                        <mat-option *ngFor="let div of M_MealDivision" [value]="div.code">{{ div.codeName }}</mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="taxServiceDivision">
+                  <th mat-header-cell *matHeaderCellDef>税サ区分</th>
+                  <td mat-cell *matCellDef="let element" [formGroup]="element">
+                    <mat-form-field class="mat-column-item-taxServiceDivision readonly">
+                      <mat-select formControlName="taxServiceDivision">
+                        <mat-option *ngFor="let div of M_TaxServiceDivision" [value]="div.taxServiceDivision">{{ div.displayName }}</mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="taxrateDivision">
+                  <th mat-header-cell *matHeaderCellDef>税率区分</th>
+                  <td mat-cell *matCellDef="let element" [formGroup]="element">
+                    <mat-form-field class="mat-column-item-taxrateDivision readonly">
+                      <mat-select formControlName="taxrateDivision">
+                        <mat-option *ngFor="let div of taxrateDivision" [value]="div.key">{{ div.value }}</mat-option>
+                      </mat-select>
+                    </mat-form-field>
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="seq">
+                  <th mat-header-cell *matHeaderCellDef></th>
+                  <td *matCellDef="let element" fxLayout="row">
+                    <button mat-icon-button (click)="removeItemInfo(element)"
+                      *ngIf="this.itemSource.data.length != 1">
+                      <mat-icon>delete icon</mat-icon>
+                    </button>
+                  </td>
+                </ng-container>
+
+                <!-- Validator -->
+                <ng-container matColumnDef ="ErrorMessage">
+                  <td mat-footer-cell *matFooterCellDef colspan="12" style="width:auto;">
+                    <div *ngFor="let element of itemList let i = index"  style="height: auto;" >
+                      <div *ngIf="element.controls['unitPrice'].invalid && (element.controls['unitPrice'].touched || element.controls['unitPrice'].dirty)">
+                        <small *ngIf="element.controls['unitPrice'].hasError('pattern')" class="mat-text-warn">{{i + 1}}{{msgLine}}{{lblUnitPrice}}{{msgIs}}{{msgPatternNumber}}</small>
+                        <small *ngIf="element.controls['unitPrice'].hasError('min')" class="mat-text-warn">{{i + 1}}{{msgLine}}{{lblUnitPrice}}{{msgIs}}{{msgMin99999999}}</small>
+                        <small *ngIf="element.controls['unitPrice'].hasError('max')" class="mat-text-warn">{{i + 1}}{{msgLine}}{{lblUnitPrice}}{{msgIs}}{{msgMax99999999}}</small>
+                      </div>
+                    </div>
+                  </td>
+                </ng-container>
+
+                <!-- Header and Row and Footer -->
+                <tr mat-header-row *matHeaderRowDef="childItemInfoHeader"></tr>
+                <tr mat-row *matRowDef="let row; columns: childItemInfoHeader;"></tr>
+                <tr mat-footer-row *matFooterRowDef="['ErrorMessage']"></tr>
+              </table>
+              <div style="height: 10px;"></div>
+              <span class="Message">
+                合計: ¥{{totalAmount  | number}}
+              </span>
+            </form>
+          </mat-tab>
+        </mat-tab-group>
+      </mat-card>
+
+
+    </div>
+
+  </div>
+</div>

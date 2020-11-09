@@ -1,0 +1,57 @@
+<div fxLayout="row" fxLayoutAlign="center start">
+  <div fxFlex.gt-sm="40" fxFlex="100">
+    <mat-card class="pa-0">
+      <mat-tab-group >
+        <mat-tab>
+          <ng-template matTabLabel>WEB連携 - ポイント変換マスタ</ng-template>
+            <mat-card-content class="pa-1">
+              <form fxLayout="column" [formGroup]="pointConvertForm">
+
+                <mat-form-field class="mb-1">
+                  <mat-select placeholder="サイトコントローラー名" [disabled]="updateFlg" [ngClass]="{'readonly':updateFlg}" formControlName="scCd" (selectionChange)="selectScCode()" required>
+                    <mat-option *ngFor="let op of codes" [value]="op.scSegCd">{{ op.content1 }}</mat-option>
+                  </mat-select>
+                  <div *ngIf="pointConvertForm.controls['scCd'].invalid && (pointConvertForm.controls['scCd'].touched || pointConvertForm.controls['scCd'].dirty)">
+                    <small *ngIf="pointConvertForm.controls['scCd'].hasError('required')" class="mat-text-warn">{{msgRequid}}</small>
+                  </div>
+                </mat-form-field>
+
+                <mat-form-field class="mb-1">
+                  <mat-select placeholder="サイト名" [disabled]="updateFlg" [ngClass]="{'readonly':updateFlg}" formControlName="scSiteCd" required>
+                    <mat-option *ngFor="let op of sitecodes" [value]="op.scSiteCd">{{ op.scSiteNm }}</mat-option>
+                  </mat-select>
+                  <div *ngIf="pointConvertForm.controls['scSiteCd'].invalid && (pointConvertForm.controls['scSiteCd'].touched || pointConvertForm.controls['scSiteCd'].dirty)">
+                    <small *ngIf="pointConvertForm.controls['scSiteCd'].hasError('required')" class="mat-text-warn">{{msgRequid}}</small>
+                  </div>
+                </mat-form-field>
+
+                <mat-form-field class="mb-1">
+                  <input matInput placeholder="ポイント割引・補助金名" [readonly]="updateFlg" [ngClass]="{'readonly':updateFlg}" formControlName="pntsDiscntName" required>
+                  <div *ngIf="pointConvertForm.controls['pntsDiscntName'].invalid && (pointConvertForm.controls['pntsDiscntName'].touched || pointConvertForm.controls['pntsDiscntName'].dirty)">
+                    <small *ngIf="pointConvertForm.controls['pntsDiscntName'].hasError('maxlength')" class="mat-text-warn">{{msgMaxLength50}}</small>
+                    <small *ngIf="pointConvertForm.controls['pntsDiscntName'].hasError('required')" class="mat-text-warn">{{msgRequid}}</small>
+                  </div>
+                </mat-form-field>
+
+                <mat-form-field class="mb-1">
+                  <mat-select placeholder="金種" formControlName="denominationCode" required>
+                    <mat-option *ngFor="let op of denominations" [value]="op.denominationCode">{{ op.denominationName }}</mat-option>
+                    <mat-option unspecified [value]="unspecified.key" [disabled]="true">{{unspecified.value}}</mat-option>
+                  </mat-select>
+                  <div *ngIf="pointConvertForm.controls['denominationCode'].invalid && (pointConvertForm.controls['denominationCode'].touched || pointConvertForm.controls['denominationCode'].dirty)">
+                    <small *ngIf="pointConvertForm.controls['denominationCode'].hasError('required')" class="mat-text-warn">{{msgRequid}}</small>
+                    <small *ngIf="pointConvertForm.controls['denominationCode'].hasError('pattern')" class="mat-text-warn">金種{{msgChooseArticle}}</small>
+                  </div>
+                </mat-form-field>
+
+              </form>
+            </mat-card-content>
+          </mat-tab>
+        </mat-tab-group>
+      <mat-card-actions class="pa-1">
+        <button mat-raised-button color="primary"(click)="onSubmit()"[disabled]="pointConvertForm.invalid">保存</button>
+        <button mat-raised-button color="accent" (click)="cancel()">中止</button>
+      </mat-card-actions>
+    </mat-card>
+  </div>
+</div>

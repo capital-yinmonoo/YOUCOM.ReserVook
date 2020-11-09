@@ -1,0 +1,202 @@
+<!-- 宿泊商品  -->
+<form [formGroup]="stayItemInfoForm">
+  <table mat-table class="mat-elevation-z8" [dataSource]="itemSource">
+    <!-- columns -->
+    <ng-container matColumnDef="addItemInfo">
+      <th mat-header-cell *matHeaderCellDef></th>
+      <td *matCellDef="let element" fxLayout="row">
+        <span *ngIf="!CheckSetItemDivision_Child(element.controls['setItemDivision'].value)">
+          <button mat-icon-button (click)="addItemInfo()" style="padding: 0">
+            <mat-icon>add</mat-icon>
+          </button>
+        </span>
+        <div *ngIf="CheckSetItemDivision_Child(element.controls['setItemDivision'].value)" fxFlex fxLayoutAlign="center end">
+          <mat-icon style=" color: gray">subdirectory_arrow_right</mat-icon>
+        </div>
+      </td>
+    </ng-container>
+    <ng-container matColumnDef="item">
+      <th mat-header-cell *matHeaderCellDef>商品</th>
+      <td mat-cell *matCellDef="let element" [formGroup]="element">
+        <mat-form-field class="mat-column-item-item" floatLabel="never">
+          <mat-label>選択</mat-label>
+          <mat-select [disabled]="DisabledFlag || !CheckBillSeq(element.controls['billSeparateSeq'].value) || CheckSetItemDivision_Child(element.controls['setItemDivision'].value)" formControlName="item" id="1" (selectionChange)="selectStayItem(element)">
+            <mat-optgroup label="セット商品">
+              <mat-option *ngFor="let setItem of MasterInfo.M_SetItemList" [value]="setItem.itemCode">{{ setItem.itemName }}</mat-option>
+            </mat-optgroup>
+            <mat-optgroup label="宿泊商品">
+              <mat-option *ngFor="let stayItem of MasterInfo.M_StayItemList" [value]="stayItem.itemCode">{{ stayItem.itemName }}</mat-option>
+            </mat-optgroup>
+            <mat-optgroup label="その他商品">
+              <mat-option *ngFor="let otherItem of MasterInfo.M_OtherItemList" [value]="otherItem.itemCode">{{ otherItem.itemName }}</mat-option>
+            </mat-optgroup>
+            <mat-option unspecified [value]="unspecified.key" [disabled]="true">{{unspecified.value}}</mat-option> <!-- Web連携用 未指定 -->
+          </mat-select>
+        </mat-form-field>
+      </td>
+    </ng-container>
+    <ng-container matColumnDef="printName">
+      <th mat-header-cell *matHeaderCellDef>{{lblPrintName}}</th>
+      <td mat-cell *matCellDef="let element" [formGroup]="element">
+        <mat-form-field class="mat-column-item-item">
+          <input type="text" matInput formControlName="printName">
+        </mat-form-field>
+      </td>
+    </ng-container>
+    <ng-container matColumnDef="unitPrice">
+      <th mat-header-cell *matHeaderCellDef>{{lblUnitPrice}}</th>
+      <td mat-cell *matCellDef="let element" [formGroup]="element">
+        <mat-form-field class="mat-column-item-unitPrice">
+          <input type="tel" class="number" matInput formControlName="unitPrice" (change)="calcAmountStayItem(element)">
+        </mat-form-field>
+      </td>
+    </ng-container>
+    <ng-container matColumnDef="itemNumberM">
+      <th mat-header-cell *matHeaderCellDef>{{lblMale}}</th>
+      <td mat-cell *matCellDef="let element" [formGroup]="element">
+        <mat-form-field class="mat-column-item-itemnumber">
+          <input type="number" class="number" matInput formControlName="itemNumberM" (change)="copyToSetItem_Member(element)">
+        </mat-form-field>
+      </td>
+    </ng-container>
+    <ng-container matColumnDef="itemNumberF">
+      <th mat-header-cell *matHeaderCellDef>{{lblFemale}}</th>
+      <td mat-cell *matCellDef="let element" [formGroup]="element">
+        <mat-form-field class="mat-column-item-itemnumber">
+          <input type="number" class="number" matInput formControlName ="itemNumberF" (change)="copyToSetItem_Member(element)">
+        </mat-form-field>
+      </td>
+    </ng-container>
+    <ng-container matColumnDef="itemNumberC">
+      <th mat-header-cell *matHeaderCellDef>{{lblChild}}</th>
+      <td mat-cell *matCellDef="let element" [formGroup]="element">
+        <mat-form-field class="mat-column-item-itemnumber">
+          <input type="number" class="number" matInput formControlName ="itemNumberC" (change)="copyToSetItem_Member(element)">
+        </mat-form-field>
+      </td>
+    </ng-container>
+    <ng-container matColumnDef="amountPrice">
+      <th mat-header-cell *matHeaderCellDef>{{lblAmount}}</th>
+      <td mat-cell *matCellDef="let element" [formGroup]="element">
+        <mat-form-field class="mat-column-item-amountPrice readonly">
+          <input type="tel" class="number" matInput formControlName="amountPrice" readonly="true">
+        </mat-form-field>
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="mealDivision">
+      <th mat-header-cell *matHeaderCellDef>料理区分</th>
+      <td mat-cell *matCellDef="let element" [formGroup]="element">
+        <mat-form-field class="mat-column-item-mealDivision readonly">
+          <mat-select formControlName="mealDivision">
+            <mat-option *ngFor="let div of MasterInfo.M_MealDivision" [value]="div.code">{{ div.codeName }}</mat-option>
+          </mat-select>
+          </mat-form-field>
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="taxServiceDivision">
+      <th mat-header-cell *matHeaderCellDef>税サ区分</th>
+      <td mat-cell *matCellDef="let element" [formGroup]="element">
+        <mat-form-field class="mat-column-item-taxServiceDivision readonly">
+          <mat-select formControlName="taxServiceDivision">
+            <mat-option *ngFor="let div of MasterInfo.M_TaxServiceDivisionList" [value]="div.taxServiceDivision">{{ div.displayName }}</mat-option>
+          </mat-select>
+          </mat-form-field>
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="taxRate">
+      <th mat-header-cell *matHeaderCellDef>消費税率</th>
+      <td mat-cell *matCellDef="let element" [formGroup]="element">
+        <mat-form-field class="mat-column-item-taxRate readonly" >
+          <input type="tel" class="number" matInput formControlName="taxRate" readonly="true">
+        </mat-form-field>
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="billSeparateSeq">
+      <th mat-header-cell *matHeaderCellDef>{{lblBillNo}}</th>
+      <td mat-cell *matCellDef="let element" [formGroup]="element">
+        <mat-form-field class="mat-column-item-billSeparateSeq">
+          <input type="number" class="number" matInput formControlName="billSeparateSeq" (change)="copyToSetItem_BillSeparateNo(element)">
+        </mat-form-field>
+      </td>
+    </ng-container>
+
+    <ng-container matColumnDef="detailsSeq">
+      <th mat-header-cell *matHeaderCellDef></th>
+      <td *matCellDef="let element" fxLayout="row">
+        <button mat-icon-button (click)="removeItemInfo(element)"
+          *ngIf="this.itemSource.data.length != 1 && this.CheckBillSeq(element.controls['billSeparateSeq'].value) && !this.CheckSetItemDivision_Child(element.controls['setItemDivision'].value)">
+          <mat-icon>delete icon</mat-icon>
+        </button>
+      </td>
+    </ng-container>
+
+
+    <!-- Validator -->
+    <ng-container matColumnDef ="ErrorMessage">
+      <td mat-footer-cell *matFooterCellDef colspan="12" style="width:auto;">
+        <div *ngFor="let element of itemList let i = index"  style="height: auto;" >
+
+          <div *ngIf="element.controls.item.errors?.Required">
+            <small class="mat-text-warn">{{i + 1}}{{msgLine}} {{lblItem}}{{msgIs}}{{msgRequid}}</small>
+          </div>
+
+          <div *ngIf="element.controls['printName'].invalid && (element.controls['printName'].touched || element.controls['printName'].dirty)">
+            <small *ngIf="element.controls['printName'].hasError('maxlength')" class="mat-text-warn">{{i + 1}}{{msgLine}} {{lblPrintName}}{{msgIs}}{{msgMaxLengthPrintName}}</small>
+          </div>
+
+          <div *ngIf="element.controls['unitPrice'].invalid && (element.controls['unitPrice'].touched || element.controls['unitPrice'].dirty)">
+            <small *ngIf="element.controls['unitPrice'].hasError('pattern')" class="mat-text-warn">{{i + 1}}{{msgLine}} {{lblUnitPrice}}{{msgIs}}{{msgPatternNumber}}</small>
+            <small *ngIf="element.controls['unitPrice'].hasError('min')" class="mat-text-warn">{{i + 1}}{{msgLine}} {{lblUnitPrice}}{{msgIs}}{{msgMinAmount}}</small>
+            <small *ngIf="element.controls['unitPrice'].hasError('max')" class="mat-text-warn">{{i + 1}}{{msgLine}} {{lblUnitPrice}}{{msgIs}}{{msgMaxAmount}}</small>
+          </div>
+
+          <div *ngIf="element.controls['itemNumberM'].invalid && (element.controls['itemNumberM'].touched || element.controls['itemNumberM'].dirty)">
+            <small *ngIf="element.controls['itemNumberM'].hasError('pattern')" class="mat-text-warn">{{i + 1}}{{msgLine}} {{lblMale}}{{msgIs}}{{msgPatternNumber}}</small>
+            <small *ngIf="element.controls['itemNumberM'].hasError('min')" class="mat-text-warn">{{i + 1}}{{msgLine}} {{lblMale}}{{msgIs}}{{msgMinMember}}</small>
+            <small *ngIf="element.controls['itemNumberM'].hasError('max')" class="mat-text-warn">{{i + 1}}{{msgLine}} {{lblMale}}{{msgIs}}{{msgMaxMember}}</small>
+          </div>
+
+          <div *ngIf="element.controls['itemNumberF'].invalid && (element.controls['itemNumberF'].touched || element.controls['itemNumberF'].dirty)">
+            <small *ngIf="element.controls['itemNumberF'].hasError('pattern')" class="mat-text-warn">{{i + 1}}{{msgLine}} {{lblFemale}}{{msgIs}}{{msgPatternNumber}}</small>
+            <small *ngIf="element.controls['itemNumberF'].hasError('min')" class="mat-text-warn">{{i + 1}}{{msgLine}} {{lblFemale}}{{msgIs}}{{msgMinMember}}</small>
+            <small *ngIf="element.controls['itemNumberF'].hasError('max')" class="mat-text-warn">{{i + 1}}{{msgLine}} {{lblFemale}}{{msgIs}}{{msgMaxMember}}</small>
+          </div>
+
+          <div *ngIf="element.controls['itemNumberC'].invalid && (element.controls['itemNumberC'].touched || element.controls['itemNumberC'].dirty)">
+            <small *ngIf="element.controls['itemNumberC'].hasError('pattern')" class="mat-text-warn">{{i + 1}}{{msgLine}} {{lblChild}}{{msgIs}}{{msgPatternNumber}}</small>
+            <small *ngIf="element.controls['itemNumberC'].hasError('min')" class="mat-text-warn">{{i + 1}}{{msgLine}} {{lblChild}}{{msgIs}}{{msgMinMember}}</small>
+            <small *ngIf="element.controls['itemNumberC'].hasError('max')" class="mat-text-warn">{{i + 1}}{{msgLine}} {{lblChild}}{{msgIs}}{{msgMaxMember}}</small>
+          </div>
+
+          <div *ngIf="element.controls['amountPrice'].invalid && (element.controls['amountPrice'].touched || element.controls['amountPrice'].dirty)">
+            <small *ngIf="element.controls['amountPrice'].hasError('pattern')" class="mat-text-warn">{{i + 1}}{{msgLine}} {{lblAmount}}{{msgIs}}{{msgPatternNumber}}</small>
+            <small *ngIf="element.controls['amountPrice'].hasError('min')" class="mat-text-warn">{{i + 1}}{{msgLine}} {{lblAmount}}{{msgIs}}{{msgMinAmount}}</small>
+            <small *ngIf="element.controls['amountPrice'].hasError('max')" class="mat-text-warn">{{i + 1}}{{msgLine}} {{lblAmount}}{{msgIs}}{{msgMaxAmount}}</small>
+          </div>
+
+          <div *ngIf="element.controls['billSeparateSeq'].invalid && (element.controls['billSeparateSeq'].touched || element.controls['billSeparateSeq'].dirty)">
+            <small *ngIf="element.controls['billSeparateSeq'].hasError('min')" class="mat-text-warn">{{i + 1}}{{msgLine}} {{lblBillNo}}{{msgIs}}{{msgMinBillNo}}</small>
+            <small *ngIf="element.controls['billSeparateSeq'].hasError('max')" class="mat-text-warn">{{i + 1}}{{msgLine}} {{lblBillNo}}{{msgIs}}{{msgMaxBillNo}}</small>
+          </div>
+
+          <div *ngIf="element.controls.billSeparateSeqError.errors?.Required">
+            <small class="mat-text-warn">{{i + 1}}{{msgLine}} {{lblBillNo}}{{msgIs}}{{msgRequid}}</small>
+          </div>
+          <div *ngIf="element.controls.billSeparateSeqError.errors?.Adjustmented">
+            <small class="mat-text-warn">{{i + 1}}{{msgLine}} {{lblBillNo}}:{{element.get('billSeparateSeq').value}}{{msgIs}}{{msgAdjustmented}}</small>
+          </div>
+        </div>
+
+      </td>
+    </ng-container>
+
+    <!-- Header and Row and Footer -->
+    <tr mat-header-row *matHeaderRowDef="stayItemInfoHeader"></tr>
+    <tr mat-row *matRowDef="let row; columns: stayItemInfoHeader;"></tr>
+    <tr mat-footer-row *matFooterRowDef="['ErrorMessage']"></tr>
+  </table>
+</form>

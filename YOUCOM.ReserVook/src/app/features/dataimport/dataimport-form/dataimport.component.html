@@ -1,0 +1,92 @@
+<div id="container">
+
+  <!-- ヘッダ部 -->
+  <div id="header">
+    <div class="left" fxLayout="row" fxLayoutAlign="start start" fxLayoutGap="10px" style=" margin-left: 20px;">
+      <!-- Title -->
+      <span style="font-size: 24px;font-weight: bold;">データインポート</span>
+    </div>
+  </div>
+
+  <!-- 予約インポート -->
+  <div fxLayoutAlign="start start" fxLayoutGap="5px"  class="myDiv"  style="margin-left:20px; margin-right:20px; width: auto;">
+    <div fxLayout="row wrap">
+
+      <div class="left" style="width: auto; min-width: 500px;">
+        <mat-card fxLayoutGap="10px">
+
+          <mat-card-header>
+            <mat-card-title>予約インポート</mat-card-title>
+            <div fxFlexOffset="auto">
+              <button mat-raised-button class="dounload-button" color="accent" (click)="downloadCsv(0)">
+                <span>ダウンロード</span>
+                <mat-icon>get_app</mat-icon>
+              </button>
+            </div>
+          </mat-card-header>
+
+          <div fxLayout="column wrap">
+            <div fxLayout="row wrap">
+              <input type="file" style="display: none" #fileInputReserve accept="text/csv" (change)="changeListener($event.target.files, 0)"/>
+              <button mat-raised-button color="primary" class="file-select-button" (click)="onClickFileSelectButton(0)">
+                <mat-icon>attach_file</mat-icon>ファイルを選択
+              </button>
+              <div class="file-name" *ngIf="!fileReserve">ファイルが選択されていません</div>
+              <div class="file-name">{{ fileReserve?.name }}</div>
+            </div>
+
+            <div fxLayout="column" class="mat-column-reserve-button">
+              <div fxFlexOffset="10px">
+                <button mat-raised-button color="accent" [disabled]="!fileReserve ?'disabled':null" (click)="ImportReserveData()">
+                  <span>取込</span>
+                </button>
+              </div>
+            </div>
+
+          </div>
+        </mat-card>
+      </div>
+    </div>
+  </div>
+
+  <!-- 顧客インポート -->
+  <div fxLayoutAlign="start start" style="margin-left:20px; margin-right:20px; width: auto;">
+    <div fxLayout="row wrap">
+      <div class="left" style="width: auto; min-width: 500px;">
+        <mat-card fxLayoutGap="10px">
+
+          <mat-card-header>
+            <mat-card-title>顧客インポート</mat-card-title>
+            <div fxFlexOffset="auto">
+              <button mat-raised-button class="dounload-button" color="accent" (click)="downloadCsv(1)">
+                <span>ダウンロード</span>
+                <mat-icon>get_app</mat-icon>
+              </button>
+            </div>
+          </mat-card-header>
+
+          <div fxLayout="column wrap">
+            <div fxLayout="row wrap">
+              <input type="file" style="display: none" #fileInputCustomer accept="text/csv" (change)="changeListener($event.target.files, 1)"/>
+              <button mat-raised-button color="primary" class="file-select-button" (click)="onClickFileSelectButton(1)">
+                <mat-icon>attach_file</mat-icon>ファイルを選択
+              </button>
+              <div class="file-name" *ngIf="!fileCustomer">ファイルが選択されていません</div>
+              <div class="file-name">{{ fileCustomer?.name }}</div>
+            </div>
+
+            <div fxLayout="column" class="mat-column-customer-button">
+              <div fxFlexOffset="10px">
+                <button mat-raised-button color="accent" [disabled]="!fileCustomer ?'disabled':null" (click)="ImportCustomerData()">
+                  <span>取込</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </mat-card>
+      </div>
+    </div>
+  </div>
+
+</div>
+

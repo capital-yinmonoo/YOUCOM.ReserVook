@@ -1,0 +1,148 @@
+<div fxLayout="row" fxLayoutAlign="center start">
+  <div fxFlex.gt-sm="40" fxFlex="100">
+    <mat-card class="pa-0">
+      <mat-tab-group >
+        <mat-tab>
+          <ng-template matTabLabel>WEB連携 - サイト変換マスタ</ng-template>
+            <mat-card-content class="pa-1">
+              <form fxLayout="column" [formGroup]="siteConvertForm">
+
+                <mat-form-field class="mb-1">
+                  <mat-select [disabled]="updateFlg" [ngClass]="{'readonly':updateFlg}" placeholder="サイトコントローラー名" formControlName="scCd" required>
+                    <mat-option *ngFor="let op of codes" [value]="op.scSegCd">{{ op.content1 }}</mat-option>
+                  </mat-select>
+                  <div *ngIf="siteConvertForm.controls['scCd'].invalid && (siteConvertForm.controls['scCd'].touched || siteConvertForm.controls['scCd'].dirty)">
+                    <small *ngIf="siteConvertForm.controls['scCd'].hasError('required')" class="mat-text-warn">{{msgRequid}}</small>
+                  </div>
+                </mat-form-field>
+
+                <mat-form-field class="mb-1">
+                  <input [readonly]="updateFlg" [ngClass]="{'readonly':updateFlg}" matInput placeholder="サイトコード" formControlName="scSiteCd" required>
+                    <div *ngIf="siteConvertForm.controls['scSiteCd'].invalid && (siteConvertForm.controls['scSiteCd'].touched || siteConvertForm.controls['scSiteCd'].dirty)">
+                      <small *ngIf="siteConvertForm.controls['scSiteCd'].hasError('required')" class="mat-text-warn">{{msgRequid}}</small>
+                      <small *ngIf="siteConvertForm.controls['scSiteCd'].hasError('pattern')" class="mat-text-warn">{{msgPatternAlphabet}}</small>
+                      <small *ngIf="siteConvertForm.controls['scSiteCd'].hasError('maxlength')" class="mat-text-warn">{{msgMaxLength30}}</small>
+                    </div>
+                </mat-form-field>
+
+                <mat-form-field class="mb-1">
+                  <input matInput placeholder="サイト名" formControlName="scSiteNm" required>
+                  <div *ngIf="siteConvertForm.controls['scSiteNm'].invalid && (siteConvertForm.controls['scSiteNm'].touched || siteConvertForm.controls['scSiteNm'].dirty)">
+                    <small *ngIf="siteConvertForm.controls['scSiteNm'].hasError('required')" class="mat-text-warn">{{msgRequid}}</small>
+                    <small *ngIf="siteConvertForm.controls['scSiteNm'].hasError('maxlength')" class="mat-text-warn">{{msgMaxLength30}}</small>
+                  </div>
+                </mat-form-field>
+
+                <mat-form-field class="mb-1">
+                  <mat-select placeholder="エージェント" formControlName="travelAgncCd" required>
+                    <mat-option *ngFor="let op of agents" [value]="op.agentCode">{{ op.agentName }}</mat-option>
+                    <mat-option unspecified [value]="unspecified.key" [disabled]="true">{{unspecified.value}}</mat-option>
+                  </mat-select>
+                  <div *ngIf="siteConvertForm.controls['travelAgncCd'].invalid && (siteConvertForm.controls['travelAgncCd'].touched || siteConvertForm.controls['travelAgncCd'].dirty)">
+                    <small *ngIf="siteConvertForm.controls['travelAgncCd'].hasError('required')" class="mat-text-warn">{{msgRequid}}</small>
+                    <small *ngIf="siteConvertForm.controls['travelAgncCd'].hasError('pattern')" class="mat-text-warn">エージェント{{msgChooseArticle}}</small>
+                  </div>
+                </mat-form-field>
+
+                <mat-form-field class="mb-1">
+                  <mat-select placeholder="人数計算区分" formControlName="scPersonCalcSeg">
+                    <mat-option *ngFor="let op of peopleDivision" [value]="op.key">{{ op.value }}</mat-option>
+                  </mat-select>
+                  <div *ngIf="siteConvertForm.controls['scPersonCalcSeg'].invalid && (siteConvertForm.controls['scPersonCalcSeg'].touched || siteConvertForm.controls['scPersonCalcSeg'].dirty)">
+                    <small *ngIf="siteConvertForm.controls['scPersonCalcSeg'].hasError('required')" class="mat-text-warn">{{msgRequid}}</small>
+                  </div>
+                </mat-form-field>
+
+                <mat-label>利用人数取込設定 ( 電文人数項目 ⇒ ReserVook人数項目 )</mat-label>
+                <mat-list>
+                  <mat-list-item>
+                    <mat-label class="required" style="margin-right: 24px;">大人男性</mat-label>
+                    <mat-radio-group formControlName="scPositionMan">
+                      <mat-radio-button *ngFor="let posision of posisionsRadio" [value]="posision.key">{{posision.value}}</mat-radio-button>
+                    </mat-radio-group>
+                  </mat-list-item>
+
+                  <mat-divider [inset]="true"></mat-divider>
+
+                  <mat-list-item>
+                    <mat-label class="required" style="margin-right: 24px;">大人女性</mat-label>
+                    <mat-radio-group formControlName="scPositionWoman">
+                      <mat-radio-button *ngFor="let posision of posisionsRadio" [value]="posision.key">{{posision.value}}</mat-radio-button>
+                    </mat-radio-group>
+                  </mat-list-item>
+
+                  <mat-divider [inset]="true"></mat-divider>
+
+                  <mat-list-item>
+                    <mat-label class="required" style="margin-right: 42.5px;">子供A</mat-label>
+                    <mat-radio-group formControlName="scPositionChildA">
+                      <mat-radio-button *ngFor="let posision of posisionsRadio" [value]="posision.key">{{posision.value}}</mat-radio-button>
+                    </mat-radio-group>
+                  </mat-list-item>
+
+                  <mat-divider [inset]="true"></mat-divider>
+
+                  <mat-list-item>
+                    <mat-label class="required" style="margin-right: 42.58px;">子供B</mat-label>
+                    <mat-radio-group formControlName="scPositionChildB">
+                      <mat-radio-button *ngFor="let posision of posisionsRadio" [value]="posision.key">{{posision.value}}</mat-radio-button>
+                    </mat-radio-group>
+                  </mat-list-item>
+
+                  <mat-divider [inset]="true"></mat-divider>
+
+                  <mat-list-item>
+                    <mat-label class="required" style="margin-right: 42.58px;">子供C</mat-label>
+                    <mat-radio-group formControlName="scPositionChildC">
+                      <mat-radio-button *ngFor="let posision of posisionsRadio" [value]="posision.key">{{posision.value}}</mat-radio-button>
+                    </mat-radio-group>
+                  </mat-list-item>
+
+                  <mat-divider [inset]="true"></mat-divider>
+
+                  <mat-list-item>
+                    <mat-label class="required" style="margin-right: 41.52px;">子供D</mat-label>
+                    <mat-radio-group formControlName="scPositionChildD">
+                      <mat-radio-button *ngFor="let posision of posisionsRadio" [value]="posision.key">{{posision.value}}</mat-radio-button>
+                    </mat-radio-group>
+                  </mat-list-item>
+
+                  <mat-divider [inset]="true"></mat-divider>
+
+                  <mat-list-item>
+                    <mat-label class="required" style="margin-right: 43.34px;">子供E</mat-label>
+                    <mat-radio-group formControlName="scPositionChildE">
+                      <mat-radio-button *ngFor="let posision of posisionsRadio" [value]="posision.key">{{posision.value}}</mat-radio-button>
+                    </mat-radio-group>
+                  </mat-list-item>
+
+                  <mat-divider [inset]="true"></mat-divider>
+
+                  <mat-list-item>
+                    <mat-label class="required" style="margin-right: 44px;">子供F</mat-label>
+                    <mat-radio-group formControlName="scPositionChildF">
+                      <mat-radio-button *ngFor="let posision of posisionsRadio" [value]="posision.key">{{posision.value}}</mat-radio-button>
+                    </mat-radio-group>
+                  </mat-list-item>
+
+                  <mat-divider [inset]="true"></mat-divider>
+
+                  <mat-list-item>
+                    <mat-label class="required" style="margin-right: 10px;">子供その他</mat-label>
+                    <mat-radio-group formControlName="scPositionChildOther">
+                      <mat-radio-button *ngFor="let posision of posisionsRadio" [value]="posision.key">{{posision.value}}</mat-radio-button>
+                    </mat-radio-group>
+                  </mat-list-item>
+                </mat-list>
+              </form>
+
+            </mat-card-content>
+          </mat-tab>
+        </mat-tab-group>
+      <mat-card-actions class="pa-1">
+        <button mat-raised-button color="primary"(click)="onSubmit()"[disabled]="siteConvertForm.invalid">保存</button>
+        <button mat-raised-button color="accent" (click)="cancel()">中止</button>
+      </mat-card-actions>
+    </mat-card>
+  </div>
+</div>

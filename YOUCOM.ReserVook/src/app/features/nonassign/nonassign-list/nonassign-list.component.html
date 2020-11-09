@@ -1,0 +1,41 @@
+<div class="assignment-list">
+  <div class="grid-list">
+    <div class="left" style=" margin:20px;">
+      <span style="font-size: 24px;font-weight:bold;"> 未アサイン一覧 </span>
+    </div>
+  </div>
+</div>
+
+<ngx-datatable class="material"
+  [rows]="NonAssignList"
+  [columnMode]="'force'"
+  [headerHeight]="50"
+  [footerHeight]="50"
+  [rowHeight]="45"
+  [limit]="15"
+  [messages]="ngx_table_messages">
+
+  <ngx-datatable-column name="予約番号" prop="reserveNo">
+    <ng-template let-value="value" ngx-datatable-cell-template>
+      <a style="color: #0000ee;" [routerLink]="'/company/reserve/' + value">
+        {{value}}
+      </a>
+    </ng-template>
+  </ngx-datatable-column>
+  <ngx-datatable-column name="利用者名" prop="guestName"></ngx-datatable-column>
+  <ngx-datatable-column name="希望部屋タイプ" prop="roomTypeName">
+    <ng-template let-value="value" ngx-datatable-cell-template>
+      <div *ngIf="value != ''">{{value}}</div>
+      <div *ngIf="value == ''">未設定</div>
+  </ng-template>
+  </ngx-datatable-column>
+  <ngx-datatable-column name="利用日" prop="useDate">
+    <ng-template let-value="value" ngx-datatable-cell-template>
+      <a matTooltip="アサイン状況に移動します" style="color: #0000ee;" [routerLink]="'/company/rooms'" [queryParams]="{ date: value }">
+        {{value.substring(0, 4) + "/" + value.substring(4, 6) + "/" + value.substring(6, 8)}}
+      </a>
+    </ng-template>
+  </ngx-datatable-column>
+</ngx-datatable>
+
+

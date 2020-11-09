@@ -1,0 +1,38 @@
+@import "../../../../../assets/styles/scss/material.variables";
+
+:host {
+  margin-left: -5px;
+  margin-right: -5px;
+  margin-top: -5px;
+  display: block;
+}
+
+$mat-toolbar-height-desktop: 64px !default;
+$mat-toolbar-height-mobile-portrait: 56px !default;
+$mat-toolbar-height-mobile-landscape: 48px !default;
+
+.mat-form-field {
+  width: auto;
+}
+
+@media ($mat-xsmall) and (orientation: portrait) {
+  .mat-card-top {
+    margin-top: -($mat-toolbar-height-mobile-portrait);
+  }
+}
+
+@media ($mat-small) and (orientation: landscape) {
+  .mat-card-top {
+    margin-top: -($mat-toolbar-height-mobile-landscape);
+  }
+}
+
+.required {
+  background: #FF1A00;
+  color: #FFF;
+	border-radius: 3px;
+	font-size: 12px;
+	margin-right: 10px;
+	padding: 5px 10px;
+	letter-spacing: 0.2em;
+}

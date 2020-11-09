@@ -1,0 +1,89 @@
+<!-- ヘッダ部 -->
+<div class="header">
+  <div class="left" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="5px" style="margin-left: 20px;">
+    <span style="font-weight: bold; font-size: 24px;">台帳</span>
+
+    <!-- DatePicker -->
+    <mat-form-field style="width: 200px;">
+      <input matInput style="text-align: center;font-size: 20px;"
+        [matDatepicker]="picker" [(ngModel)]="inputDate" readonly="readonly" (ngModelChange)="getChangeDate($event)">
+      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-datepicker #picker></mat-datepicker>
+    </mat-form-field>
+
+    <!-- DatePickerBtn -->
+    <div class="con-float datetool-parent">
+      <datetool [CurrDate]="inputDate" (DateChange)="getChangeDate($event)"></datetool>
+    </div>
+
+  </div>
+</div>
+
+<ngx-datatable
+  class="material"
+  [headerHeight]="50"
+  [limit]="10"
+  [columnMode]="'force'"
+  [footerHeight]="50"
+  rowHeight="auto"
+  [rows]="ledgerList"
+  [messages]="ngx_table_messages">
+    <ngx-datatable-column name = "予約番号" prop="reserveNo" [flexGrow]="2">
+      <ng-template ngx-datatable-header-template>
+        <div>予約番号</div>
+      </ng-template>
+      <ng-template let-value="value" ngx-datatable-cell-template>
+        <a class="nav-link" style="color: #0000ee;" (click)="onClickReserveNo(value)">
+          {{ value }}
+        </a>
+      </ng-template>
+    </ngx-datatable-column>
+    <ngx-datatable-column name = "部屋名" prop="roomName" [flexGrow]="3">
+      <ng-template ngx-datatable-header-template>
+        <div>部屋名</div>
+      </ng-template>
+      <ng-template let-value="value"  ngx-datatable-cell-template>
+        {{ value }}
+      </ng-template>
+    </ngx-datatable-column>
+    <ngx-datatable-column name = "利用者名" prop="guestName" [flexGrow]="5">
+      <ng-template ngx-datatable-header-template>
+        <div>利用者名</div>
+      </ng-template>
+      <ng-template let-value="value"  ngx-datatable-cell-template>
+        {{ value }}
+      </ng-template>
+    </ngx-datatable-column>
+    <ngx-datatable-column name = "人数" prop="members" [flexGrow]="1">
+      <ng-template ngx-datatable-header-template>
+        <div style="text-align: right;">人数</div>
+      </ng-template>
+      <ng-template let-value="value"  ngx-datatable-cell-template>
+        <div style="text-align: right;">{{ value.toLocaleString() }}</div>
+      </ng-template>
+    </ngx-datatable-column>
+    <ngx-datatable-column name = "泊数" prop="stayDays" [flexGrow]="1">
+      <ng-template ngx-datatable-header-template>
+        <div>泊数</div>
+      </ng-template>
+      <ng-template let-value="value"  ngx-datatable-cell-template>
+        {{ value }}
+      </ng-template>
+    </ngx-datatable-column>
+    <ngx-datatable-column name = "利用金額" prop="amountPrice" [flexGrow]="3">
+      <ng-template let-value="value" ngx-datatable-header-template>
+        <div style="text-align: right;">利用金額</div>
+      </ng-template>
+      <ng-template let-value="value"  ngx-datatable-cell-template>
+        <div style="text-align: right;">{{ value.toLocaleString()}}</div>
+      </ng-template>
+    </ngx-datatable-column>
+    <ngx-datatable-column name = "内消費税額" prop="insideTaxPrice" [flexGrow]="3">
+      <ng-template let-value="value" ngx-datatable-header-template>
+        <div style="text-align: right;">内消費税額</div>
+      </ng-template>
+      <ng-template let-value="value" ngx-datatable-cell-template>
+        <div style="text-align: right;">{{ value.toLocaleString()}}</div>
+      </ng-template>
+    </ngx-datatable-column>
+</ngx-datatable>

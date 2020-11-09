@@ -1,0 +1,83 @@
+<mat-toolbar-row  style="margin-top: 5px;" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="10px">
+  <span style="font-size: 24px;font-weight:bold;">忘れ物一覧</span>
+
+  <label for="file" class="padding">画像使用容量:</label>
+  <progress [value]="useCapacity" [max]="company?.maxCapacity">{{limitCapacity}}</progress>
+  <ng-container>現在使用容量:{{dispUseCapacity}}</ng-container><br>
+  <ng-container>使用可能容量:{{dispMaxCapacity}}</ng-container>
+
+  <form class="padding">
+    <mat-form-field style="margin-right: 3px;">
+      <input matInput name="searchWord" [(ngModel)]="searchWord" placeholder="検索用ワードを入力">&nbsp;&nbsp;&nbsp;
+    </mat-form-field>
+    <button mat-raised-button (click)="simpleSearch()" type="button" name="button">検索</button>
+  </form>
+
+  <button mat-raised-button color="accent" (click)="detailedSearch()">
+    <mat-icon>search</mat-icon>
+    <span>詳細検索</span>
+  </button>
+
+  <div class="right confirm"*ngIf="currentUser.roleDivision==role.Admin.toString()">
+    <button mat-raised-button color="warn" (click)="lumpDelete()">
+      <span>一括削除</span>
+    </button>
+  </div>
+
+</mat-toolbar-row>
+
+<ngx-datatable class="material fullscreenMas" [columnMode]="'force'" [headerHeight]="50" [footerHeight]="0"
+  [rowHeight]="100" [scrollbarV]="true" [scrollbarH]="true" [rows]="lostItemLists" [messages]="ngx_table_messages" rowHeight="auto">
+  <ngx-datatable-column>
+    <ng-template let-row="row" ngx-datatable-cell-template>
+      <a mat-icon-button [routerLink]="['../form/', row.managementNo]">
+        <mat-icon>edit</mat-icon>
+      </a>
+      <button mat-icon-button aria-label="Delete" (click)="delete(row.managementNo)">
+        <mat-icon>delete</mat-icon>
+      </button>
+    </ng-template>
+  </ngx-datatable-column>
+
+  <ngx-datatable-column name="イメージ画像" prop="imageSrc">
+    <ng-template let-value="value" ngx-datatable-cell-template>
+    <img [src]="value" alt="No Image" width="100" height="100">
+  </ng-template>
+  </ngx-datatable-column>
+
+  <ngx-datatable-column name="管理番号" prop="managementNo"></ngx-datatable-column>
+  <ngx-datatable-column name="忘れ物状態" prop="stateName"></ngx-datatable-column>
+  <ngx-datatable-column name="予約番号" prop="reserveNo"></ngx-datatable-column>
+  <ngx-datatable-column name="部屋番号" prop="roomNo"></ngx-datatable-column>
+  <ngx-datatable-column name="物品名" prop="itemName"></ngx-datatable-column>
+  <ngx-datatable-column name="発見日付" prop="foundDate">
+    <ng-template let-value="value" ngx-datatable-cell-template>
+      {{value.substr(0,4) + '/' + value.substr(4,2) + '/' + value.substr(6,2) }}
+    </ng-template>
+  </ngx-datatable-column>
+  <ngx-datatable-column name="発見時刻" prop="foundTime">
+    <ng-template let-value="value" ngx-datatable-cell-template>
+      {{value.substr(0,2) + ':' + value.substr(2,2) }}
+    </ng-template>
+  </ngx-datatable-column>
+  <ngx-datatable-column name="発見場所" prop="foundPlace"></ngx-datatable-column>
+  <ngx-datatable-column name="発見場所分類" prop="foundPlaceName"></ngx-datatable-column>
+  <ngx-datatable-column name="保管分類" prop="storageName"></ngx-datatable-column>
+  <ngx-datatable-column name="コメント" prop="comment"></ngx-datatable-column>
+  <ngx-datatable-column name="検索用ワード" prop="searchWord"></ngx-datatable-column>
+  <ngx-datatable-column name="作成者" prop ="creator"></ngx-datatable-column>
+  <ngx-datatable-column name="作成日" prop="cdt">
+    <ng-template let-value="value" ngx-datatable-cell-template>
+      {{value.substr(0,4) + '/' + value.substr(4,2) + '/' + value.substr(6,2) }}
+    </ng-template>
+  </ngx-datatable-column>
+  <ngx-datatable-column name="更新者" prop ="updator"></ngx-datatable-column>
+  <ngx-datatable-column name="更新日" prop="udt">
+    <ng-template let-value="value" ngx-datatable-cell-template>
+      {{value.substr(0,4) + '/' + value.substr(4,2) + '/' + value.substr(6,2) }}
+    </ng-template>
+  </ngx-datatable-column>
+</ngx-datatable>
+<a mat-fab [routerLink]="['../form/', '']" color="warn" class="mat-fab-bottom-right" style="z-index: 9;">
+  <mat-icon class="mat-24">add</mat-icon>
+</a>

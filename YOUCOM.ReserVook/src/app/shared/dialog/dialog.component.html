@@ -1,0 +1,8 @@
+<h1 mat-dialog-title>{{modalData.title}}</h1>
+<div mat-dialog-content>
+  <p [innerHTML]="modalData.content"></p>
+</div>
+<mat-dialog-actions align="end">
+  <!-- <button mat-button (click)="onNoClick()">No Thanks</button> -->
+  <button mat-button cdkFocusInitial (click)="closeModal()">OK</button>
+</mat-dialog-actions>

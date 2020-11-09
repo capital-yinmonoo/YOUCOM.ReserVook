@@ -1,0 +1,30 @@
+.cleaning-list {
+    .list {
+      width:100px;
+    }
+  }
+
+.textarea{
+  resize: none;
+  max-width: 150px;
+}
+
+.menu {
+  position: absolute;
+  width: 110px;
+  min-height: 20px;
+  z-index: 99;
+  background-color: white;
+  border: 1px solid black;
+  padding: 10px;
+  .menu-group {
+    border-bottom: 1px solid grey;
+    padding-bottom: 10px;
+    > div {
+      height: 40px;
+      text-align: left;
+      line-height: 40px;
+      cursor: pointer;
+    }
+  }
+}

@@ -1,0 +1,28 @@
+// 商品共通
+.mat-column-item-item {
+  width: 200px;
+}
+.mat-column-item-unitPrice, .mat-column-item-amountPrice {
+  width: 120px;
+}
+.mat-column-item-taxServiceDivision {
+  width: 200px;
+}
+.mat-column-item-taxRate {
+  width: 50px;
+}
+.mat-column-item-billSeparateSeq {
+  width: 50px;
+}
+.mat-column-item-itemnumber {
+  width: 50px;
+}
+.mat-column-item-meal {
+  width: 80px;
+}
+
+// 余白調整
+div.space{
+  padding-left: 5px !important;
+  padding-right: 5px !important;
+}

@@ -1,0 +1,35 @@
+<mat-toolbar-row  style="margin-top: 5px;" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="10px">
+  <span style="font-size: 24px;font-weight:bold;">WEB連携 - 支払方法変換マスタ</span>
+</mat-toolbar-row>
+<ngx-datatable class="material fullscreenMas" [columnMode]="'force'" [headerHeight]="50" [footerHeight]="0"
+  [rowHeight]="50" [scrollbarV]="true" [scrollbarH]="true" [rows]="paymentconverts" [messages]="ngx_table_messages">
+  <ngx-datatable-column>
+    <ng-template let-row="row" ngx-datatable-cell-template>
+      <a mat-icon-button [routerLink]="['../form/', row.scCd, row.scSiteCd, row.scPaymentOpts]">
+        <mat-icon>edit</mat-icon>
+      </a>
+      <button mat-icon-button aria-label="Delete" (click)="delete(row.scCd,row.scSiteCd, row.scPaymentOpts)">
+        <mat-icon>delete</mat-icon>
+      </button>
+    </ng-template>
+  </ngx-datatable-column>
+  <ngx-datatable-column name="サイトコントローラー名" prop="cdName"></ngx-datatable-column>
+  <ngx-datatable-column name="サイト名" prop="siteCdName"></ngx-datatable-column>
+  <ngx-datatable-column name="決済方法" prop="scPaymentOptsName"></ngx-datatable-column>
+  <ngx-datatable-column name="金種" prop="denomination"></ngx-datatable-column>
+  <ngx-datatable-column name="作成者" prop ="createClerk"></ngx-datatable-column>
+  <ngx-datatable-column name="作成日" prop="createDatetime">
+    <ng-template let-value="value" ngx-datatable-cell-template>
+      {{value.substr(0,4) + '/' + value.substr(4,2) + '/' + value.substr(6,2) }}
+    </ng-template>
+  </ngx-datatable-column>
+  <ngx-datatable-column name="更新者" prop ="updateClerk"></ngx-datatable-column>
+  <ngx-datatable-column name="更新日" prop="updateDatetime">
+    <ng-template let-value="value" ngx-datatable-cell-template>
+      {{value.substr(0,4) + '/' + value.substr(4,2) + '/' + value.substr(6,2) }}
+    </ng-template>
+  </ngx-datatable-column>
+</ngx-datatable>
+<a mat-fab [routerLink]="['../form/', '', '', '']" color="warn" class="mat-fab-bottom-right" style="z-index: 9;">
+  <mat-icon class="mat-24">add</mat-icon>
+</a>

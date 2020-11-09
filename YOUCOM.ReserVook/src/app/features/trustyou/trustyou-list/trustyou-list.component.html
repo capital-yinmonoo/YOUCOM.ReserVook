@@ -1,0 +1,84 @@
+<div class="trustyou-list">
+
+  <!-- ヘッダ -->
+  <ng-container>
+    <div class="grid-list" fxLayout="row" fxLayoutGap="5px" style=" margin-left: 20px;">
+
+      <div class="left" fxLayoutAlign="start center" fxFlex="grow">
+        <!-- Title -->
+        <span style="font-size: 24px;font-weight: bold;">TrustYou連携&nbsp;</span>
+
+        <mat-form-field>
+          <input matInput style="text-align: center;font-size: 20px;" [matDatepicker]="pickerFrom" [(ngModel)]="inputDateFrom" (dateInput)="getTrustyouList()">
+          <mat-datepicker-toggle matSuffix [for]="pickerFrom"></mat-datepicker-toggle>
+          <mat-datepicker #pickerFrom></mat-datepicker>
+        </mat-form-field>
+
+        <span>&nbsp; ～ &nbsp;</span>
+
+        <mat-form-field>
+          <input matInput style="text-align: center;font-size: 20px;" [matDatepicker]="pickerTo" [(ngModel)]="inputDateTo" (dateInput)="getTrustyouList()">
+          <mat-datepicker-toggle matSuffix [for]="pickerTo"></mat-datepicker-toggle>
+          <mat-datepicker #pickerTo></mat-datepicker>
+        </mat-form-field>
+
+      </div>
+
+      <div class="right" fxLayoutAlign="start center" fxFlex="0 0 98px">
+        <!-- ログ -->
+        <button mat-raised-button fxLayout="right" color="primary" (click)="OpenLog(true)">ログ表示</button>
+      </div>
+      <div class="right" fxLayoutAlign="start center" fxFlex="0 0 75px">
+        <!-- 保留 -->
+        <button mat-raised-button fxLayout="right" color="primary" (click)="TemporarilySave()">保留</button>
+      </div>
+      <div class="right" fxLayoutAlign="start center" fxFlex="0 0 140px">
+        <!-- 送信 -->
+        <button mat-raised-button fxLayout="right" color="primary" (click)="SendData(false)">連携データ送信</button>
+      </div>
+      <div class="right" fxLayoutAlign="start center" fxFlex="0 0 150px">
+        <!-- キャンセル送信 -->
+        <button mat-raised-button fxLayout="right" color="primary" (click)="SendData(true)">キャンセル送信</button>
+      </div>
+    </div>
+  </ng-container>
+
+  <div fxLayout="row">
+    <!-- 一覧 -->
+    <div fxLayout="column" [ngStyle]="viewStyle">
+      <ngx-datatable class="material selection-cell" [ngClass]="{fullscreenMas: true}" [rows]="trustyouList" [columnMode]="'force'" [count]=""
+        [headerHeight]="50"  [scrollbarV]="true" [scrollbarH]="true" [footerHeight]="0" [rowHeight]="50"
+        [scrollbarH]="true" [messages]="ngx_table_messages" [rowClass]="getRowClass" [selectionType]="'checkbox'" (select)="onSelect($event)">
+
+        <ngx-datatable-column [width]="30" [sortable]="false" [canAutoResize]="false"
+          [draggable]="false" [resizeable]="false" [headerCheckboxable]="true" [checkboxable]="true">
+          <ng-template let-rowIndex="rowIndex" let-value="value" let-row="row" ngx-datatable-cell-template>
+          {{value}}
+          </ng-template>
+        </ngx-datatable-column>
+
+        <ngx-datatable-column *ngFor="let col of displayColumns" [name]="col.name" [width]= "col.width" [prop]="col.prop" >
+          <ng-template let-rowIndex="rowIndex" let-value="value" let-row="row" ngx-datatable-cell-template>
+
+            <ng-container *ngIf="col.prop == 'sendGuestName'">
+              <mat-form-field class="gusetTextArea" >
+                <textarea class="textarea" maxlength="100" matInput type="text" (blur)="updateValue($event, col.prop, rowIndex)" [value]="value">{{ value }}</textarea>
+              </mat-form-field>
+            </ng-container>
+
+            <ng-container *ngIf="col.prop == 'sendEmail'">
+              <mat-form-field class="emailTextArea" >
+                <textarea class="textarea" maxlength="60" matInput type="text" (blur)="updateValue($event, col.prop, rowIndex)" [value]="value">{{ value }}</textarea>
+              </mat-form-field>
+            </ng-container>
+
+            <ng-container *ngIf="col.prop !== 'sendGuestName' && col.prop !== 'sendEmail'">
+              {{value}}
+            </ng-container>
+
+          </ng-template>
+        </ngx-datatable-column>
+      </ngx-datatable>
+    </div>
+  </div>
+</div>

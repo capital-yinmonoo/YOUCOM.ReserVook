@@ -1,0 +1,69 @@
+<mat-toolbar-row  style="margin-top: 5px;" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="10px">
+  <span style="font-size: 24px;font-weight:bold;">商品マスタ</span>
+</mat-toolbar-row>
+<ngx-datatable class="material fullscreenMas" [columnMode]="'force'" [headerHeight]="50" [footerHeight]="0"
+  [rowHeight]="50" [scrollbarV]="true" [scrollbarH]="true" [rows]=" items" [messages]="ngx_table_messages">
+  <ngx-datatable-column>
+    <ng-template let-row="row" ngx-datatable-cell-template>
+      <a mat-icon-button [routerLink]="['../form/', row.itemCode]">
+        <mat-icon>edit</mat-icon>
+      </a>
+      <button mat-icon-button aria-label="Delete" (click)="checkDelete(row.itemCode)">
+        <mat-icon>delete</mat-icon>
+      </button>
+    </ng-template>
+  </ngx-datatable-column>
+  <ngx-datatable-column name="商品分類"  prop="itemDivisionName"></ngx-datatable-column>
+  <ngx-datatable-column name="料理区分"  prop="mealDivisionName"></ngx-datatable-column>
+  <ngx-datatable-column name="商品コード" prop="itemCode"></ngx-datatable-column>
+  <ngx-datatable-column name="名称" prop="itemName"></ngx-datatable-column>
+  <ngx-datatable-column name="カナ" prop="itemKana">
+    <ng-template let-column="column" let-sort="sortFn" ngx-datatable-header-template>
+      <span (click)="sort()">カナ</span>
+    </ng-template>
+  </ngx-datatable-column>
+  <ngx-datatable-column name="印字用名称" prop="printName"></ngx-datatable-column>
+  <ngx-datatable-column name="単価" prop="unitPrice">
+    <ng-template let-value="value" ngx-datatable-cell-template>
+      <div style="text-align: right;">{{ value.toLocaleString() }}</div>
+    </ng-template>
+  </ngx-datatable-column>
+  <ngx-datatable-column name="税サ区分" prop="taxServiceDivisionName"></ngx-datatable-column>
+  <ngx-datatable-column name="税率区分" prop="taxrateDivision">
+    <ng-template let-value="value" ngx-datatable-cell-template>
+      <span *ngIf="value === '1'">標準税率</span>
+      <span *ngIf="value === '2'">軽減税率</span>
+    </ng-template>
+  </ngx-datatable-column>
+  <ngx-datatable-column name="表示順" prop="displayOrder">
+    <ng-template ngx-datatable-header-template>
+      <div style="text-align: right;">表示順</div>
+    </ng-template>
+    <ng-template let-value="value" ngx-datatable-cell-template>
+      <div style="text-align: right;">{{ value.toLocaleString() }}</div>
+    </ng-template>
+  </ngx-datatable-column>
+  <ngx-datatable-column name="作成者" prop ="creator">
+    <ng-template let-column="column" let-sort="sortFn"  ngx-datatable-header-template>
+      <span (click)="sort()">作成者</span>
+    </ng-template>
+  </ngx-datatable-column>
+  <ngx-datatable-column name="作成日" prop="cdt">
+    <ng-template let-value="value" ngx-datatable-cell-template>
+      {{value.substr(0,4) + '/' + value.substr(4,2) + '/' + value.substr(6,2) }}
+    </ng-template>
+  </ngx-datatable-column>
+  <ngx-datatable-column name="更新者" prop ="updator">
+    <ng-template let-column="column" let-sort="sortFn"  ngx-datatable-header-template>
+      <span (click)="sort()">更新者</span>
+    </ng-template>
+  </ngx-datatable-column>
+  <ngx-datatable-column name="更新日" prop="udt">
+    <ng-template let-value="value" ngx-datatable-cell-template>
+      {{value.substr(0,4) + '/' + value.substr(4,2) + '/' + value.substr(6,2) }}
+    </ng-template>
+  </ngx-datatable-column>
+</ngx-datatable>
+<a mat-fab [routerLink]="['../form/', '']" color="warn" class="mat-fab-bottom-right" style="z-index: 9;">
+  <mat-icon class="mat-24">add</mat-icon>
+</a>

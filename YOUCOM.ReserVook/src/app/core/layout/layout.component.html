@@ -1,0 +1,26 @@
+<div class="app mat-typography">
+  <!-- <ngx-loading-bar color="#009688"></ngx-loading-bar> -->
+  <!-- <app-loading></app-loading> -->
+
+
+  <app-header (toggleSidenav)="sidemenu.toggle()" ></app-header>
+
+  <mat-sidenav-container class="app-inner">
+    <!-- <mat-sidenav #sidemenu class="sidebar-panel" id="sidebar-panel" [mode]="isOver() ? 'over' : 'side'" [opened]="!isOver()"
+      (openedStart)="sidePanelOpened = true" (closedStart)="sidePanelOpened = false" (mouseover)="menuMouseOver()"
+      (mouseout)="menuMouseOut()" [perfectScrollbar]="config" [disabled]="isScreenSmall">
+      <app-menu (click)="updatePS()" [direction]="options.dir"></app-menu>
+    </mat-sidenav>
+    <mat-sidenav #notifications position="end" class="chat-panel" mode="over" opened="false">
+      <app-notification></app-notification>
+    </mat-sidenav> -->
+    <!-- <div [perfectScrollbar]="config" [disabled]="isScreenSmall">
+      <router-outlet></router-outlet>
+    </div> -->
+    <router-outlet></router-outlet>
+  </mat-sidenav-container>
+
+  <!-- Demo Purposes Only -->
+  <!-- <app-options (messageEvent)="receiveOptions($event)"></app-options> -->
+  <!-- /Demo Purposes Only -->
+</div>

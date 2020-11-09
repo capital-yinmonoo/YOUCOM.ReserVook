@@ -1,0 +1,38 @@
+<mat-toolbar-row  style="margin-top: 5px;" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="10px">
+  <span style="font-size: 24px;font-weight:bold;">WEB連携 - 備考変換マスタ</span>
+</mat-toolbar-row>
+<ngx-datatable class="material fullscreenMas" [columnMode]="'force'" [headerHeight]="50" [footerHeight]="0"
+  [rowHeight]="50" [scrollbarV]="true" [scrollbarH]="true" [rows]="remarksconverts" [messages]="ngx_table_messages">
+  <ngx-datatable-column>
+    <ng-template let-row="row" ngx-datatable-cell-template>
+      <a mat-icon-button [routerLink]="['../form/', row.scCd, row.scXClmn]">
+        <mat-icon>edit</mat-icon>
+      </a>
+    </ng-template>
+  </ngx-datatable-column>
+  <ngx-datatable-column name="サイトコントローラー名" prop="cdName"></ngx-datatable-column>
+  <ngx-datatable-column name="XML項目名" prop="scXClmn"></ngx-datatable-column>
+  <ngx-datatable-column name="XML項目名(漢字)" prop="scXClmnKanji"></ngx-datatable-column>
+  <ngx-datatable-column name="設定順" prop="scRemarksSetLocation">
+    <ng-template let-value="value" ngx-datatable-cell-template>
+      <div style="text-align: right;">{{ value.toLocaleString() }}</div>
+    </ng-template>
+  </ngx-datatable-column>
+  <ngx-datatable-column name="優先順" prop="scRemarksPriorityOdr">
+    <ng-template let-value="value" ngx-datatable-cell-template>
+      <div style="text-align: right;">{{ value.toLocaleString() }}</div>
+    </ng-template>
+  </ngx-datatable-column>
+  <ngx-datatable-column name="作成者" prop ="createClerk"></ngx-datatable-column>
+  <ngx-datatable-column name="作成日" prop="createDatetime">
+    <ng-template let-value="value" ngx-datatable-cell-template>
+      {{value.substr(0,4) + '/' + value.substr(4,2) + '/' + value.substr(6,2) }}
+    </ng-template>
+  </ngx-datatable-column>
+  <ngx-datatable-column name="更新者" prop ="updateClerk"></ngx-datatable-column>
+  <ngx-datatable-column name="更新日" prop="updateDatetime">
+    <ng-template let-value="value" ngx-datatable-cell-template>
+      {{value.substr(0,4) + '/' + value.substr(4,2) + '/' + value.substr(6,2) }}
+    </ng-template>
+  </ngx-datatable-column>
+</ngx-datatable>

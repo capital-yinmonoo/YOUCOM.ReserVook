@@ -1,0 +1,322 @@
+  <div class="salesmonthlyreport">
+    <!-- Headder -->
+    <div>
+      <div class="left" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="5px" style="margin-left: 20px;">
+        <span style="font-weight: bold; font-size: 24px;">売上月報</span>
+
+        <form [formGroup]="headerForm">
+        <mat-form-field>
+          <input matInput style="text-align: center; font-size: 20px;"
+            [matDatepicker]="dp" formControlName="yearMonth" readonly>
+          <mat-datepicker-toggle matSuffix [for]="dp"></mat-datepicker-toggle>
+          <mat-datepicker #dp
+                          startView="year"
+                          (yearSelected)="chosenYearHandler($event)"
+                          (monthSelected)="chosenMonthHandler($event, dp)"
+                          panelClass="example-month-picker">
+          </mat-datepicker>
+        </mat-form-field>
+        </form>
+
+        <!-- DatePickerBtn -->
+        <div class="con-float datetool-parent" style="width: 200px; margin-left: 210px; margin-top: -50px;">
+          <monthtool [CurrDate]="inputDate" (DateChange)="getChangeDate($event)"></monthtool>
+        </div>
+
+        <button mat-raised-button color="primary" (click)="exportCSV()">CSV出力</button>
+        <a id="csv-download"></a>
+      </div>
+    </div>
+
+    <h2 style="margin-left: 20px;">売上</h2>
+
+    <!-- Sales Table Body  -->
+    <ngx-datatable
+      class="material"
+      [headerHeight]="40"
+      [limit]="10"
+      [columnMode]="'force'"
+      [footerHeight]="50"
+      [rowHeight]="30"
+      [rows]="salesList"
+      [messages]="ngx_table_messages">
+
+      <ngx-datatable-column name = "商品分類" prop="itemDivisionName">
+        <ng-template ngx-datatable-header-template>
+          <div>商品分類</div>
+        </ng-template>
+        <ng-template let-value="value"  ngx-datatable-cell-template>
+          {{ value }}
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column name = "商品コード" prop="itemCode">
+        <ng-template ngx-datatable-header-template>
+          <div>商品コード</div>
+        </ng-template>
+        <ng-template let-value="value"  ngx-datatable-cell-template>
+          {{ value }}
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column name = "商品名" prop="printName">
+        <ng-template ngx-datatable-header-template>
+          <div>商品名</div>
+        </ng-template>
+        <ng-template let-value="value"  ngx-datatable-cell-template>
+          {{ value }}
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column name = "基本単価" prop="unitPrice">
+        <ng-template ngx-datatable-header-template>
+          <div style="text-align: right;">基本単価</div>
+        </ng-template>
+        <ng-template let-value="value" ngx-datatable-cell-template>
+          <div style="text-align: right;">{{ value.toLocaleString() }}</div>
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column name = "数量" prop="itemNumber">
+        <ng-template ngx-datatable-header-template>
+          <div style="text-align: right;">数量</div>
+        </ng-template>
+        <ng-template let-value="value"  ngx-datatable-cell-template>
+          <div style="text-align: right;">{{ value.toLocaleString() }}</div>
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column name = "金額" prop="netAmount">
+        <ng-template ngx-datatable-header-template>
+          <div style="text-align: right;">金額</div>
+        </ng-template>
+        <ng-template let-value="value"  ngx-datatable-cell-template>
+          <div style="text-align: right;">{{ value.toLocaleString() }}</div>
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column name = "内消費税" prop="insideTaxPrice">
+        <ng-template ngx-datatable-header-template>
+          <div style="text-align: right;">内消費税</div>
+        </ng-template>
+        <ng-template let-value="value"  ngx-datatable-cell-template>
+          <div style="text-align: right;">{{ value.toLocaleString() }}</div>
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column name = "内サービス料" prop="insideServicePrice">
+        <ng-template ngx-datatable-header-template>
+          <div style="text-align: right;">内サービス料</div>
+        </ng-template>
+        <ng-template let-value="value"  ngx-datatable-cell-template>
+          <div style="text-align: right;">{{ value.toLocaleString() }}</div>
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column name = "外サービス料" prop="outsideServicePrice">
+        <ng-template ngx-datatable-header-template>
+          <div style="text-align: right;">外サービス料</div>
+        </ng-template>
+        <ng-template let-value="value"  ngx-datatable-cell-template>
+          <div style="text-align: right;">{{ value.toLocaleString() }}</div>
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column name = "合計金額" prop="amountPrice">
+        <ng-template ngx-datatable-header-template>
+          <div style="text-align: right;">合計金額</div>
+        </ng-template>
+        <ng-template let-value="value"  ngx-datatable-cell-template>
+          <div style="text-align: right;">{{ value.toLocaleString() }}</div>
+        </ng-template>
+      </ngx-datatable-column>
+    </ngx-datatable>
+
+    <!-- Sales Table SubTotal  -->
+    <ngx-datatable
+      class="material"
+      [headerHeight]="0"
+      [columnMode]="'force'"
+      [footerHeight]="0"
+      [rowHeight]="30"
+      [rows]="salesSubTotal"
+      [messages]="ngx_table_messages">
+
+      <ngx-datatable-column name = "商品分類" prop="itemDivisionName">
+        <ng-template let-value="value"  ngx-datatable-cell-template>
+          {{ value }}
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column name = "商品コード" prop="itemCode">
+        <ng-template let-value="value"  ngx-datatable-cell-template>
+          {{ "" }}
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column name = "商品名" prop="printName">
+        <ng-template let-value="value"  ngx-datatable-cell-template>
+          {{ value }}
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column name = "基本単価" prop="unitPrice">
+        <ng-template let-value="value" ngx-datatable-cell-template>
+          {{ value }}
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column name = "数量" prop="itemNumber">
+        <ng-template let-value="value"  ngx-datatable-cell-template>
+          <div style="text-align: right;">{{ value.toLocaleString() }}</div>
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column name = "金額" prop="netAmount">
+        <ng-template let-value="value"  ngx-datatable-cell-template>
+          <div style="text-align: right;">{{ value.toLocaleString() }}</div>
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column name = "内消費税" prop="insideTaxPrice">
+        <ng-template let-value="value"  ngx-datatable-cell-template>
+          <div style="text-align: right;">{{ value.toLocaleString() }}</div>
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column name = "内サービス料" prop="insideServicePrice">
+        <ng-template let-value="value"  ngx-datatable-cell-template>
+          <div style="text-align: right;">{{ value.toLocaleString() }}</div>
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column name = "外サービス料" prop="outsideServicePrice">
+        <ng-template let-value="value"  ngx-datatable-cell-template>
+          <div style="text-align: right;">{{ value.toLocaleString() }}</div>
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column name = "合計金額" prop="amountPrice">
+        <ng-template let-value="value"  ngx-datatable-cell-template>
+          <div style="text-align: right;">{{ value.toLocaleString() }}</div>
+        </ng-template>
+      </ngx-datatable-column>
+    </ngx-datatable>
+
+    <h2 style="margin-left: 20px;">入金</h2>
+
+    <!-- Deposit Table Body  -->
+    <ngx-datatable
+      class="material"
+      [headerHeight]="40"
+      [columnMode]="'force'"
+      [footerHeight]="0"
+      [rowHeight]="30"
+      [rows]="depositList"
+      [messages]="ngx_table_messages">
+
+      <ngx-datatable-column name = " " prop="itemDivision">
+        <ng-template let-value="value"  ngx-datatable-cell-template>
+          {{ " " }}
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column name = "金種コード" prop="itemCode">
+        <ng-template ngx-datatable-header-template>
+          <div>金種コード</div>
+        </ng-template>
+        <ng-template let-value="value"  ngx-datatable-cell-template>
+          {{ value }}
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column name = "金種名" prop="printName">
+        <ng-template ngx-datatable-header-template>
+          <div>金種名</div>
+        </ng-template>
+        <ng-template let-value="value"  ngx-datatable-cell-template>
+          {{ value }}
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column name = " ">
+        <ng-template let-value="value"  ngx-datatable-cell-template>
+          {{ "" }}
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column name = " ">
+        <ng-template let-value="value"  ngx-datatable-cell-template>
+          {{ "" }}
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column name = " ">
+        <ng-template let-value="value"  ngx-datatable-cell-template>
+          {{ "" }}
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column name = " ">
+        <ng-template let-value="value"  ngx-datatable-cell-template>
+          {{ "" }}
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column name = " ">
+        <ng-template let-value="value"  ngx-datatable-cell-template>
+          {{ "" }}
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column name = " ">
+        <ng-template let-value="value"  ngx-datatable-cell-template>
+          {{ "" }}
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column name = "金額" prop="netAmount">
+        <ng-template ngx-datatable-header-template>
+          <div style="text-align: right;">金額</div>
+        </ng-template>
+        <ng-template let-value="value"  ngx-datatable-cell-template>
+          <div style="text-align: right;">{{ value.toLocaleString() }}</div>
+        </ng-template>
+      </ngx-datatable-column>
+    </ngx-datatable>
+
+    <!-- Deposit Table SubTotal  -->
+    <ngx-datatable
+      class="material"
+      [headerHeight]="0"
+      [columnMode]="'force'"
+      [footerHeight]="0"
+      [rowHeight]="30"
+      [rows]="depositTotal"
+      [messages]="ngx_table_messages">
+
+      <ngx-datatable-column name = " " prop="itemDivision">
+        <ng-template let-value="value"  ngx-datatable-cell-template>
+          {{ " " }}
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column name = "金種コード" prop="itemCode">
+        <ng-template let-value="value"  ngx-datatable-cell-template>
+          {{ value }}
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column name = "金種名" prop="printName">
+        <ng-template let-value="value"  ngx-datatable-cell-template>
+          {{ value }}
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column name = " ">
+        <ng-template let-value="value"  ngx-datatable-cell-template>
+          {{ "" }}
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column name = " ">
+        <ng-template let-value="value"  ngx-datatable-cell-template>
+          {{ "" }}
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column name = " ">
+        <ng-template let-value="value"  ngx-datatable-cell-template>
+          {{ "" }}
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column name = " ">
+        <ng-template let-value="value"  ngx-datatable-cell-template>
+          {{ "" }}
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column name = " ">
+        <ng-template let-value="value"  ngx-datatable-cell-template>
+          {{ "" }}
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column name = " ">
+        <ng-template let-value="value"  ngx-datatable-cell-template>
+          {{ "" }}
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column name = "金額" prop="netAmount">
+        <ng-template let-value="value"  ngx-datatable-cell-template>
+          <div style="text-align: right;">{{ value.toLocaleString() }}</div>
+        </ng-template>
+      </ngx-datatable-column>
+    </ngx-datatable>
+  </div>

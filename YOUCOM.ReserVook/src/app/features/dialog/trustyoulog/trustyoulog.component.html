@@ -1,0 +1,37 @@
+<h1 mat-dialog-title class="Title">ログ表示</h1>
+<div mat-dialog-content fxLayout="column">
+
+  <div fxFlex="auto">
+    <div class="left" fxLayoutAlign="start center" fxFlex="grow">
+      <mat-form-field>
+        <input matInput style="text-align: center;font-size: 20px;" [matDatepicker]="picker" [(ngModel)]="inputDate" (dateInput)="Search()">
+        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+      </mat-form-field>
+
+      <!-- DatePickerBtn -->
+      <span class="datetool-parent">
+        <datetool [CurrDate]="inputDate" (DateChange)="onChangeDate($event)"></datetool>
+      </span>
+    </div>
+  </div>
+
+  <div fxFlex="grow">
+    <ngx-datatable class="material list" [rows]="searchResultList" [columnMode]="'ColumnMode.standard'"
+      [scrollbarV]="true" [scrollbarH]="false" [headerHeight]="50" [footerHeight]="0" [rowHeight]="35" [messages]="ngx_table_messages" >
+      <ngx-datatable-column *ngFor="let col of guestListColumns" [name]="col.name" [prop]="col.prop" [width]="col.width">
+        <ng-template let-value="value" let-row="row" ngx-datatable-cell-template>
+          <ng-container>
+            <div [ngStyle]="{'text-align': col.textalign}">
+              {{value}}
+            </div>
+          </ng-container>
+        </ng-template>
+      </ngx-datatable-column>
+    </ngx-datatable>
+  </div>
+</div>
+
+<mat-dialog-actions align="end">
+  <button mat-raised-button color="accent" (click)="CloseDialog()">戻る</button>
+</mat-dialog-actions>

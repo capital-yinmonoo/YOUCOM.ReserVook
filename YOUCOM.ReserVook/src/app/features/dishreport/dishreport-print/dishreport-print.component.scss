@@ -1,0 +1,162 @@
+/* 要素の初期化 */
+* {
+  margin: 0mm;
+  padding: 0mm;
+
+  /* デフォルトのフォント */
+  color: #000000;
+  font-family: "游ゴシック Medium", "Yu Gothic Medium", "游ゴシック体", YuGothic, sans-serif;
+  font-size: 9pt;
+  font-weight: normal;
+
+  /* 背景色・背景画像を印刷する（Chromeのみで有効） */
+  -webkit-print-color-adjust: exact;
+
+  /* 空白を印字する */
+  white-space: normal;
+}
+
+/* ページレイアウト (section.sheet を１ページとする) */
+.sheet {
+  overflow: hidden;
+  position: relative;
+  box-sizing: border-box;
+  page-break-after: always;
+
+  /* 用紙サイズ A4ヨコ */
+  width: 297mm;
+  height: 210mm;
+
+  /* 余白サイズ */
+  padding-top: 10mm;
+  padding-left: 10mm;
+  padding-right: 10mm;
+  padding-bottom: 10mm;
+}
+
+/* プレビュー用のスタイル */
+@media screen {
+  body {
+    background: #e0e0e0;
+    size: 80%;
+  }
+  .sheet {
+    background: white; /* 背景を白く */
+    box-shadow: 0 0.5mm 2mm rgba(0, 0, 0, 0.3); /* ドロップシャドウ */
+    margin: 5mm auto;
+  }
+}
+
+@media print{
+  body {
+    background: #e0e0e0;
+    size: 80%;
+  }
+  .sheet {
+    width: 99%;
+    height: 100%;
+  }
+}
+
+
+/* 汎用クラス */
+.text-left {
+  text-align: left;
+}
+.text-center {
+  text-align: center;
+}
+.text-right {
+  text-align: right;
+}
+.clear-element {
+  clear: both;
+}
+
+/* 大枠の指定 */
+/* ヘッダ */
+div.row_header {
+  div.col_1 {
+    width: 50%;
+    float: left;
+  }
+
+  div.col_2 {
+    width: 50%;
+    float: left;
+  }
+}
+
+/* 個別のスタイル指定 */
+/* タイトル */
+h1 {
+  font-size: 20px;
+  font-weight: normal;
+  letter-spacing: 10px;
+}
+
+/* テーブル　共通 */
+table,
+th,
+td {
+  border: 1px #000000 solid;
+  border-collapse: collapse;
+  padding: 1px 2px;
+}
+
+table {
+  th {
+    background: #bebebe;
+    font-weight: normal;
+  }
+
+  td {
+    text-align: left;
+    vertical-align: text-top;
+  }
+}
+
+/* テーブル 明細 */
+table.detail {
+  width: 100%;
+  height: 100%;
+
+  table-layout: fixed;
+
+  tr {
+    height: 6mm;
+  }
+
+  th{
+    &.mealDivisionName {
+      width: 8mm;
+    }
+    &.mealName {
+      width: 30mm;
+    }
+    &.sumMealNumber {
+      width: 10mm;
+    }
+    &.dishDayInfo {
+      width: 10mm;
+    }
+  }
+
+  td{
+    &.mealDivisionName {
+      text-align: left;
+    }
+    &.mealName {
+      text-align: left;
+    }
+    &.sumMealNumber {
+      text-align: right;
+    }
+    &.dishDayInfo {
+      text-align: right;
+    }
+  }
+}
+
+
+

@@ -1,0 +1,116 @@
+#container {
+  height: calc(100vh - 65px);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+#search {
+  flex: 0 0 auto;
+  height: 50px;
+  width: 100%;
+  margin-top: 12px;
+  margin-bottom: 12px;
+}
+
+#table {
+  flex: 1 1 auto;
+  width: 100%;
+  position: relative;
+}
+
+#table-container {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  overflow: auto;
+}
+
+#table-container table {
+  width: 100%;
+}
+
+.con-header {
+  height: 50px;
+}
+
+.con-title-font {
+  margin-top: 15px;
+  font-size: 24px;
+  font-weight: bold;
+  margin-right: 10px;
+  float: left;
+}
+
+.Prefix{
+  padding-right: 10px;
+}
+
+.con-dropdown {
+  width: 150px;
+}
+
+.con-checkbox {
+  margin-top: 15px;
+}
+
+.con-float {
+  margin-left: 10px;
+  float: left;
+}
+
+.table-top {
+  margin-top: 10px;
+  clear: both;
+}
+
+table {
+  width: 100%;
+}
+
+.datetool-parent {
+  height: 100%;
+}
+
+
+.msg-error{
+  padding-left: 15px;
+}
+
+// 宿泊情報
+.mat-column-dateTimePickerFrom {
+  width: 220px;
+  margin-right: 5px;
+}
+
+.mat-column-dateTimePickerTo {
+  width: 160px;
+  margin-right: 5px;
+}
+
+// 顧客情報
+.mat-column-customer-phone {
+  width: 280px;
+  margin-right: 5px;
+}
+
+.mat-column-customer-namekana {
+  width: 380px;
+  margin-right: 5px;
+}
+
+.mat-column-useamount-min {
+  width: 200px;
+  margin-right: 5px;
+}
+
+.mat-column-useamount-max {
+  width: 120px;
+  margin-right: 5px;
+}
+
+input.number{
+  text-align: right;
+}

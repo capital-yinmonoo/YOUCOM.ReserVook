@@ -1,0 +1,814 @@
+
+<div fxLayout="column">
+
+  <!-- 1段目(タイトル･ボタン) -->
+  <div fxFlex fxLayoutAlign="start center" fxLayoutGap="5px"style="width: auto;">
+    <div fxLayout="row" fxFlex="grow" fxLayoutGap="100px" class="title">
+      <div class= "left title-left" fxLayoutAlign="start center" fxFlex="0 0 100px" style="font-size: 24px;font-weight:bold;"> 予約登録 </div>
+      <div class="center title-center" fxLayoutAlign="start center" fxFlex="grow">
+        <div style="font-size: medium;" *ngIf="reserveNo != null">予約番号:{{reserveNo}} </div>
+        &nbsp;&nbsp;
+        <button mat-raised-button color="accent" *ngIf="xTravelAgncBkngNum != null" [routerLink]="[webReservesURL, scCd, xTravelAgncBkngSeq]">電文表示</button>
+      </div>
+      <div class="right confirm" style="margin-left: 12px" fxLayoutAlign="end center" fxFlex="0 0 300px">
+        <div style="font-size: medium;" *ngIf="cancelFlag">キャンセル済</div>
+        <div style="font-size: medium;" *ngIf="checkVisible_State_CO()">チェックアウト済</div>
+        &nbsp;
+        <button mat-raised-button color="primary" *ngIf="!disabledFlag" (click)="save()" [disabled]="CheckInvalid_SaveButton()">保存</button>
+        &nbsp;
+        <button mat-raised-button color="warn" *ngIf="checkVisible_State_Cancelable()" (click)="ReserveCancel()">予約取消</button>
+        &nbsp;
+        <button mat-raised-button color="accent" *ngIf="reserveNo != null" (click)="showReserveLog()">変更履歴</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- キャンセル済 / C/O済の場合、編集不可 -->
+  <fieldset [disabled]="disabledFlag ?'disabled':null" style="border: none;">
+
+    <!-- 2段目(宿泊情報/エージェント) -->
+    <div fxFlex fxLayoutAlign="start center" fxLayoutGap="5px" style="margin-left:20px; margin-right:20px; width: auto;">
+      <div fxLayout="row wrap">
+        <!-- 宿泊情報 -->
+        <div class="left" style="width: auto;">
+          <form [formGroup]="stayInfoForm">
+            <mat-card fxLayoutGap="10px">
+
+              <mat-card-title>宿泊情報</mat-card-title>
+              <!-- 宿泊情報 -->
+              <div fxLayout="column wrap">
+              <div fxLayout="row wrap">
+                <mat-form-field class="mat-column-stay-dateTimePicker">
+                  <div matPrefix class="Prefix FixedWidth">
+                    <span class="required">{{ lblArrivalDate }}</span>
+                    <span fxFlex fxLayoutAlign="end center">{{PrefixDelimiter}}</span>
+                  </div>
+                  <input type="text" [disabled] = "checkVisible_State_Stay()" matInput formControlName="arrivalDate" [matDatepicker]="dtpArrival" (dateChange)="changeArrivalDate()">
+                  <mat-datepicker-toggle matSuffix [for]="dtpArrival"></mat-datepicker-toggle>
+                  <mat-datepicker #dtpArrival></mat-datepicker>
+                </mat-form-field>
+
+                <mat-form-field class="mat-column-stay-stayDays">
+                  <input type="number" matInput class="number" formControlName="stayDays" (change)="changeStayDays()">
+                  <span matSuffix class="Suffix required">泊</span>
+                </mat-form-field>
+                <mat-form-field class="mat-column-stay-dateTimePicker">
+                  <div matPrefix class="Prefix FixedWidth">
+                    <span class="required">{{ lblDepartureDate }}</span>
+                    <span fxFlex fxLayoutAlign="end center">{{PrefixDelimiter}}</span>
+                  </div>
+                  <input type="text" matInput formControlName="departureDate" [matDatepicker]="dtpDeparture" (dateChange)="changeDepartureDate()">
+                  <mat-datepicker-toggle matSuffix [for]="dtpDeparture"></mat-datepicker-toggle>
+                  <mat-datepicker #dtpDeparture></mat-datepicker>
+                </mat-form-field>
+                <mat-form-field class="mat-column-stay-dateTimePicker">
+                  <div matPrefix class="Prefix FixedWidth">
+                    <span class="required">{{ lblReserveDate }}</span>
+                    <span fxFlex fxLayoutAlign="end center">{{PrefixDelimiter}}</span>
+                  </div>
+                  <input type="text" matInput formControlName="reserveDate" [matDatepicker]="dtpReserve">
+                  <mat-datepicker-toggle matSuffix [for]="dtpReserve"></mat-datepicker-toggle>
+                  <mat-datepicker #dtpReserve></mat-datepicker>
+                </mat-form-field>
+              </div>
+
+              <!-- 宿泊情報 Validate -->
+              <div fxLayout="row wrap">
+                <div fxLayout="column">
+                  <div *ngIf="stayInfoForm.controls['arrivalDate'].invalid && (stayInfoForm.controls['arrivalDate'].touched || stayInfoForm.controls['arrivalDate'].dirty)">
+                    <small *ngIf="stayInfoForm.controls['arrivalDate'].hasError('required')" class="mat-text-warn msg-error">{{lblArrivalDate}}{{msgIs}}{{msgRequid}}{{msgPatternDate}}</small>
+                  </div>
+                  <div *ngIf="stayInfoForm.controls['stayDays'].invalid && (stayInfoForm.controls['stayDays'].touched || stayInfoForm.controls['stayDays'].dirty)">
+                    <small *ngIf="stayInfoForm.controls['stayDays'].hasError('required')" class="mat-text-warn msg-error">{{msgStayDays}}{{msgIs}}{{msgRequid}}</small>
+                    <small *ngIf="stayInfoForm.controls['stayDays'].hasError('pattern')" class="mat-text-warn msg-error">{{msgStayDays}}{{msgIs}}{{msgPatternNumber}}</small>
+                    <small *ngIf="stayInfoForm.controls['stayDays'].hasError('min')" class="mat-text-warn msg-error">{{msgStayDays}}{{msgIs}}{{msgMin0}}</small>
+                    <small *ngIf="stayInfoForm.controls['stayDays'].hasError('max')" class="mat-text-warn msg-error">{{msgStayDays}}{{msgIs}}{{msgMaxNight}}</small>
+                  </div>
+                  <div *ngIf="stayInfoForm.controls['departureDate'].invalid && (stayInfoForm.controls['departureDate'].touched || stayInfoForm.controls['departureDate'].dirty)">
+                    <small *ngIf="stayInfoForm.controls['departureDate'].hasError('required')" class="mat-text-warn msg-error">{{lblDepartureDate}}{{msgIs}}{{msgRequid}}{{msgPatternDate}}</small>
+                  </div>
+                  <small *ngIf="stayInfoForm.controls.departureDate.errors?.FromToError" class="mat-text-warn msg-error">{{lblDepartureDate}}{{msgIs}}{{lblArrivalDate}}{{msgFromToError}}</small>
+
+                  <div *ngIf="stayInfoForm.controls['reserveDate'].invalid && (stayInfoForm.controls['reserveDate'].touched || stayInfoForm.controls['reserveDate'].dirty)">
+                    <small *ngIf="stayInfoForm.controls['reserveDate'].hasError('required')" class="mat-text-warn msg-error">{{lblReserveDate}}{{msgIs}}{{msgRequid}}{{msgPatternDate}}</small>
+                  </div>
+                </div>
+              </div>
+
+              <!-- 人数 -->
+              <div fxLayout="row wrap">
+                <div class="members">
+                  <mat-form-field class="mat-column-stay-member">
+                    <div matPrefix class="Prefix">
+                      <span class="required">{{ lblMale }}</span>
+                      <span fxFlex fxLayoutAlign="end center">{{PrefixDelimiter}}</span>
+                    </div>
+                    <input type="number" class="number" matInput formControlName="memberMale" (change)="calcPersonCount()">
+                  </mat-form-field>
+                  <mat-form-field class="mat-column-stay-member">
+                    <div matPrefix class="Prefix">
+                      <span class="required">{{ lblFemale }}</span>
+                      <span fxFlex fxLayoutAlign="end center">{{PrefixDelimiter}}</span>
+                    </div>
+                    <input type="number" class="number" matInput formControlName="memberFemale" (change)="calcPersonCount()">
+                  </mat-form-field>
+                  <mat-form-field class="mat-column-stay-member">
+                    <div matPrefix class="Prefix">
+                      <span class="required">{{ lblChildA }}</span>
+                      <span fxFlex fxLayoutAlign="end center">{{PrefixDelimiter}}</span>
+                    </div>
+                    <input type="number" class="number" matInput formControlName="memberChildA" (change)="calcPersonCount()">
+                  </mat-form-field>
+                  <mat-form-field class="mat-column-stay-member">
+                    <div matPrefix class="Prefix">
+                      <span class="required">{{ lblChildB }}</span>
+                      <span fxFlex fxLayoutAlign="end center">{{PrefixDelimiter}}</span>
+                    </div>
+                    <input type="number" class="number" matInput formControlName="memberChildB" (change)="calcPersonCount()">
+                  </mat-form-field>
+                  <mat-form-field class="mat-column-stay-member">
+                    <div matPrefix class="Prefix">
+                      <span class="required">{{ lblChildC }}</span>
+                      <span fxFlex fxLayoutAlign="end center">{{PrefixDelimiter}}</span>
+                    </div>
+                    <input type="number" class="number" matInput formControlName="memberChildC" (change)="calcPersonCount()">
+                  </mat-form-field>
+
+                  &nbsp;&nbsp;&nbsp;
+
+                  <mat-form-field class="mat-column-stay-member-total readonly">
+                    <span matPrefix class="Prefix">合計人数:</span>
+                    <input type="tel" class="number" matInput formControlName="memberTotal" readonly="true" >
+                  </mat-form-field>
+                </div>
+              </div>
+
+              <!-- 人数 Validate -->
+              <div fxLayout="row wrap">
+                <div fxLayout="column">
+                  <div *ngIf="stayInfoForm.controls['memberMale'].invalid && (stayInfoForm.controls['memberMale'].touched || stayInfoForm.controls['memberMale'].dirty)">
+                    <small *ngIf="stayInfoForm.controls['memberMale'].hasError('required')" class="mat-text-warn msg-error">{{lblMale}}{{msgIs}}{{msgRequid}}</small>
+                    <small *ngIf="stayInfoForm.controls['memberMale'].hasError('pattern')" class="mat-text-warn msg-error">{{lblMale}}{{msgIs}}{{msgPatternNumber}}</small>
+                    <small *ngIf="stayInfoForm.controls['memberMale'].hasError('min')" class="mat-text-warn msg-error">{{lblMale}}{{msgIs}}{{msgMin0}}</small>
+                    <small *ngIf="stayInfoForm.controls['memberMale'].hasError('max')" class="mat-text-warn msg-error">{{lblMale}}{{msgIs}}{{msgMax999}}</small>
+                  </div>
+                  <div *ngIf="stayInfoForm.controls['memberFemale'].invalid && (stayInfoForm.controls['memberFemale'].touched || stayInfoForm.controls['memberFemale'].dirty)">
+                    <small *ngIf="stayInfoForm.controls['memberFemale'].hasError('required')" class="mat-text-warn msg-error">{{lblFemale}}{{msgIs}}{{msgRequid}}</small>
+                    <small *ngIf="stayInfoForm.controls['memberFemale'].hasError('pattern')" class="mat-text-warn msg-error">{{lblFemale}}{{msgIs}}{{msgPatternNumber}}</small>
+                    <small *ngIf="stayInfoForm.controls['memberFemale'].hasError('min')" class="mat-text-warn msg-error">{{lblFemale}}{{msgIs}}{{msgMin0}}</small>
+                    <small *ngIf="stayInfoForm.controls['memberFemale'].hasError('max')" class="mat-text-warn msg-error">{{lblFemale}}{{msgIs}}{{msgMax999}}</small>
+                  </div>
+                  <div *ngIf="stayInfoForm.controls['memberChildA'].invalid && (stayInfoForm.controls['memberChildA'].touched || stayInfoForm.controls['memberChildA'].dirty)">
+                    <small *ngIf="stayInfoForm.controls['memberChildA'].hasError('required')" class="mat-text-warn msg-error">{{lblChildA}}{{msgIs}}{{msgRequid}}</small>
+                    <small *ngIf="stayInfoForm.controls['memberChildA'].hasError('pattern')" class="mat-text-warn msg-error">{{lblChildA}}{{msgIs}}{{msgPatternNumber}}</small>
+                    <small *ngIf="stayInfoForm.controls['memberChildA'].hasError('min')" class="mat-text-warn msg-error">{{lblChildA}}{{msgIs}}{{msgMin0}}</small>
+                    <small *ngIf="stayInfoForm.controls['memberChildA'].hasError('max')" class="mat-text-warn msg-error">{{lblChildA}}{{msgIs}}{{msgMax999}}</small>
+                  </div>
+                  <div *ngIf="stayInfoForm.controls['memberChildB'].invalid && (stayInfoForm.controls['memberChildB'].touched || stayInfoForm.controls['memberChildB'].dirty)">
+                    <small *ngIf="stayInfoForm.controls['memberChildB'].hasError('required')" class="mat-text-warn msg-error">{{lblChildB}}{{msgIs}}{{msgRequid}}</small>
+                    <small *ngIf="stayInfoForm.controls['memberChildB'].hasError('pattern')" class="mat-text-warn msg-error">{{lblChildB}}{{msgIs}}{{msgPatternNumber}}</small>
+                    <small *ngIf="stayInfoForm.controls['memberChildB'].hasError('min')" class="mat-text-warn msg-error">{{lblChildB}}{{msgIs}}{{msgMin0}}</small>
+                    <small *ngIf="stayInfoForm.controls['memberChildB'].hasError('max')" class="mat-text-warn msg-error">{{lblChildB}}{{msgIs}}{{msgMax999}}</small>
+                  </div>
+                  <div *ngIf="stayInfoForm.controls['memberChildC'].invalid && (stayInfoForm.controls['memberChildC'].touched || stayInfoForm.controls['memberChildC'].dirty)">
+                    <small *ngIf="stayInfoForm.controls['memberChildC'].hasError('required')" class="mat-text-warn msg-error">{{lblChildC}}{{msgIs}}{{msgRequid}}</small>
+                    <small *ngIf="stayInfoForm.controls['memberChildC'].hasError('pattern')" class="mat-text-warn msg-error">{{lblChildC}}{{msgIs}}{{msgPatternNumber}}</small>
+                    <small *ngIf="stayInfoForm.controls['memberChildC'].hasError('min')" class="mat-text-warn msg-error">{{lblChildC}}{{msgIs}}{{msgMin0}}</small>
+                    <small *ngIf="stayInfoForm.controls['memberChildC'].hasError('max')" class="mat-text-warn msg-error">{{lblChildC}}{{msgIs}}{{msgMax999}}</small>
+                  </div>
+                </div>
+              </div>
+            </div>
+            </mat-card>
+          </form>
+        </div>
+
+        <!-- エージェント -->
+        <div class="right" style="width: auto;">
+          <form [formGroup]="agentInfoForm">
+            <mat-card fxLayoutGap="10px">
+              <mat-card-title>エージェント情報</mat-card-title>
+              <div fxLayout="column wrap">
+                <mat-form-field class="mat-column-agent-name" floatLabel="never">
+                  <mat-label>選択</mat-label>
+                  <div matPrefix class="Prefix">
+                    <span>扱　先</span>
+                    <span fxFlex fxLayoutAlign="end center">{{PrefixDelimiter}}</span>
+                  </div>
+                  <mat-select [disabled]="disabledFlag" formControlName="agentCode" id="1" (selectionChange)="selectAgent(agentInfoForm.controls['agentCode'].value)">
+                    <mat-option></mat-option><!-- 空の選択肢 -->
+                    <mat-option *ngFor="let agent of M_AgentList" [value]="agent.agentCode">{{ agent.agentName }}</mat-option>
+                    <mat-option unspecified [value]="unspecified.key" [disabled]="true">{{unspecified.value}}</mat-option> <!-- Web連携用 未指定 -->
+                  </mat-select>
+                </mat-form-field>
+                <mat-form-field class="mat-column-agent-remarks">
+                  <div matPrefix class="Prefix">
+                    <span>備　考</span>
+                    <span fxFlex fxLayoutAlign="end center">{{PrefixDelimiter}}</span>
+                  </div>
+                  <input type="text" matInput formControlName="agentRemarks">
+                </mat-form-field>
+                <div *ngIf="agentInfoForm.controls['agentRemarks'].invalid && (agentInfoForm.controls['agentRemarks'].touched || agentInfoForm.controls['agentRemarks'].dirty)">
+                  <small *ngIf="agentInfoForm.controls['agentRemarks'].hasError('maxlength')" class="mat-text-warn msg-error">{{msgMaxLengthText}}</small>
+                </div>
+              </div>
+            </mat-card>
+          </form>
+        </div>
+      </div>
+    </div>
+  </fieldset>
+
+  <!-- 3段目(利用者情報/希望部屋タイプ) -->
+  <div fxFlex fxLayoutAlign="start center" fxLayoutGap="5px" style="margin-left:20px; margin-right:20px; width: auto;">
+    <div fxLayout="row wrap">
+
+      <!-- キャンセル済 / C/O済の場合、編集不可 -->
+      <fieldset [disabled]="disabledFlag ?'disabled':null" style="border: none;">
+
+        <div class="left" style="width: 800px;">
+          <mat-card fxLayout="column" style="height: auto;">
+            <mat-card-header>
+              <mat-card-title>利用者情報</mat-card-title>
+              <div fxFlexOffset="auto">
+                <button mat-raised-button color="accent" *ngIf="!disabledFlag" (click)="guestSearch()">
+                  <span>利用者検索</span>
+                  <mat-icon>search</mat-icon>
+                </button>
+              </div>
+            </mat-card-header>
+            <form [formGroup]="guestInfoForm">
+              <div fxLayout="row wrap">
+                <div fxLayout="column" class="mat-column-customer-phone">
+                  <mat-form-field>
+                    <div matPrefix class="Prefix FixedWidth">
+                      <span class="required">電話番号</span>
+                      <span fxFlex fxLayoutAlign="end center">{{PrefixDelimiter}}</span>
+                    </div>
+                    <input type="tel" matInput formControlName="phone">
+                  </mat-form-field>
+                  <div *ngIf="guestInfoForm.controls['phone'].invalid && (guestInfoForm.controls['phone'].touched || guestInfoForm.controls['phone'].dirty)">
+                    <small *ngIf="guestInfoForm.controls['phone'].hasError('required')" class="mat-text-warn msg-error">{{msgRequid}}</small>
+                    <small *ngIf="guestInfoForm.controls['phone'].hasError('pattern')" class="mat-text-warn msg-error">{{msgPatternPhone}}</small>
+                    <small *ngIf="guestInfoForm.controls['phone'].hasError('maxlength')" class="mat-text-warn msg-error">{{msgMaxLengthPhone}}</small>
+                  </div>
+                </div>
+                <div fxLayout="column" class="mat-column-customer-phone">
+                  <mat-form-field>
+                    <div matPrefix class="Prefix FixedWidth">
+                      <span>携帯電話</span>
+                      <span fxFlex fxLayoutAlign="end center">{{PrefixDelimiter}}</span>
+                    </div>
+                    <input type="tel" matInput formControlName="cellphone">
+                  </mat-form-field>
+                  <div *ngIf="guestInfoForm.controls['cellphone'].invalid && (guestInfoForm.controls['cellphone'].touched || guestInfoForm.controls['cellphone'].dirty)">
+                    <small *ngIf="guestInfoForm.controls['cellphone'].hasError('required')" class="mat-text-warn msg-error">{{msgRequid}}</small>
+                    <small *ngIf="guestInfoForm.controls['cellphone'].hasError('pattern')" class="mat-text-warn msg-error">{{msgPatternPhone}}</small>
+                    <small *ngIf="guestInfoForm.controls['cellphone'].hasError('maxlength')" class="mat-text-warn msg-error">{{msgMaxLengthPhone}}</small>
+                  </div>
+                </div>
+
+              </div>
+
+              <div fxLayout="row">
+                <div fxLayout="column" class="mat-column-customer-name">
+                  <mat-form-field>
+                    <div matPrefix class="Prefix FixedWidth">
+                      <span class="required">利用者名</span>
+                      <span fxFlex fxLayoutAlign="end center">{{PrefixDelimiter}}</span>
+                    </div>
+                    <input type="text" matInput formControlName="guestName">
+                  </mat-form-field>
+                  <div *ngIf="guestInfoForm.controls['guestName'].invalid && (guestInfoForm.controls['guestName'].touched || guestInfoForm.controls['guestName'].dirty)">
+                    <small *ngIf="guestInfoForm.controls['guestName'].hasError('required')" class="mat-text-warn msg-error">{{msgRequid}}</small>
+                    <small *ngIf="guestInfoForm.controls['guestName'].hasError('maxlength')" class="mat-text-warn msg-error">{{msgMaxLengthName}}</small>
+                  </div>
+                </div>
+                <div fxLayout="column" class="mat-column-customer-namekana">
+                  <mat-form-field>
+                    <div matPrefix class="Prefix FixedWidth">
+                      <span class="required">フリガナ</span>
+                      <span fxFlex fxLayoutAlign="end center">{{PrefixDelimiter}}</span>
+                    </div>
+                    <input type="text" matInput formControlName="guestNameKana">
+                  </mat-form-field>
+                  <div *ngIf="guestInfoForm.controls['guestNameKana'].invalid && (guestInfoForm.controls['guestNameKana'].touched || guestInfoForm.controls['guestNameKana'].dirty)">
+                    <small *ngIf="guestInfoForm.controls['guestNameKana'].hasError('required')" class="mat-text-warn msg-error">{{msgRequid}}</small>
+                    <small *ngIf="guestInfoForm.controls['guestNameKana'].hasError('pattern')" class="mat-text-warn msg-error">{{msgPatternKana}}</small>
+                    <small *ngIf="guestInfoForm.controls['guestNameKana'].hasError('maxlength')" class="mat-text-warn msg-error">{{msgMaxLengthName}}</small>
+                  </div>
+                </div>
+              </div>
+              <div fxLayout="row">
+                <div fxLayout="column" class="mat-column-customer-company">
+                  <mat-form-field>
+                    <div matPrefix class="Prefix FixedWidth">
+                      <span>会社名</span>
+                      <span fxFlex fxLayoutAlign="end center">{{PrefixDelimiter}}</span>
+                    </div>
+                    <input type="text" matInput formControlName="companyName">
+                  </mat-form-field>
+                  <div *ngIf="guestInfoForm.controls['companyName'].invalid && (guestInfoForm.controls['companyName'].touched || guestInfoForm.controls['companyName'].dirty)">
+                    <small *ngIf="guestInfoForm.controls['companyName'].hasError('maxlength')" class="mat-text-warn msg-error">{{msgMaxLengthName}}</small>
+                  </div>
+              </div>
+              </div>
+              <div fxLayout="row">
+                <div fxLayout="column" class="mat-column-customer-zipcode">
+                  <mat-form-field>
+                    <div matPrefix class="Prefix FixedWidth">
+                      <span>郵便番号</span>
+                      <span fxFlex fxLayoutAlign="end center">{{PrefixDelimiter}}</span>
+                    </div>
+                    <input type="tel" matInput formControlName="zipCode">
+                  </mat-form-field>
+                  <div *ngIf="guestInfoForm.controls['zipCode'].invalid && (guestInfoForm.controls['zipCode'].touched || guestInfoForm.controls['zipCode'].dirty)">
+                    <small *ngIf="guestInfoForm.controls['zipCode'].hasError('pattern')" class="mat-text-warn msg-error">{{msgPatternZip}}</small>
+                  </div>
+                </div>
+                <div fxLayout="column" class="mat-column-customer-email">
+                  <mat-form-field>
+                    <div matPrefix class="Prefix FixedWidth">
+                      <span>メール</span>
+                      <span fxFlex fxLayoutAlign="end center">{{PrefixDelimiter}}</span>
+                    </div>
+                    <input type="email" matInput formControlName="email">
+                  </mat-form-field>
+                  <div *ngIf="guestInfoForm.controls['email'].invalid && (guestInfoForm.controls['email'].touched || guestInfoForm.controls['email'].dirty)">
+                    <small *ngIf="guestInfoForm.controls['email'].hasError('pattern')" class="mat-text-warn msg-error">{{msgPatternEmail}}</small>
+                    <small *ngIf="guestInfoForm.controls['email'].hasError('maxlength')" class="mat-text-warn msg-error">{{msgMaxLengthEmail}}</small>
+                  </div>
+                </div>
+              </div>
+              <div fxLayout="row">
+                <div fxLayout="column" class="mat-column-customer-address">
+                  <mat-form-field>
+                    <div fxLayout="row" matPrefix class="Prefix FixedWidth">
+                      <span>住　所</span>
+                      <span fxFlex fxLayoutAlign="end center">{{PrefixDelimiter}}</span>
+                    </div>
+                    <input type="text" matInput formControlName="address">
+                  </mat-form-field>
+                  <div *ngIf="guestInfoForm.controls['address'].invalid && (guestInfoForm.controls['address'].touched || guestInfoForm.controls['address'].dirty)">
+                    <small *ngIf="guestInfoForm.controls['address'].hasError('maxlength')" class="mat-text-warn msg-error">{{msgMaxLengthText}}</small>
+                  </div>
+                </div>
+              </div>
+
+              <div fxLayout="row">
+                <div fxLayout="column" class="mat-column-customer-customerNo">
+                  <mat-form-field>
+                    <div fxLayout="row" matPrefix class="Prefix FixedWidth">
+                      <span>顧客番号</span>
+                      <span fxFlex fxLayoutAlign="end center">{{PrefixDelimiter}}</span>
+                    </div>
+                    <input type="text" matInput formControlName="customerNo">
+                  </mat-form-field>
+                  <div *ngIf="guestInfoForm.controls['customerNo'].invalid && (guestInfoForm.controls['customerNo'].touched || guestInfoForm.controls['customerNo'].dirty)">
+                    <small *ngIf="guestInfoForm.controls['customerNo'].hasError('minlength')" class="mat-text-warn msg-error">{{msgLengthCustomerNo}}</small>
+                    <small *ngIf="guestInfoForm.controls['customerNo'].hasError('maxlength')" class="mat-text-warn msg-error">{{msgLengthCustomerNo}}</small>
+                  </div>
+                </div>
+                <div fxLayout="column" class="mat-column-customer-customerNoButton">
+                  <div fxFlexOffset="top">
+                    <button mat-raised-button color="accent" matTooltip="利用者・備考情報を基に顧客マスタを登録します。" [disabled]="this.guestInfoForm.invalid" (click)="registerCustomer()">
+                      <span>顧客登録</span>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </mat-card>
+        </div>
+      </fieldset>
+
+      <div fxLayout="colmn wrap">
+        <!-- 希望部屋タイプ -->
+        <div class="rights" style="width: auto; height: auto;">
+          <mat-card fxLayoutGap="10px">
+            <form [formGroup]="roomTypeInfoForm">
+              <div fxFlex fxLayout="column wrap">
+                <mat-card-header style="margin-bottom: 10px;">
+                  <mat-card-title>希望部屋タイプ</mat-card-title>
+                  <div *ngIf="RoomtypeInvalied">
+                    <small class="mat-text-warn msg-error">希望部屋タイプが設定されていない利用日付があります。</small>
+                  </div>
+                  <div fxFlexOffset="auto">
+                    <button mat-raised-button color="accent" *ngIf="reserveNo != null && !cancelFlag" (click)="showRoomDetails()">
+                      部屋割詳細
+                    </button>
+                  </div>
+                </mat-card-header>
+
+                <div class="left" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="5px" style="font-size:18px;margin-top:-10px;margin-left: 0px;">
+                  <div class="usedate">
+                    <span>利用日付:　</span>
+                    <input type="button" value="＜" (click)="getChangeUseDate(-1)">
+                    <mat-form-field class="mat-column-usedate">
+                      <input type="text" matInput formControlName="useDate" readonly>
+                    </mat-form-field>
+                    <input type="button" value="＞" (click)="getChangeUseDate(1)">
+                  </div>
+                </div>
+
+                <!-- キャンセル済 / C/O済の場合、編集不可 -->
+                <fieldset [disabled]="disabledFlag ?'disabled':null" style="border: none;">
+
+                  <table mat-table class="mat-elevation-z8" [dataSource]="roomTypeSource">
+
+                    <ng-container matColumnDef="addRoomTypeInfo">
+                      <th mat-header-cell *matHeaderCellDef></th>
+                      <td *matCellDef="let element" fxLayout="row">
+                        <button mat-icon-button (click)="addRoomTypeInfo()">
+                          <mat-icon>add</mat-icon>
+                        </button>
+                      </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="roomType">
+                      <th mat-header-cell *matHeaderCellDef class="required">部屋タイプ</th>
+                      <td mat-cell *matCellDef="let element" [formGroup]="element">
+                        <mat-form-field class="mat-column-roomtype-roomtype" floatLabel="never" >
+                          <mat-label>選択</mat-label>
+                          <mat-select formControlName="roomType" id="1" [disabled]="disabledFlag || element.controls['assignCount'].value > 0 ? 'disabled' : null" (selectionChange)="changeRoomTypeInfo(element)">
+                            <mat-option *ngFor="let rType of M_RoomTypeList" [value]="rType.code">{{ rType.codeName }}</mat-option>
+                            <mat-option unspecified [value]="unspecified.key" [disabled]="true">{{unspecified.value}}</mat-option> <!-- Web連携用 未指定 -->
+                          </mat-select>
+                        </mat-form-field>
+                      </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="roomCount">
+                      <th mat-header-cell *matHeaderCellDef class="required">室数</th>
+                      <td mat-cell *matCellDef="let element" [formGroup]="element">
+                        <mat-form-field class="mat-column-roomtype-roomcount">
+                          <input type="number" class="number" matInput formControlName="roomCount" (change)="changeRoomTypeInfo()">
+                        </mat-form-field>
+                      </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="assignCount">
+                      <th mat-header-cell *matHeaderCellDef>アサイン済</th>
+                      <td mat-cell *matCellDef="let element" [formGroup]="element">
+                        <mat-form-field class="mat-column-roomtype-roomcount readonly">
+                          <input type="number" class="number" matInput formControlName="assignCount" readonly="true">
+                        </mat-form-field>
+                      </td>
+                    </ng-container>
+
+                    <ng-container matColumnDef="roomtypeSeq">
+                      <th mat-header-cell *matHeaderCellDef></th>
+                      <td mat-cell *matCellDef="let element">
+                        <button mat-icon-button (click)="removeRoomTypeInfo(element.controls['roomtypeSeq'].value)"
+                          *ngIf="this.roomTypeSource.data.length != 1 && element.controls['assignCount'].value == 0">
+                          <mat-icon>delete icon</mat-icon>
+                        </button>
+                      </td>
+                    </ng-container>
+
+                    <!-- Validator -->
+                    <ng-container matColumnDef ="ErrorMessage">
+                      <td mat-footer-cell *matFooterCellDef colspan="4" style="width:auto;">
+                        <div *ngFor="let roomtypeElement of roomTypeSource.data let i = index" style="height: auto;" >
+
+                          <div *ngIf="roomtypeElement.controls['roomType'].invalid && (roomtypeElement.controls['roomType'].touched || roomtypeElement.controls['roomType'].dirty)">
+                            <div style="height: 10px;"></div>
+                            <small *ngIf="roomtypeElement.controls['roomType'].hasError('required')" class="mat-text-warn msg-error">{{i + 1}}{{msgLine}} {{lblRoomType}}{{msgIs}}{{msgRequid}}</small>
+                          </div>
+                          <div *ngIf="roomtypeElement.controls['roomCount'].invalid && (roomtypeElement.controls['roomCount'].touched || roomtypeElement.controls['roomCount'].dirty)">
+                            <div style="height: 10px;"></div>
+                            <small *ngIf="roomtypeElement.controls['roomCount'].hasError('required')" class="mat-text-warn msg-error">{{i + 1}}{{msgLine}} {{lblRoomCount}}{{msgIs}}{{msgRequid}}</small>
+                            <small *ngIf="roomtypeElement.controls['roomCount'].hasError('min')" class="mat-text-warn msg-error">{{i + 1}}{{msgLine}} {{lblRoomCount}}{{msgIs}}{{msgMinRoomCount}}</small>
+                            <small *ngIf="roomtypeElement.controls['roomCount'].hasError('max')" class="mat-text-warn msg-error">{{i + 1}}{{msgLine}} {{lblRoomCount}}{{msgIs}}{{msgMaxRoomCount}}</small>
+                          </div>
+
+                          <div *ngIf="roomtypeElement.controls.assignCount.errors?.Min">
+                            <small class="mat-text-warn msg-error">{{i + 1}}{{msgLine}} {{lblRoomCount}}{{msgIs}}{{msgMinAssignCount}}</small>
+                          </div>
+
+                        </div>
+                      </td>
+                    </ng-container>
+
+                    <!-- Header and Row and Footer -->
+                    <tr mat-header-row *matHeaderRowDef="roomTypeInfoHeader"></tr>
+                    <tr mat-row *matRowDef="let row; columns: roomTypeInfoHeader;"></tr>
+                    <tr mat-footer-row *matFooterRowDef="['ErrorMessage']"></tr>
+
+                  </table>
+                </fieldset>
+
+              </div>
+            </form>
+
+            <div style="height: 10px;"></div>
+            <div *ngIf="checkDisable_State_Assign()">
+              <small class="mat-text-warn">
+                アサイン済 もしくは チェックイン済 の場合、<br>
+                部屋タイプは変更できません。
+              </small>
+            </div>
+
+          </mat-card>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 4段目(商品) -->
+  <!-- キャンセル済 / C/O済の場合、編集不可 -->
+  <fieldset [disabled]="disabledFlag ?'disabled':null" style="border: none;">
+    <div fxFlex fxLayoutAlign="start center" fxLayoutGap="5px" style="margin-left:20px; margin-right:20px; width: auto; height: auto;">
+      <mat-card style=" margin: auto;width:96%;min-height:5%;">
+        <mat-card-header>
+          <mat-card-title>商品情報</mat-card-title>
+        </mat-card-header>
+        <!-- salesdetails.component -->
+        <sales-details [DisabledFlag]="disabledFlag" [MaxSetItemSeq]="maxSetItemSeq"></sales-details>
+
+      </mat-card>
+    </div>
+  </fieldset>
+
+    <!-- 5段目(入金情報/精算) -->
+  <!-- キャンセル済 / C/O済の場合、編集不可 -->
+  <fieldset [disabled]="disabledFlag ?'disabled':null" style="border: none;">
+    <div fxFlex fxLayoutAlign="start center" fxLayoutGap="5px" style="margin-left:20px; margin-right:20px; width: auto;">
+      <div fxLayout="row" style=" margin: auto;width:98.8%;min-height:5%;">
+        <mat-card>
+          <mat-card-title>入金情報</mat-card-title>
+          <form [formGroup]="depositInfoForm">
+            <table mat-table [dataSource]="depositSource" class="mat-elevation-z8">
+
+              <ng-container matColumnDef="addDepositInfo">
+                <th mat-header-cell *matHeaderCellDef></th>
+                <td *matCellDef="let depositElement" fxLayout="row"  [formGroup]="depositElement">
+                  <button mat-icon-button (click)="addDepositInfo()">
+                    <mat-icon>add</mat-icon>
+                  </button>
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="depositDate">
+                <th mat-header-cell *matHeaderCellDef>{{lblDepositDate}}</th>
+                <td mat-cell *matCellDef="let depositElement"  [formGroup]="depositElement">
+                  <mat-form-field  class="mat-column-deposit-dateTimePicker">
+                    <input type="text" matInput formControlName="depositDate" [matDatepicker]="picker">
+                    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                    <mat-datepicker #picker></mat-datepicker>
+                  </mat-form-field>
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="denominationCode">
+                <th mat-header-cell *matHeaderCellDef>{{lblDenomination}}</th>
+                <td mat-cell *matCellDef="let depositElement"  [formGroup]="depositElement">
+                  <mat-form-field class="mat-column-deposit-denomination" floatLabel="never">
+                    <mat-label>選択</mat-label>
+                    <mat-select formControlName="denominationCode" id="1" [disabled]="!this.CheckBillSeq(depositElement.controls.billSeparateSeq.value) || disabledFlag ? 'disabled' : null" (selectionChange)="selectDenomination(depositElement)">
+                      <mat-option *ngFor="let dCode of M_DenominationList" [value]="dCode.denominationCode">
+                        {{ dCode.denominationName }}
+                      </mat-option>
+                    </mat-select>
+                  </mat-form-field>
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="printName">
+                <th mat-header-cell *matHeaderCellDef>{{lblPrintName}}</th>
+                <td mat-cell *matCellDef="let depositElement"  [formGroup]="depositElement">
+                  <mat-form-field class="mat-column-deposit-denomination">
+                    <input type="text" matInput formControlName="printName">
+                  </mat-form-field>
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="price">
+                <th mat-header-cell *matHeaderCellDef>{{lblPrice}}</th>
+                <td mat-cell *matCellDef="let depositElement"  [formGroup]="depositElement">
+                  <mat-form-field class="mat-column-deposit-price">
+                    <input type="text" class="number" matInput formControlName="price" (change)="calcDepositTotal()">
+                  </mat-form-field>
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="billingRemarks">
+                <th mat-header-cell *matHeaderCellDef>{{lblBillingRemarks}}</th>
+                <td mat-cell *matCellDef="let depositElement"  [formGroup]="depositElement">
+                  <mat-form-field class="mat-column-deposit-billingRemarks">
+                    <input type="text" matInput formControlName="billingRemarks">
+                  </mat-form-field>
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="billSeparateSeq">
+                <th mat-header-cell *matHeaderCellDef>{{lblBillNo}}</th>
+                <td mat-cell *matCellDef="let depositElement" [formGroup]="depositElement">
+                  <mat-form-field class="mat-column-deposit-billSeparateSeq">
+                    <input type="number" class="number" matInput formControlName="billSeparateSeq" (change)="CheckBillSeq(depositElement.controls['billSeparateSeq'].value)">
+                  </mat-form-field>
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="balanceButton">
+                <th mat-header-cell *matHeaderCellDef></th>
+                <td mat-cell *matCellDef="let depositElement" [formGroup]="depositElement">
+                  <button mat-raised-button color="basic" (click)="setBalance(depositElement)" [disabled]="hasErrorBillSeparateSeq(depositElement)">
+                    残額をセット
+                  </button>
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="detailsSeq">
+                <th mat-header-cell *matHeaderCellDef></th>
+                <td mat-cell *matCellDef="let depositElement" [formGroup]="depositElement">
+                  <!-- HACK:depositElement.value では disabledの間 値が取得できない -->
+                  <button mat-icon-button (click)="removeDepositInfo(depositElement.get('detailsSeq').value)" *ngIf="depositSource.data.length != 1 && CheckBillSeq(depositElement.controls['billSeparateSeq'].value)">
+                    <mat-icon>delete icon</mat-icon>
+                  </button>
+                </td>
+              </ng-container>
+
+              <!-- Validator -->
+              <ng-container matColumnDef ="ErrorMessage">
+                <td mat-footer-cell *matFooterCellDef colspan="5" style="width:auto;">
+                  <div *ngFor="let depositElement of depositSource.data let i = index" style="height: auto;" >
+
+                    <div *ngIf="depositElement.controls.depositDate.errors?.Required">
+                      <small class="mat-text-warn">{{i + 1}}{{msgLine}} {{lblDepositDate}}{{msgIs}}{{msgRequid}}{{msgPatternDate}}</small>
+                    </div>
+                    <div *ngIf="depositElement.controls['depositDate'].invalid && (depositElement.controls['depositDate'].touched || depositElement.controls['depositDate'].dirty)">
+                      <small *ngIf="!depositElement.controls.depositDate.errors?.Required" class="mat-text-warn">{{i + 1}}{{msgLine}} {{lblDepositDate}}{{msgIs}}{{msgPatternDate}}</small>
+                    </div>
+
+                    <div *ngIf="depositElement.controls.denominationCode.errors?.Required">
+                      <small  class="mat-text-warn">{{i + 1}}{{msgLine}} {{lblDenomination}}{{msgIs}}{{msgRequid}}</small>
+                    </div>
+                    <div *ngIf="depositElement.controls['printName'].invalid && (depositElement.controls['printName'].touched || depositElement.controls['printName'].dirty)">
+                      <small *ngIf="depositElement.controls['printName'].hasError('maxlength')" class="mat-text-warn">{{i + 1}}{{msgLine}} {{lblPrintName}}{{msgIs}}{{msgMaxLengthPrintName}}</small>
+                    </div>
+
+                    <div *ngIf="depositElement.controls['price'].invalid && (depositElement.controls['price'].touched || depositElement.controls['price'].dirty)">
+                      <small *ngIf="depositElement.controls['price'].hasError('pattern')" class="mat-text-warn">{{i + 1}}{{msgLine}} {{lblPrice}}{{msgIs}}{{msgPatternNumber}}</small>
+                      <small *ngIf="depositElement.controls['price'].hasError('min')" class="mat-text-warn">{{i + 1}}{{msgLine}} {{lblPrice}}{{msgIs}}{{msgMinAmount}}</small>
+                      <small *ngIf="depositElement.controls['price'].hasError('max')" class="mat-text-warn">{{i + 1}}{{msgLine}} {{lblPrice}}{{msgIs}}{{msgMaxAmount}}</small>
+                    </div>
+
+                    <div *ngIf="depositElement.controls['billingRemarks'].invalid && (depositElement.controls['billingRemarks'].touched || depositElement.controls['billingRemarks'].dirty)">
+                      <small *ngIf="depositElement.controls['billingRemarks'].hasError('maxlength')" class="mat-text-warn">{{i + 1}}{{msgLine}} {{lblBillingRemarks}}{{msgIs}}{{msgMaxLengthText}}</small>
+                    </div>
+
+                    <div *ngIf="depositElement.controls['billSeparateSeq'].invalid && (depositElement.controls['billSeparateSeq'].touched || depositElement.controls['billSeparateSeq'].dirty)">
+                      <small *ngIf="depositElement.controls['billSeparateSeq'].hasError('pattern')" class="mat-text-warn">{{i + 1}}{{msgLine}} {{lblBillNo}}{{msgIs}}{{msgPatternNumber}}</small>
+                      <small *ngIf="depositElement.controls['billSeparateSeq'].hasError('min')" class="mat-text-warn">{{i + 1}}{{msgLine}} {{lblBillNo}}{{msgIs}}{{msgMinBillNo}}</small>
+                      <small *ngIf="depositElement.controls['billSeparateSeq'].hasError('max')" class="mat-text-warn">{{i + 1}}{{msgLine}} {{lblBillNo}}{{msgIs}}{{msgMaxBillNo}}</small>
+                    </div>
+
+                    <div *ngIf="depositElement.controls.billSeparateSeqError.errors?.Required">
+                      <small class="mat-text-warn">{{i + 1}}{{msgLine}} {{lblBillNo}}{{msgIs}}{{msgRequid}}</small>
+                    </div>
+                    <div *ngIf="depositElement.controls.billSeparateSeqError.errors?.Adjustmented">
+                      <small class="mat-text-warn">{{i + 1}}{{msgLine}} {{lblBillNo}}:{{depositElement.get('billSeparateSeq').value}}{{msgIs}}{{msgAdjustmented}}</small>
+                    </div>
+
+                  </div>
+                </td>
+              </ng-container>
+
+              <!-- Header and Row and Footer -->
+              <tr mat-header-row *matHeaderRowDef="depositInfoHeader"></tr>
+              <tr mat-row *matRowDef="let row; columns: depositInfoHeader;"></tr>
+              <tr mat-footer-row *matFooterRowDef="['ErrorMessage']"></tr>
+            </table>
+          </form>
+          <div style="height: 10px;"></div>
+          <span class="Message">
+            入金合計: ¥{{depositTotal  | number}} &nbsp;&nbsp;
+            残額: ¥{{balance  | number}}
+          </span>
+        </mat-card>
+
+        <!-- 精算 -->
+        <div *ngIf="!cancelFlag && checkVisible_State_Stay()">
+          <mat-card fxLayoutGap="10px" style="width: auto;">
+            <mat-card-title>精算</mat-card-title>
+            <div fxLayout="row wrap" fxLayoutAlign="start center">
+              <mat-form-field class="" style ="width: 200px;">
+                <span matPrefix class="Prefix">ビル分割番号:</span>
+                <input type="number" class="number" matInput #billSeparateSeq>
+              </mat-form-field>
+            </div>
+            <span style="font-size: small;">ビル分割番号を指定しない場合、すべてのビルの精算/精算取消を行います。</span>
+            <div fxLayout="row">
+              <div class="left" fxLayoutAlign="start center" fxFlex="0 0 100px">
+                <button mat-raised-button color="accent" [disabled]="!CheckAdjustmented('', false)" (click)="showBill()">明細書発行</button>
+              </div>
+              <div class="center" fxFlex="grow"></div>
+              <div class="right" fxLayoutAlign="end center" fxFlex="grow">
+                <button mat-raised-button color="primary" [disabled]="CheckInvalid_SaveButton()" (click)="Adjustment(billSeparateSeq.value)">精算</button>
+                &nbsp;
+                <button mat-raised-button color="warn" [disabled]="CheckInvalid_SaveButton()" (click)="AdjustmentCancel(billSeparateSeq.value)">精算取消</button>
+              </div>
+          </div>
+          </mat-card>
+        </div>
+      </div>
+    </div>
+  </fieldset>
+
+    <!-- 6段目(会場情報) -->
+  <!-- キャンセル済 / C/O済の場合、編集不可 -->
+  <fieldset [disabled]="disabledFlag ?'disabled':null" style="border: none;">
+    <div fxFlex fxLayoutAlign="start center" fxLayoutGap="5px" style="margin-left:20px; margin-right:20px; width: auto; ">
+      <div style="width: auto; height:auto; ">
+        <mat-card fxLayoutGap="10px" >
+          <mat-card-header>
+            <mat-card-title>会場情報</mat-card-title>
+            <div fxFlexOffset="auto">
+              <button mat-raised-button color="accent" *ngIf="!disabledFlag" (click)="showFacility()">会場状況</button>
+            </div>
+          </mat-card-header>
+
+          <ngx-datatable class="material facility" [rows]="rsvFacilityList" [columnMode]="'ColumnMode.standard'" [count]=""
+            [scrollbarV]="false" [scrollbarH]="false" [headerHeight]="50"  [footerHeight]="0" [rowHeight]="50" [messages]="ngx_table_messages" >
+
+            <ngx-datatable-column *ngFor="let col of facilityColumns" [name]="col.name" [prop]="col.prop" [width]="col.width">
+              <ng-template let-value="value" let-row="row" ngx-datatable-cell-template>
+
+                <!-- 利用日 クリックで会場状況画面へ遷移 -->
+                <ng-container *ngIf="col.prop === 'useDate'">
+                  <a class="nav-link" style="color: #0000ee;" (click)="showFacility(value)" matTooltip="会場状況に移動します">
+                    {{ value }}
+                  </a>
+                </ng-container>
+
+                <!-- 利用日 以外-->
+                <ng-container *ngIf="col.prop !== 'useDate'">
+                  <div [ngStyle]="{'text-align': col.textalign}">
+                    {{value}}
+                  </div>
+                </ng-container>
+
+              </ng-template>
+            </ngx-datatable-column>
+          </ngx-datatable>
+
+        </mat-card>
+      </div>
+    </div>
+  </fieldset>
+
+    <!-- 7段目(備考) -->
+  <!-- キャンセル済 / C/O済の場合、編集不可 -->
+  <fieldset [disabled]="disabledFlag ?'disabled':null" style="border: none;">
+    <div fxFlex fxLayoutAlign="start center" fxLayoutGap="5px" style="margin-left:20px; margin-right:20px; width: auto; height: auto;">
+      <mat-card style=" margin: auto;width:96%;min-height:5%;">
+        <mat-card-title>備考</mat-card-title>
+        <form [formGroup]="remarksInfoForm">
+          <table mat-table class="mat-elevation-z8" [dataSource]="remarksSource">
+            <ng-container matColumnDef="addInfo">
+              <td *matCellDef="let remarksElement">
+                <button mat-icon-button (click)="addRemarksInfo()">
+                  <mat-icon>add</mat-icon>
+                </button>
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="remarks">
+              <td mat-cell *matCellDef="let remarksElement" [formGroup]="remarksElement">
+                <mat-form-field class="mat-column-remarks">
+                  <input type="text" matInput formControlName="remarks" >
+                </mat-form-field>
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="noteSeq">
+              <th mat-header-cell *matHeaderCellDef></th>
+              <td *matCellDef="let remarksElement" fxLayout="row">
+                <button mat-icon-button (click)="removeRemarksInfo(remarksElement.get('noteSeq').value)" *ngIf="this.remarksSource.data.length != 1">
+                  <mat-icon>delete icon</mat-icon>
+                </button>
+              </td>
+            </ng-container>
+
+            <!-- Validator -->
+            <ng-container matColumnDef ="ErrorMessage">
+              <td mat-footer-cell *matFooterCellDef colspan="2" style="width:auto;">
+                <div *ngFor="let remarksElement of remarksSource.data let i = index" style="height: auto;" >
+                  <div *ngIf="remarksElement.controls['remarks'].invalid && (remarksElement.controls['remarks'].touched || remarksElement.controls['remarks'].dirty)">
+                    <small *ngIf="remarksElement.controls['remarks'].hasError('maxlength')" class="mat-text-warn msg-error">{{i + 1}}{{msgLine}} {{lblRemarks}}{{msgIs}}{{msgMaxLengthText}}</small>
+                  </div>
+                </div>
+              </td>
+            </ng-container>
+
+            <!-- Header and Row and Footer -->
+            <tr mat-row *matRowDef="let row; columns: remarksInfoHeader;"></tr>
+            <tr mat-footer-row *matFooterRowDef="['ErrorMessage']"></tr>
+          </table>
+        </form>
+      </mat-card>
+    </div>
+  </fieldset>
+
+</div>  <!-- column end -->
+
+&nbsp;&nbsp;

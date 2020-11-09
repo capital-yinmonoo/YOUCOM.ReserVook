@@ -1,0 +1,71 @@
+<div fxLayout="row" fxLayoutAlign="center start">
+  <div fxFlex.gt-sm="40" fxFlex="100">
+    <mat-card class="pa-0">
+      <mat-tab-group >
+        <mat-tab>
+          <ng-template matTabLabel>WEB連携 - プラン変換マスタ</ng-template>
+            <mat-card-content class="pa-1">
+              <form fxLayout="column" [formGroup]="planConvertForm">
+
+                <mat-form-field class="mb-1">
+                  <mat-select placeholder="サイトコントローラー名" [disabled]="updateFlg" [ngClass]="{'readonly':updateFlg}" formControlName="scCd" (selectionChange)="selectScCode()" required>
+                    <mat-option *ngFor="let op of scCodes" [value]="op.scSegCd">{{ op.content1 }}</mat-option>
+                  </mat-select>
+                  <div *ngIf="planConvertForm.controls['scCd'].invalid && (planConvertForm.controls['scCd'].touched || planConvertForm.controls['scCd'].dirty)">
+                    <small *ngIf="planConvertForm.controls['scCd'].hasError('required')" class="mat-text-warn">{{msgRequid}}</small>
+                  </div>
+                </mat-form-field>
+
+                <mat-form-field class="mb-1">
+                  <input matInput placeholder="企画パッケージプランコード" [readonly]="updateFlg" [ngClass]="{'readonly':updateFlg}" formControlName="scPackagePlanCd" required>
+                    <div *ngIf="planConvertForm.controls['scPackagePlanCd'].invalid && (planConvertForm.controls['scPackagePlanCd'].touched || planConvertForm.controls['scPackagePlanCd'].dirty)">
+                      <small *ngIf="planConvertForm.controls['scPackagePlanCd'].hasError('required')" class="mat-text-warn">{{msgRequid}}</small>
+                      <small *ngIf="planConvertForm.controls['scPackagePlanCd'].hasError('maxlength')" class="mat-text-warn">{{msgMaxLength40}}</small>
+                      <small *ngIf="planConvertForm.controls['scPackagePlanCd'].hasError('pattern')" class="mat-text-warn">{{msgPatternAlphabetNumber}}</small>
+                    </div>
+                </mat-form-field>
+
+                <mat-form-field class="mb-1">
+                  <mat-select placeholder="食事条件" [disabled]="updateFlg" [ngClass]="{'readonly':updateFlg}" formControlName="scMealCond" required>
+                    <mat-option *ngFor="let op of scMealConds" [value]="op.scSegCd">{{op.scSegCd}}:{{op.content1}}</mat-option>
+                  </mat-select>
+                  <div *ngIf="planConvertForm.controls['scMealCond'].invalid && (planConvertForm.controls['scMealCond'].touched || planConvertForm.controls['scMealCond'].dirty)">
+                    <small *ngIf="planConvertForm.controls['scMealCond'].hasError('required')" class="mat-text-warn">{{msgRequid}}</small>
+                  </div>
+                </mat-form-field>
+
+                <mat-form-field class="mb-1">
+                  <mat-select placeholder="食事有無情報" [disabled]="updateFlg" [ngClass]="{'readonly':updateFlg}" formControlName="scSpecMealCond" required>
+                    <mat-option *ngFor="let op of scSpecMealConds" [value]="op.scSegCd">{{op.scSegCd}}:{{op.content1}}</mat-option>
+                  </mat-select>
+                  <div *ngIf="planConvertForm.controls['scSpecMealCond'].invalid && (planConvertForm.controls['scSpecMealCond'].touched || planConvertForm.controls['scSpecMealCond'].dirty)">
+                    <small *ngIf="planConvertForm.controls['scSpecMealCond'].hasError('required')" class="mat-text-warn">{{msgRequid}}</small>
+                  </div>
+                </mat-form-field>
+
+                <mat-form-field class="mb-1">
+                  <mat-select placeholder="商品" formControlName="itemCode" required>
+                    <div *ngFor="let itemDiv of M_ItemList">
+                      <mat-optgroup [label]="itemDiv.itemDivisionName + '商品'">
+                        <mat-option *ngFor="let item of itemDiv.itemList" [value]="item.itemCode">{{ item.itemName }}</mat-option>
+                      </mat-optgroup>
+                    </div>
+                    <mat-option unspecified [value]="unspecified.key" [disabled]="true">{{unspecified.value}}</mat-option>
+                  </mat-select>
+                  <div *ngIf="planConvertForm.controls['itemCode'].invalid && (planConvertForm.controls['itemCode'].touched || planConvertForm.controls['itemCode'].dirty)">
+                    <small *ngIf="planConvertForm.controls['itemCode'].hasError('required')" class="mat-text-warn">{{msgRequid}}</small>
+                    <small *ngIf="planConvertForm.controls['itemCode'].hasError('pattern')" class="mat-text-warn">商品{{msgChooseArticle}}</small>
+                  </div>
+                </mat-form-field>
+
+              </form>
+            </mat-card-content>
+          </mat-tab>
+        </mat-tab-group>
+      <mat-card-actions class="pa-1">
+        <button mat-raised-button color="primary"(click)="onSubmit()"[disabled]="planConvertForm.invalid">保存</button>
+        <button mat-raised-button color="accent" (click)="cancel()">中止</button>
+      </mat-card-actions>
+    </mat-card>
+  </div>
+</div>

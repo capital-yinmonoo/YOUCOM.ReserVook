@@ -1,0 +1,36 @@
+<mat-toolbar-row  style="margin-top: 5px;" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="10px">
+  <span style="font-size: 24px;font-weight:bold;">ユーザー管理</span>
+</mat-toolbar-row>
+<ngx-datatable class="material fullscreenMas" [columnMode]="'force'" [headerHeight]="50" [footerHeight]="0"
+  [rowHeight]="50" [scrollbarV]="true" [scrollbarH]="true" [rows]="staffs" [messages]="ngx_table_messages">
+  <ngx-datatable-column>
+    <ng-template let-row="row" ngx-datatable-cell-template>
+      <a mat-icon-button [routerLink]="['../form/', row.companyNo, row.userEmail]">
+        <mat-icon>edit</mat-icon>
+      </a>
+      <button mat-icon-button aria-label="Delete" (click)="delete(row.companyNo,row.userEmail)">
+        <mat-icon>delete</mat-icon>
+      </button>
+    </ng-template>
+  </ngx-datatable-column>
+  <ngx-datatable-column name="会社名" prop="companyName"></ngx-datatable-column>
+  <ngx-datatable-column name="メールアドレス" prop="userEmail"></ngx-datatable-column>
+  <ngx-datatable-column name="ユーザー名" prop="userName"></ngx-datatable-column>
+  <ngx-datatable-column name="権限" prop="roleName"></ngx-datatable-column>
+  <ngx-datatable-column name="清掃・忘れ物管理使用" [width]="180" prop="lostFlgName"></ngx-datatable-column>
+  <ngx-datatable-column name="作成者" prop ="creator"></ngx-datatable-column>
+  <ngx-datatable-column name="作成日" prop="cdt">
+    <ng-template let-value="value" ngx-datatable-cell-template>
+      {{value.substr(0,4) + '/' + value.substr(4,2) + '/' + value.substr(6,2) }}
+    </ng-template>
+  </ngx-datatable-column>
+  <ngx-datatable-column name="更新者" prop ="updator"></ngx-datatable-column>
+  <ngx-datatable-column name="更新日" prop="udt">
+    <ng-template let-value="value" ngx-datatable-cell-template>
+      {{value.substr(0,4) + '/' + value.substr(4,2) + '/' + value.substr(6,2) }}
+    </ng-template>
+  </ngx-datatable-column>
+</ngx-datatable>
+<a mat-fab [routerLink]="['../form/', '','']" color="warn" class="mat-fab-bottom-right" style="z-index: 9;">
+  <mat-icon class="mat-24">add</mat-icon>
+</a>

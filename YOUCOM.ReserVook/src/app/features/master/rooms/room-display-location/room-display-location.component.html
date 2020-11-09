@@ -1,0 +1,76 @@
+<!-- ヘッダ部 -->
+<div>
+  <div class="left" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="5px" style=" margin-left: 20px;">
+    <span style="font-size: 24px; font-weight: bold;">部屋表示設定&nbsp;&nbsp;&nbsp;&nbsp;</span>
+
+    <span>行数</span>
+    <button mat-icon-button (click) ="onChangeRowColumn(false, true)"><mat-icon>remove_circle_outline</mat-icon></button>
+    <span>{{currentMaxRow + 1}}</span>
+    <button mat-icon-button (click) ="onChangeRowColumn(true, true)"><mat-icon>add_circle_outline</mat-icon></button>
+    <span>&nbsp;&nbsp;</span>
+    <span>列数</span>
+    <button mat-icon-button (click) ="onChangeRowColumn(false, false)"><mat-icon>remove_circle_outline</mat-icon></button>
+    <span>{{currentMaxColumn + 1}}</span>
+    <button mat-icon-button (click) ="onChangeRowColumn(true, false)"><mat-icon>add_circle_outline</mat-icon></button>
+
+    <span fxFlexOffset="auto">
+      <button mat-raised-button [routerLink]="['../list']">
+        部屋マスタ
+      </button>
+    </span>
+  </div>
+</div>
+
+<!-- 部屋テーブル -->
+<div id="rooms-list">
+  <div class="left" fxLayout="column" >
+    <div class="rows" fxLayout="rows"  *ngFor="let rows of roomsTable;">
+      <div class="rooms" *ngFor="let room of rows;" dragula="{{this.DRAGDROP_ROOMCHANGE}}">
+
+          <!-- マスタに存在しない部屋パネル位置 -->
+          <div *ngIf="room.roomNo == null" class="dragwrapper" dragula="{{this.DRAGDROP_SETTING}}" style="background-color: rgb(223, 223, 223);"
+           [attr.roomlist-row]="room.rowIndex" [attr.roomlist-column]="room.columnIndex">
+            <div class="roominfo">
+              <div style="font-size: 10pt;">&nbsp;</div>
+              <span style="font-size: 8pt;">&nbsp;</span>
+            </div>
+          </div>
+
+          <!-- 存在する部屋パネル位置 -->
+          <div *ngIf="room.roomNo != null" class="dragwrapper" style="background-color: rgb(182, 212, 240);"
+           [attr.roomlist-row]="room.rowIndex" [attr.roomlist-column]="room.columnIndex">
+            <div class="roominfo">
+              <div style="font-size: 10pt;">{{room.roomName.substring(0, 7)}}
+                <a style="float: right;" (click)="release(room.rowIndex, room.columnIndex)">X&nbsp;</a>
+              </div>
+              <span style="font-size: 8pt;">{{room.roomTypeName.substring(0, 8)}}&nbsp;
+                <mat-icon *ngIf="room.smokingDivision == this.CODENAMEDIVISION_SMOKING" style="font-size: 16pt;">smoking_rooms</mat-icon>
+                <mat-icon *ngIf="room.smokingDivision == this.CODENAMEDIVISION_NONSMOKING" style="font-size: 16pt; color: rgb(223, 74, 74);">smoke_free</mat-icon>
+              </span>
+              <div> </div>
+            </div>
+          </div>
+      </div>
+    </div>
+</div>
+
+<!-- 部屋位置未設定一覧 -->
+<div class="right">
+  <mat-tab-group style="float: right;">
+    <mat-tab label="部屋位置未設定一覧">
+      <div class="noSettingList" dragula="{{this.DRAGDROP_SETTING}}">
+        <div *ngFor="let info of noSettingList" [attr.noSettingList-roomNo]="info.roomNo">
+
+          <div class="button">
+            <div>部屋番号:{{info.roomNo}}</div>
+            <div>部屋名: {{info.roomName.substring(0, 11)}}</div>
+            <div>部屋タイプ: {{info.roomTypeName.substring(0, 11)}}</div>
+            <div>フロア: {{info.floorName.substring(0, 11)}}</div>
+            <div>喫煙/禁煙: {{info.smokingDivisionName.substring(0, 11)}}</div>
+          </div>
+
+        </div>
+      </div>
+    </mat-tab>
+  </mat-tab-group>
+</div>

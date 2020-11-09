@@ -1,0 +1,55 @@
+<div fxLayout="row wrap" fxLayoutAlign="center start">
+  <div fxFlex.gt-sm="30" fxFlex="100">
+    <mat-card class="pa-0">
+      <mat-tab-group >
+        <mat-tab>
+          <ng-template class = "codenameName" matTabLabel>{{codenameName}}</ng-template>
+            <mat-card-content class="pa-1">
+              <form fxLayout="column" [formGroup]="codenameForm">
+
+                <mat-form-field class="mb-1">
+                  <input matInput placeholder="コード" [readonly]="updateFlg" [ngClass]="{'readonly':updateFlg}" formControlName="code" required>
+                    <div *ngIf="codenameForm.controls['code'].invalid && (codenameForm.controls['code'].touched || codenameForm.controls['code'].dirty)">
+                      <small *ngIf="codenameForm.controls['code'].hasError('required')" class="mat-text-warn">{{msgRequid}}</small>
+                      <small *ngIf="codenameForm.controls['code'].hasError('maxlength')" class="mat-text-warn">{{msgMaxLengthCode}}</small>
+                      <small *ngIf="codenameForm.controls['code'].hasError('pattern')" class="mat-text-warn">{{msgPatternNumber}}</small>
+                    </div>
+                </mat-form-field>
+
+                <mat-form-field class="mb-1">
+                  <input matInput placeholder="名称" formControlName="codeName" required>
+                  <div *ngIf="codenameForm.controls['codeName'].invalid && (codenameForm.controls['codeName'].touched || codenameForm.controls['codeName'].dirty)">
+                    <small *ngIf="codenameForm.controls['codeName'].hasError('required')" class="mat-text-warn">{{msgRequid}}</small>
+                    <small *ngIf="codenameForm.controls['codeName'].hasError('maxlength')" class="mat-text-warn">{{msgMaxLengthCodeName}}</small>
+                  </div>
+                </mat-form-field>
+
+                <mat-form-field class="mb-1" *ngIf="checkRoomType()">
+                  <mat-select placeholder="部屋タイプ区分" formControlName="codeValue" required>
+                    <mat-option *ngFor="let op of roomtypeDivisions" [value]="op.code">{{ op.codeName }}</mat-option>
+                  </mat-select>
+                  <div *ngIf="codenameForm.controls['codeValue'].invalid && (codenameForm.controls['codeValue'].touched || codenameForm.controls['codeValue'].dirty)">
+                    <small *ngIf="codenameForm.controls['codeValue'].hasError('required')" class="mat-text-warn">{{msgRequid}}</small>
+                  </div>
+                </mat-form-field>
+
+                <mat-form-field class="mb-1">
+                  <input matInput placeholder="表示順" type="number" formControlName="displayOrder" required>
+                  <div *ngIf="codenameForm.controls['displayOrder'].invalid && (codenameForm.controls['displayOrder'].touched || codenameForm.controls['displayOrder'].dirty)">
+                    <small *ngIf="codenameForm.controls['displayOrder'].hasError('required')" class="mat-text-warn">{{msgRequid}}</small>
+                    <small *ngIf="codenameForm.controls['displayOrder'].hasError('min')" class="mat-text-warn">{{msgMin1}}</small>
+                    <small *ngIf="codenameForm.controls['displayOrder'].hasError('max')" class="mat-text-warn">{{msgMax9999}}</small>
+                  </div>
+                </mat-form-field>
+              </form>
+
+            </mat-card-content>
+          </mat-tab>
+        </mat-tab-group>
+      <mat-card-actions class="pa-1">
+        <button mat-raised-button color="primary"(click)="onSubmit()"[disabled]="codenameForm.invalid">保存</button>
+        <button mat-raised-button color="accent" (click)="cancel()">中止</button>
+      </mat-card-actions>
+    </mat-card>
+  </div>
+</div>

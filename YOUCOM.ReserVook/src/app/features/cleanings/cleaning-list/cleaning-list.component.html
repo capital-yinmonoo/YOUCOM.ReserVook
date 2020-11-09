@@ -1,0 +1,144 @@
+<div class="cleaning-list">
+
+  <!-- ヘッダ -->
+  <ng-container *ngIf="!settingFlag">
+    <div class="grid-list" fxLayout="row" fxLayoutGap="5px" style=" margin-left: 20px;">
+
+      <div class="left" fxLayoutAlign="start center" fxFlex="grow">
+        <!-- Title -->
+        <span style="font-size: 24px;font-weight: bold;">クリーニングレポート</span>
+
+        <!-- DatePicker -->
+        <mat-form-field>
+          <input matInput style="text-align: center;font-size: 20px;" [matDatepicker]="picker" [(ngModel)]="inputDate" (dateInput)="getCleaningList()">
+          <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+          <mat-datepicker #picker></mat-datepicker>
+        </mat-form-field>
+
+        <!-- DatePickerBtn -->
+        <div class="con-float datetool-parent">
+          <datetool [CurrDate]="inputDate" (DateChange)="onChangeDate($event)"></datetool>
+        </div>
+
+        <!-- 表示設定ボタン -->
+        <div style="margin-left: 10px; width: 150px;">
+          <button mat-raised-button color="white" (click)="showSettings()">
+            <mat-icon >settings</mat-icon><span> 表示設定</span>
+          </button>
+        </div>
+
+        <!-- Message -->
+        <div *ngIf="this.lostFlg" style="font-weight: bold;">
+          状態、清掃指示、清掃備考の変更後は
+          「保存」ボタンをクリックして保存してください。
+        </div>
+
+      </div>
+
+      <div class="center" fxLayoutAlign="start center" fxFlex="0 0 100px"></div>
+
+      <div class="right" fxLayoutAlign="start center" fxFlex="0 0 100px">
+        <!-- QR -->
+        <!-- <div class="right" style="width: 300px;margin-top: -33px;margin-left:83.5%; ">
+          <a mat-raised-button color="primary" href="https://chart.googleapis.com/chart?cht=qr&chs=300x300&chl=https://www.youcom.co.jp/chart/infographics/docs/qr_codes?authuser=0&choe=UTF-8" >QRコード</a>
+          &nbsp;&nbsp;
+        </div> -->
+
+        <!-- 印刷 -->
+        <button mat-raised-button fxLayout="right" color="primary" (click)="print()">印刷</button>
+      </div>
+    </div>
+  </ng-container>
+
+  <div fxLayout="row">
+
+    <!-- 一覧 -->
+    <div fxLayout="column" [ngStyle]="viewStyle">
+      <ngx-datatable class="material selection-cell" [ngClass]="{fullscreenMas: !settingFlag}" [rows]="cleaningList" [columnMode]="'force'" [count]=""
+        [headerHeight]="50"  [scrollbarV]="true" [scrollbarH]="true" [footerHeight]="0" [rowHeight]="50" [scrollbarH]="true" [messages]="ngx_table_messages" >
+
+        <ngx-datatable-column *ngFor="let col of displayColumns" [name]="col.name" [width]= "col.width" [prop]="col.prop" >
+          <ng-template let-rowIndex="rowIndex" let-value="value" let-row="row" ngx-datatable-cell-template>
+
+            <ng-container *ngIf="col.prop !== 'smoking' && col.prop !== 'roomStatus' && col.prop !== 'register' && col.prop !== 'cleaningInstruction' && col.prop !== 'cleaningRemarks'">
+              {{value}}
+            </ng-container>
+
+            <ng-container *ngIf="col.prop == 'roomStatus'">
+              <div (contextmenu)="onStatusClick($event, row, rowIndex)">
+                {{value}}
+              </div>
+            </ng-container>
+
+            <ng-container *ngIf="col.prop !== 'smoking' && (col.prop == 'cleaningInstruction' ||  col.prop == 'cleaningRemarks') && row.roomStateDiv != null">
+              <mat-form-field>
+                <textarea class="textarea" maxlength="300" matInput type="text" (blur)="updateValue($event, col.prop, rowIndex)" [value]="value">{{ value }}</textarea>
+              </mat-form-field>
+            </ng-container>
+
+            <!-- 清掃備考の後に更新ボタンを追加 -->
+            <ng-container *ngIf="col.prop == 'register' && row.roomStateDiv != null">
+              <!-- アイコンが分かりにくいので保存ボタンに変更する -->
+              <!-- <button mat-icon-button aria-label="Update" (click)="updateRow(row)">
+                <mat-icon>publish</mat-icon>
+                &nbsp;&nbsp;
+              </button> -->
+              <button mat-flat-button color="primary" (click)="updateRow(row)">保存</button>
+            </ng-container>
+
+            <!-- 喫煙･禁煙はマークも出す -->
+            <ng-container *ngIf="col.prop === 'smoking'">
+              <span *ngIf="row?.smoking == CODENAMEDIVISION_SMOKING">
+                <mat-icon >smoking_rooms</mat-icon>{{row.smokingName}}
+              </span>
+              <span *ngIf="row?.smoking == CODENAMEDIVISION_NONSMOKING" style=" color: rgb(223, 74, 74);">
+                <mat-icon>smoke_free</mat-icon>{{row.smokingName}}
+              </span>
+            </ng-container>
+
+          </ng-template>
+        </ngx-datatable-column>
+      </ngx-datatable>
+    </div>
+
+    <!-- 表示設定 -->
+    <ng-container *ngIf="settingFlag">
+      <mat-card fxLayout="column">
+        <div fxLayout="row" fxLayoutAlign="start center" >
+          <h2 style="font-weight:bold;">表示設定</h2>
+        </div>
+
+        <div fxLayout="row" class="selected-column">
+          <div fxLayout="column">
+            <div *ngFor="let col of allcolumns" style="margin-bottom: 5px;">
+              <ng-container *ngIf="col.prop !== 'register'">
+                <input type="checkbox" [id]="col.name" (click)="checked(col)" [(ngModel)]="col.visible" />
+                <label style="font-size: medium;" [attr.for]="col.name">{{ col.name }}</label>
+              </ng-container>
+            </div>
+          </div>
+        </div>
+
+        <div style="height: 10px;"></div>
+        <div fxLayout="row" fxLayoutAlign="space-around" >
+          <button mat-raised-button color="primary" (click)="save()">保存</button>
+          &nbsp;
+          <button mat-raised-button color="accent" (click)="cancel()">キャンセル</button>
+        </div>
+      </mat-card>
+    </ng-container>
+  </div>
+
+</div>
+
+<!-- Status Menu -->
+<div class="menu" *ngIf="isDispStatusMenu" [style.top]="statusMenuTopPx" [style.left]="statusMenuLeftPx">
+
+  <div fxLayout="row">
+    <div class="menu-group">
+      <button matSuffix mat-stroked-button *ngFor="let btn of statusButton">
+        <div class="menu-item" (click)="onStatusMenuClick(btn.key)">{{btn.text}}</div>
+      </button>
+    </div>
+  </div>
+</div>

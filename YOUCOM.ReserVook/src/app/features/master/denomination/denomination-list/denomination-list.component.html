@@ -1,0 +1,47 @@
+<mat-toolbar-row  style="margin-top: 5px;" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="10px">
+  <span style="font-size: 24px;font-weight:bold;">金種マスタ</span>
+  </mat-toolbar-row>
+  <ngx-datatable class="material fullscreenMas" [columnMode]="'force'" [headerHeight]="50" [footerHeight]="0"
+    [rowHeight]="50" [scrollbarV]="true" [scrollbarH]="true" [rows]="denominations" [messages]="ngx_table_messages">
+    <ngx-datatable-column>
+      <ng-template let-row="row" ngx-datatable-cell-template>
+        <a mat-icon-button [routerLink]="['../form/', row.denominationCode]">
+          <mat-icon>edit</mat-icon>
+        </a>
+        <button mat-icon-button aria-label="Delete" (click)="delete(row.denominationCode)">
+          <mat-icon>delete</mat-icon>
+        </button>
+      </ng-template>
+    </ngx-datatable-column>
+    <ngx-datatable-column name="金種コード" prop="denominationCode"></ngx-datatable-column>
+    <ngx-datatable-column name="正式名称" prop="denominationName"></ngx-datatable-column>
+    <ngx-datatable-column name="印刷用名称" prop="printName"></ngx-datatable-column>
+    <ngx-datatable-column name="領収区分" prop="receiptDiv">
+      <ng-template let-value="value" ngx-datatable-cell-template>
+        <div>{{ dispReceiptDiv(value) }}</div>
+      </ng-template>
+    </ngx-datatable-column>
+    <ngx-datatable-column name="表示順" prop="displayOrder">
+      <ng-template ngx-datatable-header-template>
+        <div style="text-align: right;">表示順</div>
+      </ng-template>
+      <ng-template let-value="value" ngx-datatable-cell-template>
+        <div style="text-align: right;">{{ value.toLocaleString() }}</div>
+      </ng-template>
+    </ngx-datatable-column>
+    <ngx-datatable-column name="作成者" prop ="creator"></ngx-datatable-column>
+    <ngx-datatable-column name="作成日" prop="cdt">
+      <ng-template let-value="value" ngx-datatable-cell-template>
+        {{value.substr(0,4) + '/' + value.substr(4,2) + '/' + value.substr(6,2) }}
+      </ng-template>
+    </ngx-datatable-column>
+    <ngx-datatable-column name="更新者" prop ="updator"></ngx-datatable-column>
+    <ngx-datatable-column name="更新日" prop="udt">
+      <ng-template let-value="value" ngx-datatable-cell-template>
+        {{value.substr(0,4) + '/' + value.substr(4,2) + '/' + value.substr(6,2) }}
+      </ng-template>
+    </ngx-datatable-column>
+  </ngx-datatable>
+  <a mat-fab [routerLink]="['../form/', '']" color="warn" class="mat-fab-bottom-right" style="z-index: 9;">
+    <mat-icon class="mat-24">add</mat-icon>
+  </a>

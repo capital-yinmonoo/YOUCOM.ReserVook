@@ -1,0 +1,53 @@
+<mat-toolbar-row  style="margin-top: 5px;" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="10px">
+  <span style="font-size: 24px;font-weight:bold;">会社グループマスタ</span>
+</mat-toolbar-row>
+
+<ngx-datatable class="material fullscreenMas"
+  [columnMode]="'force'"
+  [headerHeight]="50"
+  [footerHeight]="0"
+  [rowHeight]="50"
+  [scrollbarV]="true"
+  [scrollbarH]="true"
+  [rows]=" companyGroupList"
+  [messages]="ngx_table_messages">
+
+  <ngx-datatable-column>
+    <ng-template let-row="row" ngx-datatable-cell-template>
+      <a mat-icon-button [routerLink]="['../form/', row.companyGroupId]">
+        <mat-icon>edit</mat-icon>
+      </a>
+      <button mat-icon-button aria-label="Delete" (click)="onDelete(row.companyGroupId)">
+        <mat-icon>delete</mat-icon>
+      </button>
+    </ng-template>
+  </ngx-datatable-column>
+
+  <ngx-datatable-column name="会社グループID" prop="companyGroupId"></ngx-datatable-column>
+  <ngx-datatable-column name="会社グループ名" prop="companyGroupName"></ngx-datatable-column>
+
+  <ngx-datatable-column name="作成者" prop ="creator">
+    <ng-template let-column="column" let-sort="sortFn"  ngx-datatable-header-template>
+      <span (click)="sort()">作成者</span>
+    </ng-template>
+  </ngx-datatable-column>
+  <ngx-datatable-column name="作成日" prop="cdt">
+    <ng-template let-value="value" ngx-datatable-cell-template>
+      {{value.substring(0, 4) + '/' + value.substring(4, 6) + '/' + value.substring(6, 8) }}
+    </ng-template>
+  </ngx-datatable-column>
+  <ngx-datatable-column name="更新者" prop ="updator">
+    <ng-template let-column="column" let-sort="sortFn"  ngx-datatable-header-template>
+      <span (click)="sort()">更新者</span>
+    </ng-template>
+  </ngx-datatable-column>
+  <ngx-datatable-column name="更新日" prop="udt">
+    <ng-template let-value="value" ngx-datatable-cell-template>
+      {{value.substring(0, 4) + '/' + value.substring(4, 6) + '/' + value.substring(6, 8) }}
+    </ng-template>
+  </ngx-datatable-column>
+</ngx-datatable>
+
+<a mat-fab [routerLink]="['../form/', '']" color="warn" class="mat-fab-bottom-right" style="z-index: 9;">
+  <mat-icon class="mat-24">add</mat-icon>
+</a>

@@ -1,0 +1,35 @@
+<mat-toolbar-row  style="margin-top: 5px;" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="10px">
+  <span style="font-size: 24px;font-weight:bold;">WEB連携 - 基本マスタ</span>
+</mat-toolbar-row>
+<ngx-datatable class="material fullscreenMas" [columnMode]="'force'" [headerHeight]="50" [footerHeight]="0"
+  [rowHeight]="50" [scrollbarV]="true" [scrollbarH]="true" [rows]="sitecontrollers" [messages]="ngx_table_messages">
+  <ngx-datatable-column>
+    <ng-template let-row="row" ngx-datatable-cell-template>
+      <a mat-icon-button [routerLink]="['../form/', row.scCd]">
+        <mat-icon>edit</mat-icon>
+      </a>
+    </ng-template>
+  </ngx-datatable-column>
+  <ngx-datatable-column name="サイトコントローラー名" prop="cdName"></ngx-datatable-column>
+  <ngx-datatable-column name="利用フラグ" prop="dispScUseFlg"></ngx-datatable-column>
+  <ngx-datatable-column name="システムID" prop="scSystemId"></ngx-datatable-column>
+  <ngx-datatable-column name="接続ユーザーID" prop="scUsrId"></ngx-datatable-column>
+  <ngx-datatable-column name="接続パスワード" prop="scUsrPassword"></ngx-datatable-column>
+  <ngx-datatable-column name="新規電文" prop ="dispScNewRcvFlg"></ngx-datatable-column>
+  <ngx-datatable-column name="取消電文" prop ="dispScCancellationRcvFlg"></ngx-datatable-column>
+  <ngx-datatable-column name="予約受信URL" prop ="scReservationRcvUrl"></ngx-datatable-column>
+  <ngx-datatable-column name="予約受信完了通知URL" prop ="scReservationRcvCompUrl"></ngx-datatable-column>
+  <ngx-datatable-column name="作成者" prop ="createClerk"></ngx-datatable-column>
+  <ngx-datatable-column name="作成日" prop="createDatetime">
+    <ng-template let-value="value" ngx-datatable-cell-template>
+      {{value.substr(0,4) + '/' + value.substr(4,2) + '/' + value.substr(6,2) }}
+    </ng-template>
+  </ngx-datatable-column>
+  <ngx-datatable-column name="更新者" prop ="updateClerk"></ngx-datatable-column>
+  <ngx-datatable-column name="更新日" prop="updateDatetime">
+    <ng-template let-value="value" ngx-datatable-cell-template>
+      {{value.substr(0,4) + '/' + value.substr(4,2) + '/' + value.substr(6,2) }}
+    </ng-template>
+  </ngx-datatable-column>
+</ngx-datatable>
+

@@ -1,0 +1,96 @@
+<div id="container">
+
+  <!-- ヘッダ部 -->
+  <div id="search">
+    <div class="left" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="5px" style=" margin-left: 20px;">
+
+      <!-- Title -->
+      <span style="font-size: 24px;font-weight: bold;">連泊状況</span>
+
+      <!-- DatePicker -->
+      <mat-form-field>
+        <input matInput style="text-align: center;font-size: 20px;" [matDatepicker]="picker" [(ngModel)]="inputDate" (dateInput)="getData()">
+        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+      </mat-form-field>
+
+      <!-- DatePickerBtn -->
+      <div class="con-float datetool-parent">
+        <datetool [CurrDate]="inputDate" (DateChange)="onChangeDate($event)"></datetool>
+      </div>
+
+      <!-- SelectDisplayDays -->
+      <div class="con-float">
+        <mat-form-field class="con-dropdown">
+          <span matPrefix class="Prefix">表示日数:</span>
+          <mat-select #matSelect [(value)]="currentDays" (selectionChange)="optionChange()">
+            <mat-option *ngFor="let date of dateArr" [value]="date.value">
+              {{date.name}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <!-- Check -->
+      <div class="con-float con-checkbox">
+        <mat-checkbox MatFormFieldControl [(ngModel)]="roomTypeInvisible" (change)="hideRoomTypeColumn()">部屋タイプを表示しない</mat-checkbox>
+      </div>
+
+    </div>
+  </div>
+
+  <div id="table">
+
+    <div id="table-container" class="table-container">
+      <table mat-table [dataSource]="data" class="mat-elevation-z8">
+
+        <!-- columns -->
+        <ng-container matColumnDef="no" style="width: auto;">
+          <th mat-header-cell *matHeaderCellDef> {{roomsHeaderName[0]}} </th>
+          <td id="" mat-cell *matCellDef="let element">
+            {{element.roomNo}}
+          </td>
+        </ng-container>
+        <ng-container matColumnDef="name" style="width: auto;">
+          <th mat-header-cell *matHeaderCellDef> {{roomsHeaderName[1]}} </th>
+          <td id="" mat-cell *matCellDef="let element">
+            {{element.roomName}}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="type" style="width: auto;">
+          <th mat-header-cell *matHeaderCellDef> {{roomsHeaderName[2]}} </th>
+          <td id="" mat-cell *matCellDef="let element">
+            {{element.roomTypeName}}
+          </td>
+        </ng-container>
+
+
+        <ng-container [matColumnDef]="column" *ngFor="let column of dateHeader; let i = index">
+
+            <th mat-header-cell *matHeaderCellDef> {{dateHeaderName[i]}} </th>
+            <td id="std1" mat-cell *matCellDef="let element"
+                [ngClass]="{selected: selected(element, i)}" [attr.available]="selected(element, i) ? '0':'1'">
+                <div (contextmenu)="onAssignRoomDateClick($event, element, i)">
+                <span *ngIf="selected(element, i)">{{element.assignList[i].reserveNo}}</span>
+              </div>
+
+              </td>
+        </ng-container>
+
+
+        <tr mat-header-row *matHeaderRowDef="displayHeaderColumn; sticky: true"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayHeaderColumn;"></tr>
+      </table>
+    </div>
+
+    <div class="menu" *ngIf="menuDisplay" [style.top]="menuTop" [style.left]="menuLeft">
+      <div class="menu-group">
+        <div class="menu-item" *ngIf="menuNewRsv" id="btnNewReserve">予約登録</div>
+        <div class="menu-item" *ngIf="menuUpdateRsv" id="btnUpdateReserve">予約編集</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+

@@ -1,0 +1,150 @@
+  <div class="confirmincome">
+    <div class="grid-list">
+      <div class="left" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="5px" style="margin-top:-10px;margin-left: 20px;">
+        <span style="font-size: 24px;font-weight:bold;">入金点検</span>
+        <mat-form-field>
+          <input matInput #ref  style="text-align: center;font-size: 20px;"  [matDatepicker]="picker" [(ngModel)]="inputDate"  (dateInput)="refillDate(inputDate)">
+          <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+          <mat-datepicker #picker></mat-datepicker>
+        </mat-form-field>
+        <div class="con-float datetool-parent">
+          <datetool [CurrDate]="inputDate" (DateChange)="getChangeDate($event)"></datetool>
+        </div>
+      </div>
+      <div class="right">
+        <button mat-raised-button color="primary" (click) = "csvExport()" >CSV出力</button>
+      </div>
+    </div>
+  </div>
+
+  <div fxLayout="row wrap" fxLayoutAlign="center start">
+    <div fxFlex.gt-sm="100" fxFlex="100">
+    <ngx-datatable class="material" [columnMode]="'force'" [headerHeight]="50" [footerHeight]="0"
+    [rowHeight]="50" [scrollbarV]="false" [scrollbarH]="false" [rows]="confirmIncomeList" [messages]="ngx_table_messages">
+      <ngx-datatable-column name="予約番号" [flexGrow]="1" prop="reserveNo">
+        <ng-template ngx-datatable-header-template>
+          <div>予約番号</div>
+        </ng-template>
+        <ng-template let-value="value" ngx-datatable-cell-template>
+          <!-- <div style="width:100%;text-align:left;">{{value }}</div> -->
+          <a class="nav-link" style="color: #0000ee;" (click)="onClickReserveNo(value)">
+            {{ value }}
+          </a>
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column name="利用者名" [flexGrow]="5" prop="guestName">
+        <ng-template ngx-datatable-header-template>
+          <div>利用者名</div>
+        </ng-template>
+        <ng-template let-value="value" ngx-datatable-cell-template>
+          <div style="width:100%;text-align:left;">{{value }}</div>
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column name="泊数" [flexGrow]="1" prop="stayDays">
+        <ng-template ngx-datatable-header-template>
+          <div>泊数</div>
+        </ng-template>
+        <ng-template let-value="value" ngx-datatable-cell-template>
+          <div style="width:100%;text-align:left;">{{value }}</div>
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column name="前日迄売上" [flexGrow]="2" prop="dayBeforeSales">
+        <ng-template ngx-datatable-header-template>
+          <div style="text-align: right;">前日迄売上</div>
+        </ng-template>
+        <ng-template let-value="value" ngx-datatable-cell-template>
+          <div style="width:100%;text-align:right;" class="numeric" >{{value | number}}</div>
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column name="当日売上" [flexGrow]="2" prop="todaySales">
+        <ng-template ngx-datatable-header-template>
+          <div style="text-align: right;">当日売上</div>
+        </ng-template>
+        <ng-template let-value="value" ngx-datatable-cell-template>
+          <div style="width:100%;text-align:right;" class="numeric" >{{value | number}}</div>
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column name="前日迄入金" [flexGrow]="2" prop="dayBeforeDeposit">
+        <ng-template ngx-datatable-header-template>
+          <div style="text-align: right;">前日迄入金</div>
+        </ng-template>
+        <ng-template let-value="value" ngx-datatable-cell-template>
+          <div style="width:100%;text-align:right;" class="numeric" >{{value | number}}</div>
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column name="当日入金金種" [flexGrow]="2" prop="denominationName">
+        <ng-template ngx-datatable-header-template>
+          <div>当日入金金種</div>
+        </ng-template>
+        <ng-template let-value="value" ngx-datatable-cell-template>
+          <div style="width:100%;text-align:left;">{{value }}</div>
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column name="当日入金金額" [flexGrow]="2" prop="amountPrice">
+        <ng-template ngx-datatable-header-template>
+          <div style="text-align: right;">当日入金金額</div>
+        </ng-template>
+        <ng-template let-value="value" ngx-datatable-cell-template>
+          <div style="width:100%;text-align:right;" class="numeric" >{{value | number}}</div>
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column name="残高" [flexGrow]="2" prop="balance">
+        <ng-template ngx-datatable-header-template>
+          <div style="text-align: right;">残高</div>
+        </ng-template>
+        <ng-template let-value="value" ngx-datatable-cell-template>
+          <div style="width:100%;text-align:right;" class="numeric" >{{value | number}}</div>
+        </ng-template>
+      </ngx-datatable-column>
+    </ngx-datatable>
+
+    <ngx-datatable class="material" [columnMode]="'flex'" [headerHeight]="0" [footerHeight]="0"
+    [rowHeight]="50" [scrollbarV]="false" [scrollbarH]="false" [rows]="confirmIncomeListTotal" [messages]="ngx_table_messages">
+      <ngx-datatable-column name="予約番号" [flexGrow]="1" prop="reserveNo">
+        <ng-template let-value="value" ngx-datatable-cell-template>
+          <div style="width:100%;text-align:left;">{{value }}</div>
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column name="利用者名" [flexGrow]="5" prop="guestName">
+        <ng-template let-value="value" ngx-datatable-cell-template>
+          <div style="width:100%;text-align:left;">{{value }}</div>
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column name="泊数" [flexGrow]="1" prop="stayDays">
+        <ng-template let-value="value" ngx-datatable-cell-template>
+          <div style="width:100%;text-align:left;">{{value }}</div>
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column name="前日迄売上" [flexGrow]="2" prop="dayBeforeSales">
+        <ng-template let-value="value" ngx-datatable-cell-template>
+          <div style="width:100%;text-align:right;" class="numeric" >{{value | number}}</div>
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column name="当日売上" [flexGrow]="2" prop="todaySales">
+        <ng-template let-value="value" ngx-datatable-cell-template>
+          <div style="width:100%;text-align:right;" class="numeric" >{{value | number}}</div>
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column name="前日迄入金" [flexGrow]="2" prop="dayBeforeDeposit">
+        <ng-template let-value="value" ngx-datatable-cell-template>
+          <div style="width:100%;text-align:right;" class="numeric" >{{value | number}}</div>
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column name="当日入金金種" [flexGrow]="2" prop="denominationName">
+        <ng-template let-value="value" ngx-datatable-cell-template>
+          <div style="width:100%;text-align:left;">{{value }}</div>
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column name="当日入金金額" [flexGrow]="2" prop="amountPrice">
+        <ng-template let-value="value" ngx-datatable-cell-template>
+          <div style="width:100%;text-align:right;" class="numeric" >{{value | number}}</div>
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column name="残高" [flexGrow]="2" prop="balance">
+        <ng-template let-value="value" ngx-datatable-cell-template>
+          <div style="width:100%;text-align:right;" class="numeric" >{{value | number}}</div>
+        </ng-template>
+      </ngx-datatable-column>
+    </ngx-datatable>
+  </div>
+</div>

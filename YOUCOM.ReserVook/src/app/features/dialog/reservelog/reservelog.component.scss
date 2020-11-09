@@ -1,0 +1,20 @@
+::ng-deep .cdk-overlay-container {
+  /* Do you changes here */
+  position: fixed;
+  z-index: 9999;
+}
+
+.Title {
+  font-weight: bold !important;
+}
+
+ngx-datatable{
+  &.list {
+    min-height: 150px;
+    height: 60vh !important;
+  }
+}
+
+::ng-deep .row-color {
+  background-color: rgb(195, 240, 255);
+}

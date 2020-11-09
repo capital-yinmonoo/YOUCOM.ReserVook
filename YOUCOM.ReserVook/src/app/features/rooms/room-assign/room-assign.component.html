@@ -1,0 +1,178 @@
+<!-- ヘッダ部 -->
+<div>
+  <div class="left" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="5px" style=" margin-left: 20px;">
+    <span style="font-size: 24px; font-weight: bold;">アサイン状況</span>
+
+    <!-- DatePicker -->
+    <mat-form-field style="width: 180px; margin-left: 5px;">
+      <input matInput style="text-align: center;font-size: 20px;" [matDatepicker]="picker" readonly="readonly" [(ngModel)]="inputDate" (dateInput)="getDailyData()">
+      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-datepicker #picker></mat-datepicker>
+    </mat-form-field>
+
+    <!-- DatePickerBtn -->
+    <span class="datetool-parent">
+      <datetool [CurrDate]="inputDate" (DateChange)="onChangeDate($event)"></datetool>
+    </span>
+
+    <button mat-icon-button (click)="getDailyData()">
+     <mat-icon>refresh</mat-icon>
+    </button>
+
+    <!-- RoomStatusNote -->
+    <span *ngFor="let status of ROOM_STATUS_LIST;">
+      <span [ngStyle]="{'background-color': status.color}">&nbsp;&nbsp;{{status.text}}&nbsp;&nbsp;</span>
+    </span>
+
+  </div>
+
+  <div fxLayout="row" fxLayoutAlign="start center">
+    <!-- ViewMode -->
+    <span style="margin-left: 15px;">表示切替：&nbsp;</span>
+    <div class="display_Change">
+      <button mat-raised-button color={{viewCOFlgColor}} (click)="getCOData()">
+        <span>チェックアウト予定</span>
+      </button>
+      <button mat-raised-button *ngIf="useCSFlg" color={{viewCSFlgColor}} (click)="getCleaningData()">
+        <span>清掃状態</span>
+      </button>
+    </div>
+
+    <!-- RoomsCounter -->
+    <span fxFlexOffset="auto" *ngIf="!(viewCOFlg || viewCSFlg)">
+      <span style="text-align: right; float: right;">
+        部屋数: {{totalRoomCount}} &nbsp;&nbsp;
+        利用部屋数:{{usedRoomCount}} &nbsp;&nbsp;
+        稼働率:{{usedRate}}% &nbsp;&nbsp;
+        利用人数:{{usePersonCount}} &nbsp;
+      </span>
+    </span>
+  </div>
+</div>
+
+<!-- 部屋テーブル -->
+<div id="rooms-list">
+  <div class="left">
+    <div class="rows" *ngFor="let rows of roomsTable;">
+      <div class="rooms" *ngFor="let room of rows;" dragula="{{this.DRAGDROP_ROOMCHANGE}}">
+        <div (contextmenu)="onRoomClick($event, room)">
+
+          <!-- マスタに存在しない部屋パネル位置 -->
+          <div *ngIf="room.roomNo == null">
+            <div> </div>
+            <div> </div>
+            <div> </div>
+            <div> </div>
+          </div>
+
+          <!-- 存在する部屋パネル位置 空室以外 -->
+          <div *ngIf="room.roomNo != null && room.panel.key != ROOMSTATUS_EMPTY" class="dragwrapper" [attr.roomNo]="room.roomNo">
+            <div class="roominfo" [ngStyle]="{'background-color':room.panel.color}">
+              <div style="font-size: 10pt;">{{room.roomName.substring(0, 9)}}</div>
+              <span style="font-size: 8pt;">{{room.roomTypeName.substring(0, 6)}}&nbsp;
+                <mat-icon *ngIf="room.smokingDivision == CODENAMEDIVISION_SMOKING" style="font-size: 16pt;">smoking_rooms</mat-icon>
+                <mat-icon *ngIf="room.smokingDivision == CODENAMEDIVISION_NONSMOKING" style="font-size: 16pt; color: rgb(223, 74, 74);">smoke_free</mat-icon>
+                <mat-icon *ngIf="room.hollowStateClass == HOLLOWSTATUS_HOLLOW" matTooltip="中抜け予約があります。予約番号:{{room.reserveNo}}" style="font-size: 16pt;">shuffle</mat-icon>
+                <mat-icon *ngIf="room.hideHollowStateClass == HOLLOWSTATUS_HOLLOW" matTooltip="中抜け予約があります。予約番号:{{room.hideReserveNo}}" style="font-size: 16pt;">shuffle</mat-icon>
+              </span>
+             <div>
+                <div *ngIf="!viewCSFlg">
+                  <div style="font-size: 8pt;">予約番号:{{room.reserveNo}}</div>
+                  <div style="font-size: 8pt; overflow: hidden;">{{room.guestName}}</div>
+                </div>
+                <div *ngIf="viewCSFlg">
+                  <div *ngIf="room.cleaningInstruction.length > 11" style="font-size: 8pt;">{{room.cleaningInstruction.substring(0, 10) + '..'}}</div>
+                  <div *ngIf="room.cleaningInstruction.length <= 11" style="font-size: 8pt;">{{room.cleaningInstruction}}</div>
+                  <div *ngIf="room.cleaningRemarks.length > 11" style="font-size: 8pt;">{{room.cleaningRemarks.substring(0, 10) + '..'}}</div>
+                  <div *ngIf="room.cleaningRemarks.length <= 11" style="font-size: 8pt;">{{room.cleaningRemarks}}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- 存在する部屋パネル位置 空室 -->
+          <div *ngIf="room.roomNo != null && room.panel.key == ROOMSTATUS_EMPTY" class="dragwrapper" dragula="{{this.DRAGDROP_ASSIGN}}" [attr.roomNo]="room.roomNo">
+            <div class="roominfo" [ngStyle]="{'background-color':room.panel.color}">
+              <div style="font-size: 10pt;">{{room.roomName.substring(0, 9)}}</div>
+              <span style="font-size: 8pt;">{{room.roomTypeName.substring(0, 6)}}&nbsp;
+                <mat-icon *ngIf="room.smokingDivision == CODENAMEDIVISION_SMOKING" style="font-size: 16pt;">smoking_rooms</mat-icon>
+                <mat-icon *ngIf="room.smokingDivision == CODENAMEDIVISION_NONSMOKING" style="font-size: 16pt; color: rgb(223, 74, 74);">smoke_free</mat-icon>
+                <mat-icon *ngIf="room.hollowStateClass == HOLLOWSTATUS_HOLLOW" matTooltip="中抜け予約があります。予約番号:{{room.reserveNo}}" style="font-size: 16pt;">shuffle</mat-icon>
+              </span>
+              <div>
+                <div style="font-size: 8pt;">&nbsp;</div>
+                <div style="font-size: 8pt;">&nbsp;</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+</div>
+
+<!-- 未アサイン一覧 -->
+<div class="right" *ngIf="!(viewCOFlg || viewCSFlg)">
+  <mat-tab-group style="float: right;">
+    <mat-tab label="未アサイン一覧">
+      <div class="notAssignList" dragula="{{this.DRAGDROP_ASSIGN}}">
+        <div *ngFor="let notAssign of notAssignList"
+          [attr.notAssign-reserveNo]="notAssign.reserveNo"
+          [attr.notAssign-orgRoomtypeCode]="notAssign.orgRoomtypeCode"
+          [attr.notAssign-routeSEQ]="notAssign.routeSEQ">
+
+          <div class="button" (contextmenu)="onNotAssignClick($event, notAssign)">
+            <div>予約番号:
+              <a [routerLink]="'/company/reserve/' + notAssign.reserveNo" style="color: #0000ee;" matTooltip="予約編集に移動します" >{{notAssign.reserveNo}}</a>
+            </div>
+            <div class="breakall">利用者: {{notAssign.guestName}}</div>
+            <div>
+              <span *ngIf="notAssign.orgRoomtypeCode==UNSPECIFIED">
+                <span matTooltip="部屋タイプが未指定です。予約編集で希望部屋タイプを指定してください。">
+                  <mat-icon style="font-size: 15pt; color: red;">error</mat-icon>
+                </span>
+              </span>
+
+              <span *ngIf="notAssign.orgRoomtypeCode!=UNSPECIFIED"> {{notAssign.roomTypeName.substring(0, 18)}}&nbsp;</span>
+              <span *ngIf="!(notAssign.stayDays == undefined || notAssign.stayDays == null)"> 泊数:{{notAssign.stayDays}} &nbsp;</span>
+              <span *ngIf="!(notAssign.memberAdult == undefined || notAssign.memberAdult == null)"> 大人:{{notAssign.memberAdult}}名&nbsp;</span>
+              <span *ngIf="!(notAssign.memberChild == undefined || notAssign.memberChild == null)"> 小人:{{notAssign.memberChild}}名&nbsp;</span>
+            </div>
+            <div>利用日:
+              <a [routerLink]="'/company/rooms'" [queryParams]="{ date: notAssign.arrivalDate }" (click)="onClickDate(notAssign.arrivalDate)">
+                {{notAssign.arrivalDate.substring(0, 4) + '/' + notAssign.arrivalDate.substring(4, 6) + '/' + notAssign.arrivalDate.substring(6, 8) }}
+              </a>
+              ～
+              <span>
+                {{notAssign.departureDate.substring(0, 4) + '/' + notAssign.departureDate.substring(4, 6) + '/' + notAssign.departureDate.substring(6, 8) }}
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </mat-tab>
+  </mat-tab-group>
+</div>
+
+<!-- Room Menu -->
+<div class="menu" *ngIf="isDispRoomMenu" [style.top]="roomMenuTopPx" [style.left]="roomMenuLeftPx" [style.width]="'auto'">
+
+  <div fxLayout="row">
+    <div class="menu-group">
+      <button matSuffix mat-stroked-button *ngFor="let btn of selectRoomInfo.menuButton">
+        <div class="menu-item" (click)="onRoomMenuClick(btn.key)">
+          <!-- TODO:アイコン表示されないものがあるので一旦コメントアウト -->
+          <!-- <mat-icon style="font-size: 15pt;">{{btn.icon}}</mat-icon> -->
+          &nbsp;{{btn.text}}
+        </div>
+      </button>
+    </div>
+
+    <div class="menu-roomdetail" *ngIf="isDispReserveInfo">
+      <div class="breakall">利用者名：{{selectRoomInfo.guestName}}</div>
+      <div>泊数: {{selectRoomInfo.stayDays}}</div>
+      <div>ご利用日：{{selectRoomInfo.arrivalDate.substring(0, 4) + '/' + selectRoomInfo.arrivalDate.substring(4 ,6) + '/' + selectRoomInfo.arrivalDate.substring(6, 8) }} ～
+        {{selectRoomInfo.departureDate.substring(0, 4) + '/' + selectRoomInfo.departureDate.substring(4 ,6) + '/' + selectRoomInfo.departureDate.substring(6, 8) }}</div>
+      <div>大人：{{selectRoomInfo.memberAdult}}名 &nbsp; 小人：{{selectRoomInfo.memberChild}}名</div>
+    </div>
+  </div>
+</div>

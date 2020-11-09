@@ -1,0 +1,33 @@
+//タイトルヘッダー
+.header{
+  margin: 0 auto;
+  padding: 0 auto;
+  height: 40px;
+  background-color: white;
+  position: fixed;
+  z-index: 99;
+}
+
+.header .btn {
+  padding: 0 14px;
+  margin-right: 50px;
+}
+
+.header .spacer {
+  flex: 1 1 auto;
+}
+
+//明細プレビュー
+div.billprev{
+  margin-left: 7%;
+  margin-top: 40px;
+  position: absolute;
+  left: 2%;
+}
+
+//条件指定部
+div.billcondition{
+  margin-top: 40px;
+  position: fixed;
+  right:3%;
+}

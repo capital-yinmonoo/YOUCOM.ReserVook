@@ -1,0 +1,40 @@
+<div class="session mat-indigo">
+  <div class="session-content">
+    <div class="session-wrapper">
+      <mat-card style="max-height: 580px; min-height: 100%">
+        <mat-card-content>
+          <form fxLayout="column" [formGroup]="form" (ngSubmit)="onSubmit()">
+            <div fxLayout="column" class="text-xs-center pb-1">
+              <div id="logo"  fxLayout="wrap" fxLayoutAlign="center center"style="height: 35vh;" >
+                <img class="image-center" src="assets/images/favicon.png" alt=""/>
+              </div>
+              <div fxLayoutAlign="center bottom"><p class="mat-text-muted">ユーザーログイン</p></div>
+            </div>
+            <div fxLayout="column" fxLayoutAlign="space-around">
+              <div class="pb-1">
+                <mat-form-field style="width: 100%">
+                  <input matInput placeholder="メールアドレス" formControlName="Email" type="email">
+                </mat-form-field>
+                <div><small *ngIf="form.controls['Email'].hasError('required') && form.controls['Email'].touched" class="mat-text-warn">メールアドレスを入力してください。</small></div>
+                <div><small *ngIf="form.controls['Email'].hasError('email') && form.controls['Email'].touched" class="mat-text-warn">{{msgValidityEmail}}</small></div>
+                <div><small *ngIf="form.controls['Email'].hasError('pattern') && form.controls['Email'].touched" class="mat-text-warn">{{msgPatternEmail}}</small></div>
+              </div>
+              <div class="pb-1">
+                <mat-form-field style="width: 100%">
+                  <input matInput type="Password" placeholder="パスワード" formControlName="Password">
+                </mat-form-field>
+                <small *ngIf="form.controls['Password'].hasError('required') && form.controls['Password'].touched"
+                  class="mat-text-warn">パスワードを入力してください。</small>
+              </div>
+              <!--TODO: Omit -->
+              <!-- <div class="pb-1">
+                <mat-checkbox>登録情報を保存して、ログインしてください</mat-checkbox>
+              </div> -->
+              <button mat-raised-button color="primary" type="submit" [disabled]="!form.valid">ログイン</button>
+            </div>
+          </form>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </div>
+</div>

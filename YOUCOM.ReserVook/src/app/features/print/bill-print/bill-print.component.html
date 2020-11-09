@@ -1,0 +1,273 @@
+<section class="sheet" *ngFor="let bill of billInfoList">
+  <!--ヘッダタイトル-->
+  <div class="row_header">
+    <h1 class="text-center">{{bill.BillHeader.TitleMain}}</h1>
+    <div class="col_1" style="text-align:left">発行日:{{bill.BillHeader.IssueDate}}</div>
+    <div class="col_2" style="text-align:center">{{bill.BillHeader.TitleSub}}</div>
+    <div class="col_3" style="text-align:right">No.{{bill.BillHeader.BillNo}}　Page.{{bill.BillHeader.Pages}}</div>
+  </div>
+
+  <!-- ヘッダ 予約基本・ホテル情報 -->
+  <div class="row_header_info">
+    <!-- ヘッダ予約基本情報 -->
+    <div class="col_1">
+      <table class="underline">
+        <!-- お名前 -->
+        <tbody>
+          <tr>
+            <ng-container [ngSwitch]="judgeSetBillName(bill.BillHeader.Name)">
+              <td *ngSwitchCase="0" class="HeaderBillName" style="font-size: 120%;">{{bill.BillHeader.Name}}</td>
+              <td *ngSwitchCase="1" class="HeaderBillName" style="font-size: 90%;">{{bill.BillHeader.Name}}</td>
+              <td *ngSwitchCase="2" class="HeaderBillName" style="font-size: 80%;">{{bill.BillHeader.Name}}</td>
+              <td *ngSwitchCase="3" class="HeaderBillName" style="font-size: 70%;">{{bill.BillHeader.Name}}</td>
+              <td *ngSwitchCase="4" class="HeaderBillName" style="font-size: 60%; letter-spacing:-0.2em">{{bill.BillHeader.Name}}</td>
+              <td *ngSwitchCase="5" class="HeaderBillName" style="font-size: 40%; letter-spacing:-0.4em">{{bill.BillHeader.Name}}</td>
+            </ng-container>
+            <!-- <td style="width: 115mm; text-align: left; font-size: 13.5pt; font-weight: bolder;">{{bill.BillHeader.Name}}</td> -->
+          </tr>
+        </tbody>
+      </table>
+      <div style="line-height: 0.5;">&nbsp;</div>
+
+      <!-- 部屋、利用日、泊数、人数 -->
+      <table class="basic">
+          <thead>
+              <tr>
+                  <th class="text-center">部屋(Room)</th>
+                  <th class="text-center">利用日(UseDate)</th>
+                  <th class="text-center">泊数(Nights)</th>
+                  <th class="text-center">人数(Persons)</th>
+              </tr>
+          </thead>
+          <tbody>
+              <tr >
+                  <td class="text-center">{{bill.BillHeader.RoomNo}}</td>
+                  <td class="text-left">{{bill.BillHeader.ArrivedDate}} ～ {{bill.BillHeader.DepartureDate}}</td>
+                  <td class="text-center" >{{bill.BillHeader.Nights}}</td>
+                  <td class="text-left">{{bill.BillHeader.Persons}}</td>
+              </tr>
+          </tbody>
+      </table>
+    </div>
+
+    <!-- 会社ロゴ -->
+    <div class="col_2">
+      <!-- ロゴデータ無し：会社マスタ情報 -->
+      <div *ngIf="logoData == null || logoData == ''" style="padding-left: 10px;">
+        <div>{{M_Company?.companyName.substring(0, 20)}}</div>
+        <div>
+          <div class="break" style="min-width: 230px; font-size: 10.5px;" >
+            <ng-container *ngIf="M_Company?.zipCode.length > 0" style="padding-right: 2px;">〒{{M_Company?.zipCode}}</ng-container>
+            {{M_Company?.address.substring(0, 65)}}
+          </div>
+        </div>
+        <div style="font-size: 10.5px;">
+          <ng-container *ngIf="M_Company?.phoneNo.length > 0">TEL: {{M_Company?.phoneNo}}</ng-container>
+        </div>
+
+        <!-- <div style="font-size: 10.5px;">
+          <ng-container *ngIf="M_Company?.zipCode.length > 0">〒 </ng-container>
+          {{M_Company?.zipCode.substring(0, 15)}}
+          <span> </span>
+          {{M_Company?.address.substring(0, 20)}}
+        </div>
+        <div style="font-size: 10.5px;" *ngIf="M_Company?.address.length > 20">
+          {{M_Company?.address.substring(20, 45)}}
+        </div>
+        <div style="font-size: 10.5px;" *ngIf="M_Company?.address.length > 45">
+          {{M_Company?.address.substring(45, 65)}}
+        </div>
+        <div style="font-size: 10.5px;">
+          <ng-container *ngIf="M_Company?.phoneNo.length > 0">TEL: </ng-container>
+          {{M_Company?.phoneNo}}
+        </div> -->
+      </div>
+
+      <!-- ロゴデータあり -->
+      <div *ngIf="!(logoData == null || logoData == '')">
+        <img [src]=logoData alt="" width="270" height="80">
+      </div>
+
+    </div>
+    <div class="clear-element"></div>
+  </div>
+
+  <!-- 明細 -->
+  <div class="row_details">
+    <table class="detail">
+      <thead>
+        <!-- 明細フッタ -->
+        <tr>
+          <th class="date">日付(Date)</th>
+          <th class="description">摘要(Description)</th>
+          <th class="price">単価(Price)</th>
+          <th class="qty">数量(Qty)</th>
+          <th class="charges">金額(Charges)</th>
+          <th class="paid">お支払(Paid)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- 明細行(16行) -->
+        <tr *ngFor="let detail of bill.BillDetails">
+          <td class="text-left">{{detail.UseDate}}</td>
+          <td class="text-left" style="text-align: left;">{{detail.ItemName}}</td>
+          <td>{{detail.UnitPrice}}</td>
+          <td>{{detail.Qty}}</td>
+          <td>{{detail.Charges}}</td>
+          <td>{{detail.Paid}}</td>
+        </tr>
+        <!-- 合計行 -->
+        <tr>
+          <th rowspan="1" colspan="4"> 合計(Total) </th>
+          <td>{{bill.BillFooter.TotalCharges}}</td>
+          <td>{{bill.BillFooter.TotalPaid}}</td>
+        </tr>
+        <!-- 請求金額 -->
+        <tr>
+          <th rowspan="1" colspan="4"> 請求金額(Balance Due) </th>
+          <td rowspan="1" colspan="2" style="font-size:large;">{{bill.BillFooter.BalanceDue}}</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- フッタ1 -->
+  <div class="row_fotter">
+    <!-- 注記など -->
+    <div class="col_1">
+      <div class="note">{{bill.BillFooter.Comment1}}</div>
+      <div class="note">{{bill.BillFooter.Comment2}}</div>
+      <div class="note">{{bill.BillFooter.Comment3}}</div>
+    </div>
+
+    <!-- 税率毎金額 -->
+    <div class="col_2">
+      <table class="tax">
+        <tbody>
+          <tr *ngFor="let tax of bill.TaxList" >
+            <div *ngIf="tax.TaxRate == ''"><td class="taxrate">&nbsp;</td></div>
+            <div *ngIf="tax.TaxRate != ''">
+              <td class="taxrate">{{tax.TaxRate}}%税込</td>
+              <td class="includeTaxAmount">{{tax.IncludeTaxAmount}}</td>
+              <td class="conTax">内消費税<span style="font-size: xx-small;">(CON.TAX)</span></td>
+              <td class="consumptionTax">{{tax.ConsumptionTax}}</td>
+            </div>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="clear-element"></div>
+  </div>
+
+  <!-- フッタ2 -->
+  <div class="row_fotter_2">
+    <!-- <div>【お振込先】</div>
+    <div style="font-size: 8.5pt;">{{bill.BillFooter.Account}}</div>
+    <div>&nbsp;</div> -->
+    <div style="font-size:larger;">ご署名</div>
+    <div class="customer_name">Signature</div>
+    <div style="height: 1em;"></div>
+    <div style="font-size:larger;">会社名</div>
+    <div class="firm">Firm</div>
+
+  </div>
+
+  <!-- 横線 -->
+  <hr>
+
+  <!-- 領収書 ヘッダ タイトル -->
+  <div class="row_receipt_header">
+    <h1 class="text-center">{{bill.Receipt.TitleMain}}</h1>
+    <div class="col_1" style="text-align: left">発行日:{{bill.Receipt.IssueDate}}</div>
+    <div class="col_2" style="text-align: center">{{bill.Receipt.TitleSub}}</div>
+    <div class="col_3" style="text-align: right">No.{{bill.Receipt.BillNo}}</div>
+  </div>
+
+  <!-- 領収書  -->
+  <div class="row_receipt_body">
+    <div class="col_1">
+      <!-- お名前 -->
+      <table class="underline">
+        <tbody>
+          <tr>
+            <ng-container [ngSwitch]="judgeSetBillName(bill.BillHeader.Name)">
+              <td *ngSwitchCase="0" class="ReceiptBillName" style="font-size: 120%;">{{bill.BillHeader.Name}}</td>
+              <td *ngSwitchCase="1" class="ReceiptBillName" style="font-size: 90%;">{{bill.BillHeader.Name}}</td>
+              <td *ngSwitchCase="2" class="ReceiptBillName" style="font-size: 80%;">{{bill.BillHeader.Name}}</td>
+              <td *ngSwitchCase="3" class="ReceiptBillName" style="font-size: 70%;">{{bill.BillHeader.Name}}</td>
+              <td *ngSwitchCase="4" class="ReceiptBillName" style="font-size: 60%; letter-spacing:-0.2em">{{bill.BillHeader.Name}}</td>
+              <td *ngSwitchCase="5" class="ReceiptBillName" style="font-size: 40%; letter-spacing:-0.4em">{{bill.BillHeader.Name}}</td>
+            </ng-container>
+          </tr>
+        </tbody>
+      </table>
+      <div style="line-height: 0.5;">&nbsp;</div>
+
+      <!-- 領収金額 -->
+      <h2 class="receipt">領収金額&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{bill.Receipt.TotalAmount}}</h2>
+
+      <!-- 但し書き -->
+      <div class="customer_name" style="font-size:larger;">但&nbsp;{{bill.Receipt.Proviso}}として</div>
+      <div>上記金額を正に受領いたしました。</div>
+      <div style="line-height:0.5em">&nbsp;</div>
+
+      <!-- 税率毎金額 -->
+      <table class="tax2">
+        <tbody>
+          <tr *ngFor="let tax of bill.TaxList" >
+            <div *ngIf="tax.TaxRate == ''"><td class="taxrate">&nbsp;</td></div>
+            <div *ngIf="tax.TaxRate != ''">
+              <td class="taxrate">{{tax.TaxRate}}%税込</td>
+              <td class="includeTaxAmount">{{tax.IncludeTaxAmount}}</td>
+              <td class="conTax">内消費税<span style="font-size: xx-small;">(CON.TAX)</span></td>
+              <td class="consumptionTax">{{tax.ConsumptionTax}}</td>
+            </div>
+          </tr>
+        </tbody>
+      </table>
+
+
+    </div>
+
+    <div class="col_2">
+      <!-- 印紙貼り付け欄 -->
+      <div class="stamp">
+        <div>&nbsp;</div>
+        <div>&nbsp;</div>
+        <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;印&nbsp;&nbsp;&nbsp;紙&nbsp;&nbsp;</div>
+        <div>&nbsp;</div>
+        <div>&nbsp;</div>
+      </div>
+    </div>
+
+    <div class="col_3">
+      <!-- ロゴデータ無し：会社マスタ情報 -->
+      <div class="company" *ngIf="logoData == null || logoData == ''">
+
+        <!-- <div style="font-size: 10px;">{{M_Company?.companyName.substring(0, 20)}}</div> -->
+        <div *ngIf="M_Company?.companyName.length < 16" style="font-size: 12px;">{{M_Company?.companyName.substring(0, 20)}}</div>
+        <div *ngIf="M_Company?.companyName.length > 16" style="font-size: 10px;">{{M_Company?.companyName.substring(0, 20)}}</div>
+
+        <div>
+          <div class="break" style="min-width: 210px; font-size: 10px;" >
+            <ng-container *ngIf="M_Company?.zipCode.length > 0" style="padding-right: 2px;">〒{{M_Company?.zipCode}}</ng-container>
+            {{M_Company?.address.substring(0, 65)}}
+          </div>
+        </div>
+        <div style="font-size: 10px;">
+          <ng-container *ngIf="M_Company?.phoneNo.length > 0">TEL: {{M_Company?.phoneNo}}</ng-container>
+        </div>
+      </div>
+
+      <!-- ロゴデータあり -->
+      <div *ngIf="!(logoData == null || logoData == '')">
+        <div>&nbsp;</div>
+        <div>&nbsp;</div>
+        <img [src]=logoData alt="" width="180" height="54">
+      </div>
+    </div>
+
+  </div>
+</section>
+

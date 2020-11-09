@@ -1,0 +1,362 @@
+<div id="title">
+  <div class="left" fxLayout="row wrap" fxLayoutAlign="start center" fxLayoutGap="10px" style="margin: 15px;">
+    <span style="font-size: 24px;font-weight: bold;">WEB予約 :  {{ webReserveInfo?.frDScRcvBase?.type }}</span>
+    <span style="font-size: 18px;">　［処理コード］: {{ webReserveInfo?.frDScRcvBase?.scProcessedCd }}</span>
+    <span style="font-size: 18px;">　［処理結果］: {{ webReserveInfo?.frDScRcvBase?.scProcessedMessage }}</span>
+  </div>
+</div>
+
+<div fxLay fxLayout="row wrap" fxLayoutAlign="center start">
+  <div id="reserve" fxFlex.gt-sm="100" fxFlex="100">
+    <div class="gridtitle">
+      <span style="font-size: 18px;font-weight: bold;">基本情報</span>
+    </div>
+    <mat-card class="mat-card-top pa-1">
+      <table fxLayout="row wrap">
+        <!-- 1行5列 -->
+
+        <!-- 1行目 -->
+        <tr fxLayout="row wrap">
+          <td class="baseitem">［SEQ］: {{ webReserveInfo?.frDScRcvBase?.scRcvSeq }}</td>
+          <td class="baseitem" colspan="4">［予約番号］: {{ webReserveInfo?.frDScRcvBase?.reservationNo }}</td>
+        </tr>
+
+        <!-- 2行目 -->
+        <tr fxLayout="row wrap">
+          <td class="baseitem">［サイトコード］: {{ webReserveInfo?.frDScRcvBase?.xSalesOfcCompanyCd }}</td>
+          <td class="baseitem">［サイト名］: {{ webReserveInfo?.frDScRcvBase?.xSalesOfcCompanyNm }}</td>
+          <td class="baseitem">［営業所名］: {{ webReserveInfo?.frDScRcvBase?.xSalesOfcNm }}</td>
+          <td class="baseitem" colspan="2">［サイト予約番号］: {{ webReserveInfo?.frDScRcvBase?.xTravelAgncBkngNum }}</td>
+        </tr>
+
+        <!-- 3行目 -->
+        <tr fxLayout="row wrap">
+          <td class="baseitem">［到着日］: {{ webReserveInfo?.frDScRcvBase?.xCheckInDate.substr(0,4) + '/' + webReserveInfo?.frDScRcvBase?.xCheckInDate.substr(4,2) + '/' + webReserveInfo?.frDScRcvBase?.xCheckInDate.substr(6,2) }}</td>
+          <td class="baseitem">［到着時刻］: {{ webReserveInfo?.frDScRcvBase?.checkInTimeDisplay }}</td>
+          <td class="baseitem">［泊数］: {{webReserveInfo?.frDScRcvBase?.xNights}}</td>
+          <td class="baseitem">［出発日］: {{ webReserveInfo?.frDScRcvBase?.xCheckOutDate.substr(0,4) + '/' + webReserveInfo?.frDScRcvBase?.xCheckOutDate.substr(4,2) + '/' + webReserveInfo?.frDScRcvBase?.xCheckOutDate.substr(6,2) }}</td>
+          <td class="baseitem">［出発時刻］: {{ webReserveInfo?.frDScRcvBase?.checkOutTimeDisplay }}</td>
+        </tr>
+
+        <!-- 4行目 -->
+        <tr fxLayout="row wrap">
+          <td class="baseitem">［名前］: {{ webReserveInfo?.frDScRcvMemberIf?.xUsrNm }}</td>
+          <td class="baseitem">［カナ］: {{ webReserveInfo?.frDScRcvMemberIf?.xUsrKana }}</td>
+          <td class="baseitem">［電話番号］: {{ webReserveInfo?.frDScRcvMemberIf?.xUsrTel }}</td>
+          <td class="baseitem" colspan="2">［メールアドレス］: {{ webReserveInfo?.frDScRcvMemberIf?.xUsrMailAddr }}</td>
+        </tr>
+
+        <!-- 5行目 -->
+        <tr fxLayout="row wrap">
+          <td class="baseitem">［〒］: {{ webReserveInfo?.frDScRcvMemberIf?.xUsrZip }}</td>
+          <td class="baseitem">［住所］: {{ webReserveInfo?.frDScRcvMemberIf?.xUsrAddr }}</td>
+          <td class="baseitem" colspan="3"></td>
+        </tr>
+
+        <!-- 6行目 -->
+        <tr fxLayout="row wrap">
+          <td class="baseitem">［コード］: {{ webReserveInfo?.frDScRcvBase?.xPackagePlanCd }}</td>
+          <td class="baseitem" colspan="3">［パッケージ名称］: {{ webReserveInfo?.frDScRcvBase?.xPackagePlanNm }}</td>
+          <td class="baseitem" colspan="1"></td>
+        </tr>
+
+        <!-- 7行目 -->
+        <tr fxLayout="row wrap">
+          <td class="baseitem">［食事条件］: {{ webReserveInfo?.frDScRcvBase?.xMealCond }}</td>
+          <td class="baseitem" colspan="4">［食事有無情報］: {{ webReserveInfo?.frDScRcvBase?.xSpecMealCond }}</td>
+        </tr>
+
+        <!-- 8行目 -->
+        <tr fxLayout="row wrap">
+          <td class="baseitem">［料金区分］: {{ webReserveInfo?.frDScRcvBase?.xRmrtOrprsnalrt }}</td>
+          <td class="baseitem">［税サ区分］: {{ webReserveInfo?.frDScRcvBase?.xTaxSrvcFee }}</td>
+          <td class="baseitem">［支払方法］: {{ webReserveInfo?.frDScRcvAgentIf?.pntDivDisplay }}</td>
+          <td class="baseitem">［合計料金］: {{ webReserveInfo?.frDScRcvBase?.xTtlAccmChg | number }}</td>
+          <td class="baseitem">［ポイント合計］: {{ webReserveInfo?.frDScRcvBase?.totalPoint | number }}</td>
+        </tr>
+      </table>
+
+    </mat-card>
+
+    <div class="gridtitle" *ngIf="this.isTLL">
+      <span style="font-size: 18px;font-weight: bold;">リザプリ電文(※見やすくするために固定ピッチフォントで表示されます)</span>
+    </div>
+    <mat-card class="mat-card-top pa-1" *ngIf="this.isTLL">
+      <pre class = "resapri">{{ webReserveInfo?.frDScRcvRpBase?.xTelegramData }} + {{ webReserveInfo?.frDScRcvRpBase?.xTelegramData2 }}</pre>
+    </mat-card>
+
+    <div class="gridtitle">
+      <span style="font-size: 18px;font-weight: bold;">部屋情報</span>
+    </div>
+
+    <!-- TLの場合のみ「frDScRcvRpRmIf」を使用 -->
+    <ngx-datatable class="material" *ngIf="this.isTLL" [columnMode]="'force'" [headerHeight]="50" [footerHeight]="0"
+        [rowHeight]="30" [scrollbarV]="true" [scrollbarH]="true" [rows]="webReserveInfo?.frDScRcvRpRmIf" [messages]="ngx_table_messages">
+      <ngx-datatable-column name="タイプ" [width]="50" prop="xRmTypeCd"></ngx-datatable-column>
+      <ngx-datatable-column name="部屋タイプ名" [width]="150" prop="xRmTypeNm"></ngx-datatable-column>
+      <ngx-datatable-column name="喫煙/禁煙" [width]="60" prop="xSmokingOrNonSmoking"></ngx-datatable-column>
+      <ngx-datatable-column name="1室利用人数" [width]="60" prop="xPerRmPaxCnt">
+        <ng-template let-value="value" ngx-datatable-cell-template>
+          <div class="numeric">
+            {{value}}
+          </div>
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column name="男性" [width]="30" prop="xRmPaxMaleCnt">
+        <ng-template let-value="value" ngx-datatable-cell-template>
+          <div class="numeric">
+            {{value}}
+          </div>
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column name="女性" [width]="30" prop="xRmPaxFemaleCnt">
+        <ng-template let-value="value" ngx-datatable-cell-template>
+          <div class="numeric">
+            {{value}}
+          </div>
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column name="子供A" [width]="30" prop="xRmChildA70Cnt">
+        <ng-template let-value="value" ngx-datatable-cell-template>
+          <div class="numeric">
+            {{value}}
+          </div>
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column name="子供B" [width]="30" prop="xRmChildB50Cnt">
+        <ng-template let-value="value" ngx-datatable-cell-template>
+          <div class="numeric">
+            {{value}}
+          </div>
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column name="子供C" [width]="30" prop="xRmChildC30Cnt">
+        <ng-template let-value="value" ngx-datatable-cell-template>
+          <div class="numeric">
+            {{value}}
+          </div>
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column name="子供D" [width]="30" prop="xRmChildDNoneCnt">
+        <ng-template let-value="value" ngx-datatable-cell-template>
+          <div class="numeric">
+            {{value}}
+          </div>
+        </ng-template>
+      </ngx-datatable-column>
+    </ngx-datatable>
+
+    <!-- TL以外の場合は「frDScRcvRmIf」を使用 -->
+    <ngx-datatable class="material" *ngIf="!this.isTLL" [columnMode]="'force'" [headerHeight]="50" [footerHeight]="0"
+        [rowHeight]="30" [scrollbarV]="true" [scrollbarH]="true" [rows]="webReserveInfo?.frDScRcvRmIf" [messages]="ngx_table_messages">
+      <ngx-datatable-column name="タイプ" [width]="50" prop="xRmTypeCd"></ngx-datatable-column>
+      <ngx-datatable-column name="部屋タイプ名" [width]="150" prop="xRmTypeNm"></ngx-datatable-column>
+      <ngx-datatable-column name="喫煙/禁煙" [width]="60" prop="xSmokingOrNonSmoking"></ngx-datatable-column>
+      <ngx-datatable-column name="1室利用人数" [width]="60" prop="xPerRmPaxCnt">
+        <ng-template let-value="value" ngx-datatable-cell-template>
+          <div class="numeric">
+            {{value}}
+          </div>
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column name="男性" [width]="30" prop="xRmPaxMaleCnt">
+        <ng-template let-value="value" ngx-datatable-cell-template>
+          <div class="numeric">
+            {{value}}
+          </div>
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column name="女性" [width]="30" prop="xRmPaxFemaleCnt">
+        <ng-template let-value="value" ngx-datatable-cell-template>
+          <div class="numeric">
+            {{value}}
+          </div>
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column name="子供A" [width]="30" prop="xRmChildA70Cnt">
+        <ng-template let-value="value" ngx-datatable-cell-template>
+          <div class="numeric">
+            {{value}}
+          </div>
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column name="子供B" [width]="30" prop="xRmChildB50Cnt">
+        <ng-template let-value="value" ngx-datatable-cell-template>
+          <div class="numeric">
+            {{value}}
+          </div>
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column name="子供C" [width]="30" prop="xRmChildC30Cnt">
+        <ng-template let-value="value" ngx-datatable-cell-template>
+          <div class="numeric">
+            {{value}}
+          </div>
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column name="子供D" [width]="30" prop="xRmChildDNoneCnt">
+        <ng-template let-value="value" ngx-datatable-cell-template>
+          <div class="numeric">
+            {{value}}
+          </div>
+        </ng-template>
+      </ngx-datatable-column>
+    </ngx-datatable>
+
+    <div class="gridtitle">
+      <span style="font-size: 18px;font-weight: bold;">料金情報</span>
+    </div>
+    <!-- TLの場合のみ「frDScRcvRpRmRtIf」を使用 -->
+    <ngx-datatable class="material" *ngIf="this.isTLL" [columnMode]="'force'" [headerHeight]="50" [footerHeight]="0"
+        [rowHeight]="30" [scrollbarV]="true" [scrollbarH]="true" [rows]="webReserveInfo?.frDScRcvRpRmRtIf" [messages]="ngx_table_messages">
+      <ngx-datatable-column name="日付" [width]="50" prop="xRmDateDisplayMD"></ngx-datatable-column>
+      <ngx-datatable-column name="大人料金" [width]="30" prop="xPerPaxRt">
+        <ng-template let-value="value" ngx-datatable-cell-template>
+          <div class="numeric">
+            {{value | number}}
+          </div>
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column name="男料金" [width]="30" prop="xPerMaleRt">
+        <ng-template let-value="value" ngx-datatable-cell-template>
+          <div class="numeric">
+            {{value | number}}
+          </div>
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column name="女料金" [width]="30" prop="xPerFemaleRt">
+        <ng-template let-value="value" ngx-datatable-cell-template>
+          <div class="numeric">
+            {{value | number}}
+          </div>
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column name="子A料金" [width]="30" prop="xPerChildA70Rt">
+        <ng-template let-value="value" ngx-datatable-cell-template>
+          <div class="numeric">
+            {{value | number}}
+          </div>
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column name="子B料金" [width]="30" prop="xPerChildB50Rt">
+        <ng-template let-value="value" ngx-datatable-cell-template>
+          <div class="numeric">
+            {{value | number}}
+          </div>
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column name="子C料金" [width]="30" prop="xPerChildC30Rt">
+        <ng-template let-value="value" ngx-datatable-cell-template>
+          <div class="numeric">
+            {{value | number}}
+          </div>
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column name="子D料金" [width]="30" prop="xPerChildDRt">
+        <ng-template let-value="value" ngx-datatable-cell-template>
+          <div class="numeric">
+            {{value | number}}
+          </div>
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column name="男コメント" [width]="80" prop="xRmRtPaxMaleReq"></ngx-datatable-column>
+      <ngx-datatable-column name="女コメント" [width]="80" prop="xRmRtPaxFemaleReq"></ngx-datatable-column>
+      <ngx-datatable-column name="子Aコメント" [width]="80" prop="xRmRtChildA70Req"></ngx-datatable-column>
+      <ngx-datatable-column name="子Bコメント" [width]="80" prop="xRmRtChildB50Req"></ngx-datatable-column>
+      <ngx-datatable-column name="子Cコメント" [width]="80" prop="xRmRtChildC30Req"></ngx-datatable-column>
+      <ngx-datatable-column name="子Dコメント" [width]="80" prop="xRmRtChildDNoneReq"></ngx-datatable-column>
+    </ngx-datatable>
+
+    <!-- TL以外の場合「frDScRcvRmRtIf」を使用 -->
+    <ngx-datatable class="material" *ngIf="!this.isTLL" [columnMode]="'force'" [headerHeight]="50" [footerHeight]="0"
+        [rowHeight]="30" [scrollbarV]="true" [scrollbarH]="true" [rows]="webReserveInfo?.frDScRcvRmRtIf" [messages]="ngx_table_messages">
+      <ngx-datatable-column name="日付" [width]="50" prop="xRmDateDisplayMD"></ngx-datatable-column>
+      <ngx-datatable-column name="大人料金" [width]="30" prop="xPerPaxRt">
+        <ng-template let-value="value" ngx-datatable-cell-template>
+          <div class="numeric">
+            {{value | number}}
+          </div>
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column name="子A料金" [width]="30" prop="xPerChildA70Rt">
+        <ng-template let-value="value" ngx-datatable-cell-template>
+          <div class="numeric">
+            {{value | number}}
+          </div>
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column name="子B料金" [width]="30" prop="xPerChildB50Rt">
+        <ng-template let-value="value" ngx-datatable-cell-template>
+          <div class="numeric">
+            {{value | number}}
+          </div>
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column name="子C料金" [width]="30" prop="xPerChildC30Rt">
+        <ng-template let-value="value" ngx-datatable-cell-template>
+          <div class="numeric">
+            {{value | number}}
+          </div>
+        </ng-template>
+      </ngx-datatable-column>
+      <ngx-datatable-column name="子D料金" [width]="30" prop="xPerChildDRt">
+        <ng-template let-value="value" ngx-datatable-cell-template>
+          <div class="numeric">
+            {{value | number}}
+          </div>
+        </ng-template>
+      </ngx-datatable-column>
+    </ngx-datatable>
+
+    <div class="gridtitle">
+      <span style="font-size: 18px;font-weight: bold;">ポイント情報</span>
+    </div>
+    <div fxLayout="column">
+      <ngx-datatable class="material" [columnMode]="'force'" [headerHeight]="50" [footerHeight]="0"
+        [rowHeight]="30" [scrollbarV]="true" [scrollbarH]="true" [rows]="webReserveInfo?.frDScRcvPntIf" [messages]="ngx_table_messages">
+        <ngx-datatable-column name="ポイント割引・補助金名称" [width]="150" prop="xPntsDiscntNm"></ngx-datatable-column>
+        <ngx-datatable-column name="ポイント割引・補助金額" [width]="150" prop="xPntsDiscnt">
+          <ng-template let-value="value" ngx-datatable-cell-template>
+            <div class="numeric">
+              {{value | number}}
+            </div>
+          </ng-template>
+        </ngx-datatable-column>
+      </ngx-datatable>
+    </div>
+
+    <div class="gridtitle">
+      <span style="font-size: 18px;font-weight: bold;">オプション情報</span>
+    </div>
+    <div fxLayout="column">
+      <ngx-datatable class="material" [columnMode]="'force'" [headerHeight]="50" [footerHeight]="0"
+        [rowHeight]="30" [scrollbarV]="true" [scrollbarH]="true" [rows]="webReserveInfo?.frDScRcvOptIf" [messages]="ngx_table_messages">
+        <ngx-datatable-column name="利用日" [width]="50" prop="xOptDateDisplayYM"></ngx-datatable-column>
+        <ngx-datatable-column name="名称" [width]="150" prop="xNm"></ngx-datatable-column>
+        <ngx-datatable-column name="備考" [width]="150" prop="xNmReq"></ngx-datatable-column>
+        <ngx-datatable-column name="単価" [width]="100" prop="xOptRt">
+          <ng-template let-value="value" ngx-datatable-cell-template>
+            <div class="numeric">
+              {{value | number}}
+            </div>
+          </ng-template>
+        </ngx-datatable-column>
+        <ngx-datatable-column name="個数" [width]="50" prop="xOptCnt">
+          <ng-template let-value="value" ngx-datatable-cell-template>
+            <div class="numeric">
+              {{value | number}}
+            </div>
+          </ng-template>
+        </ngx-datatable-column>
+      </ngx-datatable>
+    </div>
+
+    <div class="gridtitle">
+      <span style="font-size: 18px;font-weight: bold;">ＸＭＬデータ(※見やすくするために固定ピッチフォントで表示されます)</span>
+    </div>
+    <mat-card class="mat-card-top pa-1">
+      <pre class = "resapri">{{ webReserveInfo?.frDScRcvXml?.scRcvXml }}</pre>
+    </mat-card>
+
+  </div>
+</div>

@@ -1,0 +1,205 @@
+<!-- ヘッダ部 -->
+<div>
+  <div class="left" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="5px" style=" margin-left: 20px;">
+    <span style="font-size: 24px; font-weight: bold;">会場状況</span>
+
+    <!-- DatePicker -->
+    <mat-form-field style="width: 180px; margin-left: 5px;">
+      <input matInput style="text-align: center;font-size: 20px;" [matDatepicker]="picker" readonly="readonly" [(ngModel)]="inputDate" (dateInput)="getMasterData()">
+      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-datepicker #picker></mat-datepicker>
+    </mat-form-field>
+
+    <!-- DatePickerBtn -->
+    <span class="datetool-parent">
+      <datetool [CurrDate]="inputDate" (DateChange)="onChangeDate($event)"></datetool>
+    </span>
+
+    <button mat-icon-button (click)="getMasterData()">
+     <mat-icon>refresh</mat-icon>
+    </button>
+
+    <!-- StatusNote -->
+    <span [ngStyle]="{'background-color': SELECT_CELL_COLOR}"> &nbsp;&nbsp; 選択中 &nbsp;&nbsp;</span>
+
+  </div>
+</div>
+
+<div id="body">
+  <div class="left" style="height: 80vh; padding-left: 5px;">
+
+    <!-- Stepper 1 -->
+    <span *ngIf="inputMode == EnumFormMode.ViewDrag" style="font-weight: bold;">
+      <span style="margin-left: 15px; color: #6699FF;"><mat-icon>looks_one</mat-icon>&nbsp;</span>
+      <span>{{msgStep1}}</span>
+    </span>
+    <span *ngIf="inputMode != EnumFormMode.ViewDrag" style="font-weight: 100; color: gray;">
+      <span style="margin-left: 15px; color: gray;"><mat-icon>check_circle</mat-icon>&nbsp;</span>
+      <span>{{msgStep1}}</span>
+    </span>
+
+    <div id="scroll" class="mat-elevation-z8" style="height: 80vh; overflow-x: hidden; overflow-y: auto;">
+
+      <table id="schedule" mat-table [dataSource]="tableData">
+
+        <!-- facility name columns -->
+        <ng-container matColumnDef="facilityName" style="width: auto;">
+          <th id="table-header" mat-header-cell *matHeaderCellDef> 会場名 </th>
+          <td mat-cell *matCellDef="let element">
+            {{element.facilityName}}
+          </td>
+        </ng-container>
+
+        <!-- hour time columns -->
+        <ng-container [matColumnDef]="column" *ngFor="let column of hourColumns; let i = index">
+          <th mat-header-cell *matHeaderCellDef colspan="2"> {{hourColumnsName[i]}} </th>
+        </ng-container>
+
+        <!-- details cells -->
+        <ng-container [matColumnDef]="column" *ngFor="let column of timeColumns; let i = index">
+
+          <td [id]="element.facilityCode + column" class="cell schedule-cell" mat-cell *matCellDef="let element"
+            [ngClass]="{'selected': selected(element, i)}"
+            [attr.available]="selected(element, i) ? '0':'1'"
+            [attr.facilityCode]="element.facilityCode"
+            [attr.facilitySeq]="element.facilityInfo[i].info == null ? '' : element.facilityInfo[i].info.facilitySeq"
+            [attr.time]="column"
+            (mouseover)="onMouseoverTable($event, element.facilityInfo[i].info)"
+            (mouseout)="onMouseoutTable($event)"
+          >
+          <!--
+
+          -->
+
+            <div *ngIf="isStartTime(element, i)" class="overwrite"
+              [id]="element.facilityCode + element.facilityInfo[i].info.facilitySeq"
+              [ngStyle]="setStyle_RsvDiv(column, element, i)"
+              [attr.defaultColor]="setBackgroundColor(element, i)"
+              [attr.facilityCode]="element.facilityCode"
+              [attr.facilitySeq]="element.facilityInfo[i].info == null ? '' : element.facilityInfo[i].info.facilitySeq"
+              [attr.cellIndex]="i + 1"
+              (click)="setSelectColor_RsvDiv(element, i)"
+            >
+              ({{element.facilityInfo[i].info.facilityMember}}){{element.facilityInfo[i].info.guestName}}
+            </div>
+          </td>
+
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="allHourColumns; sticky: true"></tr>
+        <tr mat-row *matRowDef="let row; columns: allTimeColumns;"></tr>
+      </table>
+    </div>
+
+  </div>
+
+  <div class="right">
+
+    <!-- Stepper 2 -->
+    <span *ngIf="inputMode != EnumFormMode.ViewDrag" style="font-weight: bold;">
+      <span style="color: #6699FF;"><mat-icon>looks_two</mat-icon>&nbsp;</span>
+      <span>{{msgStep2}}</span>
+    </span>
+
+    <!-- input forms -->
+    <mat-card-content class="pa-1">
+      <form fxLayout="column" [formGroup]="facilityForm">
+
+        <mat-form-field class="mb-1">
+          <mat-select placeholder="会場" formControlName="facilityCode">
+            <mat-option *ngFor="let facility of mstData" [value]="facility.facilityCode">{{ facility.facilityName }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <div fxLayout="row">
+          <mat-form-field class="mb-1" style="width: 23%;">
+            <mat-select formControlName="startHour">
+              <mat-option *ngFor="let hour of hourColumnsName" [value]="hour">{{ hour }}時</mat-option>
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field class="mb-1" style="width: 23%;">
+            <mat-select formControlName="startMinute">
+              <mat-option *ngFor="let minute of minuteColumnsName" [value]="minute">{{ minute }}分</mat-option>
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field class="mb-1" style="width: 8%;">
+            <input matInput readonly value="～" [disabled]="inputMode == EnumFormMode.ViewDrag">
+          </mat-form-field>
+          <mat-form-field class="mb-1" style="width: 23%;">
+            <mat-select formControlName="endHour">
+              <mat-option *ngFor="let hour of hourColumnsName" [value]="hour">{{ hour }}時</mat-option>
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field class="mb-1" style="width: 23%;">
+            <mat-select formControlName="endMinute">
+              <div *ngIf="facilityForm.controls['endHour'].value == '23'">
+                <mat-option *ngFor="let minute of lastHourminuteColumnsName" [value]="minute">{{ minute }}分</mat-option>
+              </div>
+              <div *ngIf="facilityForm.controls['endHour'].value != '23'">
+                <mat-option *ngFor="let minute of minuteColumnsName" [value]="minute">{{ minute }}分</mat-option>
+              </div>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <mat-form-field class="mb-1">
+          <input matInput placeholder="予約番号" formControlName="reserveNo">
+          <button matSuffix mat-raised-button (click)="reserveSearch()" [disabled]="inputMode == EnumFormMode.ViewDrag">
+            <mat-icon>search</mat-icon>予約検索
+          </button>
+          <div *ngIf="facilityForm.controls['reserveNo'].invalid && (facilityForm.controls['reserveNo'].touched || facilityForm.controls['reserveNo'].dirty)">
+            <small *ngIf="facilityForm.controls['reserveNo'].hasError('pattern')" class="mat-text-warn">{{msgPatternNumber}}
+            </small>
+            <small *ngIf="facilityForm.controls['reserveNo'].hasError('maxlength')" class="mat-text-warn">{{msgLengthReserveNo}}
+            </small>
+            <small *ngIf="facilityForm.controls['reserveNo'].hasError('minlength')" class="mat-text-warn">{{msgLengthReserveNo}}
+            </small>
+          </div>
+        </mat-form-field>
+
+        <mat-form-field class="mb-1">
+          <input matInput placeholder="予約者名" formControlName="reserveName" readonly>
+        </mat-form-field>
+
+        <mat-form-field class="mb-1">
+          <input matInput type="number" placeholder="会場人数" formControlName="facilityMember">
+          <div *ngIf="facilityForm.controls['facilityMember'].invalid && (facilityForm.controls['facilityMember'].touched || facilityForm.controls['facilityMember'].dirty)">
+            <small *ngIf="facilityForm.controls['facilityMember'].hasError('pattern')" class="mat-text-warn">{{msgPatternNumber}}
+            </small>
+            <small *ngIf="facilityForm.controls['facilityMember'].hasError('min')" class="mat-text-warn">{{msgMinMember}}
+            </small>
+            <small *ngIf="facilityForm.controls['facilityMember'].hasError('max')" class="mat-text-warn">{{msgMaxMember}}
+            </small>
+          </div>
+        </mat-form-field>
+
+        <mat-form-field class="mb-1">
+          <textarea matInput placeholder="会場備考" formControlName="facilityRemarks"></textarea>
+          <div *ngIf="facilityForm.controls['facilityRemarks'].invalid && (facilityForm.controls['facilityRemarks'].touched || facilityForm.controls['facilityRemarks'].dirty)">
+            <small *ngIf="facilityForm.controls['facilityRemarks'].hasError('maxlength')" class="mat-text-warn">{{msgMaxLengthRemarks}}
+            </small>
+          </div>
+        </mat-form-field>
+
+      </form>
+
+    </mat-card-content>
+
+    <button mat-raised-button color="primary" (click)="save()" [disabled]="inputMode == EnumFormMode.ViewDrag || facilityForm.invalid || isWrongRsvNo">保存</button>
+    &nbsp;
+    <button mat-raised-button color="warn" (click)="delete()" [disabled]="inputMode != EnumFormMode.EditUpdate">削除</button>
+    &nbsp;
+    <button mat-raised-button (click)="clear(true)">中止</button>
+
+  </div>
+
+  <!-- サブメニュー -->
+  <div class="submenu" *ngIf="isDispSubMenu" [style.top]="subMenuTopPx" [style.left]="subMenuLeftPx">
+    <div *ngIf="subMenuInfo.reserveNo == ''">予約番号：未登録</div>
+    <div *ngIf="subMenuInfo.reserveNo != ''">予約番号：{{subMenuInfo.reserveNo}}</div>
+    <div *ngIf="subMenuInfo.guestName == ''">予約者名：未登録</div>
+    <div *ngIf="subMenuInfo.guestName != ''" class="breakall">予約者名：{{subMenuInfo.guestName}}</div>
+    <div>会場人数：{{subMenuInfo.facilityMember}}</div>
+  </div>
+
+</div>

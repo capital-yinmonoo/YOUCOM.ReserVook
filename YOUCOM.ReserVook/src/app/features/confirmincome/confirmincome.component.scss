@@ -1,0 +1,94 @@
+.confirmincome {
+  .grid-list {
+    margin-bottom: 20px;
+    margin-top: 20px;
+    height: 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .tg {
+    border-collapse: collapse;
+    border-spacing: 0;
+    margin-left: 3px;
+  }
+  .tg td {
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    padding: 10px 10px;
+    border-style: solid;
+    border-width: 1px;
+    overflow: hidden;
+    word-break: normal;
+    border-color: black;
+  }
+  .tg th {
+    font-family: Arial, sans-serif;
+    font-size: 14px;
+    font-weight: normal;
+    padding: 10px 10px;
+    border-style: solid;
+    border-width: 1px;
+    overflow: hidden;
+    word-break: normal;
+    border-color: black;
+  }
+  .tg .tg-a3m1 {
+    font-size: 8px;
+    background-color: #efefef;
+    border-color: #ffffff;
+    text-align: right;
+    vertical-align: top;
+  }
+  .tg .tg-n5dd {
+    font-size: 8px;
+    background-color: #efefef;
+    border-color: #ffffff;
+    text-align: right;
+    vertical-align: top;
+  }
+  .tg .tg-b1js {
+    font-size: 8px;
+    background-color: #efefef;
+    border-color: #ffffff;
+    text-align: left;
+    vertical-align: top;
+  }
+  .tg .tg-imbg {
+    font-size: 8px;
+    background-color: #efefef;
+    border-color: #ffffff;
+    text-align: left;
+    vertical-align: top;
+  }
+  .tg .tg-iao2 {
+    font-size: 8px;
+    border-color: #ffffff;
+    text-align: left;
+    vertical-align: top;
+  }
+  .tg .tg-mll5 {
+    font-size: 8px;
+    border-color: #ffffff;
+    text-align: right;
+    vertical-align: top;
+  }
+  .ngx-datatable .datatable-body .datatable-body-row > div {
+    align-items: right;
+  }
+
+  .ngx-datatable.material .datatable-body .datatable-body-row .datatable-body-cell{
+    align-items: flex-start !important;
+  }
+}
+
+
+:host ::ng-deep .datatable-body-cell {
+  align-items: flex-start !important;
+}
+
+ngx-datatable{
+  *{
+    font-size: 110%;
+  }
+}

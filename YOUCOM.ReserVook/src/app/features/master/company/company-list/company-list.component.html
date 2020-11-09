@@ -1,0 +1,78 @@
+<!-- ヘッダタイトル部 -->
+<mat-toolbar-row  style="margin-top: 5px;" fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="10px">
+  <span *ngIf="isSuperAdmin" style="font-size: 24px;font-weight:bold;">会社マスタ</span>
+  <span *ngIf="!isSuperAdmin" style="font-size: 24px;font-weight:bold;">システムマスタ</span>
+</mat-toolbar-row>
+
+<ngx-datatable class="material fullscreenMas" [columnMode]="'force'" [headerHeight]="50" [footerHeight]="0"
+  [rowHeight]="50" [scrollbarV]="true" [scrollbarH]="true" [rows]="companyList" [messages]="ngx_table_messages">
+
+  <!-- 編集/削除ボタン -->
+  <ngx-datatable-column>
+    <ng-template let-row="row" ngx-datatable-cell-template>
+      <a mat-icon-button [routerLink]="['../form/', row.companyNo]">
+        <mat-icon>edit</mat-icon>
+      </a>
+      <button *ngIf="isSuperAdmin" mat-icon-button aria-label="Delete" (click)="delete(row.companyNo)">
+        <mat-icon>delete</mat-icon>
+      </button>
+    </ng-template>
+  </ngx-datatable-column>
+
+  <!-- マスタ内容一覧 -->
+  <ngx-datatable-column *ngIf="isSuperAdmin" name="会社番号" prop="companyNo"></ngx-datatable-column>
+
+  <ngx-datatable-column name="施設名" prop="companyName"></ngx-datatable-column>
+
+  <ngx-datatable-column name="郵便番号" prop="zipCode"></ngx-datatable-column>
+
+  <ngx-datatable-column name="住所" prop="address"></ngx-datatable-column>
+
+  <ngx-datatable-column name="電話番号" prop="phoneNo"></ngx-datatable-column>
+
+  <ngx-datatable-column name="請求先" prop="billingAddress"></ngx-datatable-column>
+
+  <ngx-datatable-column name="サービス料率" prop="serviceRate"></ngx-datatable-column>
+
+  <ngx-datatable-column name="最終予約番号" prop="lastReserveNo"></ngx-datatable-column>
+
+  <ngx-datatable-column *ngIf="false" name="最終顧客番号" prop="lastCustomerNo"></ngx-datatable-column>
+
+  <ngx-datatable-column name="最終ビル番号" prop="lastBillNo"></ngx-datatable-column>
+
+  <ngx-datatable-column *ngIf="isSuperAdmin" name="清掃・忘れ物管理使用" prop="lostFlgName"></ngx-datatable-column>
+
+  <ngx-datatable-column *ngIf="isSuperAdmin" name="保存期間(年)" prop="savePeriod"></ngx-datatable-column>
+
+  <ngx-datatable-column *ngIf="isSuperAdmin" name="TrustYou連携区分" prop="trustyouConnectDivName"></ngx-datatable-column>
+
+  <ngx-datatable-column *ngIf="isSuperAdmin" name="会社グループ名" prop="companyGroupName">
+    <ng-template let-value="value" ngx-datatable-cell-template>
+      <span *ngIf="value==''">未選択</span>
+      <span *ngIf="value!=''">{{value}}</span>
+    </ng-template>
+  </ngx-datatable-column>
+
+  <ngx-datatable-column name="作成者" prop ="creator"></ngx-datatable-column>
+
+  <ngx-datatable-column name="作成日" prop="cdt">
+    <ng-template let-value="value" ngx-datatable-cell-template>
+      {{value.substring(0, 4) + '/' + value.substring(4, 6) + '/' + value.substring(6, 8) }}
+    </ng-template>
+  </ngx-datatable-column>
+
+  <ngx-datatable-column name="更新者" prop ="updator"></ngx-datatable-column>
+  <ngx-datatable-column name="更新日" prop="udt">
+    <ng-template let-value="value" ngx-datatable-cell-template>
+      {{value.substring(0, 4) + '/' + value.substring(4, 6) + '/' + value.substring(6, 8)}}
+    </ng-template>
+  </ngx-datatable-column>
+
+</ngx-datatable>
+
+<!-- 新規作成ボタン -->
+<ng-container *ngIf="isSuperAdmin">
+  <a mat-fab [routerLink]="['../form/', '']" color="warn" class="mat-fab-bottom-right" style="z-index: 9;">
+    <mat-icon class="mat-24">add</mat-icon>
+  </a>
+</ng-container>

@@ -1,0 +1,14 @@
+.image-center {
+  background-repeat: no-repeat;
+  background-position: center;
+  width: 20vh;
+  max-width: 150px;
+  max-height: 150px;
+
+  -webkit-background-size: 45px 45px;
+  background-size: 45px 45px;
+  margin-top: -25px;
+  background-size: auto 100%;
+  background-repeat: no-repeat;
+  background-position: left top;
+}

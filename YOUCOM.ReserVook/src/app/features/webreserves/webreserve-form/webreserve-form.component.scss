@@ -1,0 +1,25 @@
+@import "../../../../assets/styles/scss/material.variables";
+
+.baseitem{
+  min-width: 350px;
+}
+
+.material{
+  &.scroll-vertical {
+    height: 18vh;
+  }
+}
+
+.resapri{
+  font-family:monospace, serif;
+  margin: 5.3333px;
+}
+
+.numeric{
+  text-align: right;
+  }
+
+.gridtitle{
+  margin-left: 10px;
+  margin-top: 15px;
+}

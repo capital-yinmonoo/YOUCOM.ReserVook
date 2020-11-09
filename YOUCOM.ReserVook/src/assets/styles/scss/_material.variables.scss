@@ -1,0 +1,53 @@
+@import '~@angular/material/theming';
+
+$md-mcgpalette0: (
+    50 : #e4f6f3,
+    100 : #bce9e0,
+    200 : #8fdbcb,
+    300 : #62ccb6,
+    400 : #40c1a7,
+    500 : #6699ff,
+    600 : #1aaf8f,
+    700 : #16a684,
+    800 : #129e7a,
+    900 : #0a8e69,
+    A100 : #bdffea,
+    A200 : #8affda,
+    A400 : #57ffca,
+    A700 : #3dffc1,
+    contrast: (
+        50 : #000000,
+        100 : #000000,
+        200 : #000000,
+        300 : #000000,
+        400 : #ffffff,
+        500 : #ffffff,
+        600 : #ffffff,
+        700 : #ffffff,
+        800 : #ffffff,
+        900 : #ffffff,
+        A100 : #000000,
+        A200 : #000000,
+        A400 : #000000,
+        A700 : #000000,
+    )
+);
+
+$primary: mat-palette($md-mcgpalette0);
+// $primary: mat-palette($mat-indigo);
+$accent: mat-palette($mat-amber, A200, A100, A400);
+$warn: mat-palette($mat-red);
+$theme: mat-light-theme($primary, $accent, $warn);
+$background: map-get($theme, background);
+$foreground: map-get($theme, foreground);
+
+@include mat-core();
+
+$dark-primary: mat-palette($mat-blue-grey);
+$dark-accent: mat-palette($mat-amber, A200, A100, A400);
+$dark-warn: mat-palette($mat-deep-orange);
+$dark-theme: mat-dark-theme($dark-primary, $dark-accent, $dark-warn);
+$dark-background: map-get($dark-theme, background);
+$dark-foreground: map-get($dark-theme, foreground);
+
+$config: mat-typography-config();

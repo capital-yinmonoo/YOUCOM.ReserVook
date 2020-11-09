@@ -1,0 +1,24 @@
+#container {
+  height: calc(100vh - 65px);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+#header {
+  flex: 0 0 auto;
+  height: 50px;
+  width: 100%;
+  margin-top: 12px;
+  margin-bottom: 12px;
+}
+
+.file-name{
+  align-self: center;
+}
+
+.dounload-button{
+  font-size: 12px;
+  line-height: 25px;
+  padding: 0 8px;
+}

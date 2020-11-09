@@ -1,0 +1,36 @@
+<ng-container class="A4Landscape" *ngFor="let pageInfo of printList let i = index">
+  <section class="sheet">
+
+    <!--ヘッダ-->
+    <div class="row_header">
+      <h1 class="text-center">クリーニングレポート</h1>
+      <div class="col_1 text-left">日付:{{printFormatDate}}</div>
+      <div class="col_2 text-right">印刷日時:{{printDateTime}}　Page.{{i + 1}}</div>
+    </div>
+
+    <!-- 明細 -->
+    <div class="row_details">
+      <table class="detail">
+        <thead>
+          <!-- ヘッダ行 -->
+          <tr>
+            <th *ngFor="let column of _header" [class]="column.prop">
+              <span *ngIf="column.visible">{{ReplaceHeader(column.name)}}</span>
+            </th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <!-- 明細行 -->
+          <tr *ngFor="let rowData of pageInfo">
+            <ng-container *ngFor="let data of rowData">
+              <td *ngIf="data.visible" [class]="data.prop">{{ReplaceValue(data.value, data.prop)}}</td>
+            </ng-container>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+  </section>
+</ng-container>
+

@@ -1,0 +1,80 @@
+<!-- タイトルヘッダー -->
+<mat-toolbar fxLayout="row" fxLayoutAlign="start center" class="header">
+  <span style="font-weight: bold;">明細書発行</span>
+  &nbsp;
+  <span style="font-size: 15px;">予約番号:{{reserveNo}}</span>
+  &nbsp;
+  <span class="spacer"></span>
+  <button class="btn" mat-raised-button color="white" (click)="toReserve()">予約編集</button>
+</mat-toolbar>
+
+<!-- 明細書プレビュー -->
+<div #divPage fxFlex.gt-sm="70%" class="billprev">
+  <billprint  [reserveNo]="reserveNo"
+              [name]="billForm.controls['name'].value"
+              [roomNo]="billForm.controls['roomNo'].value"
+              [proviso]="billForm.controls['proviso'].value"
+              [sepBillNo]="billForm.controls['sepBillNo'].value">
+  </billprint>
+</div>
+
+<div fxFlex.gt-sm="30%" class="billcondition" fxLayout="column">
+
+  <div [formGroup]="billForm">
+
+    <mat-card fxLayout="column">
+      <mat-form-field class="example-full-width1">
+        <span matPrefix>ビル分割番号 &nbsp;&nbsp;&nbsp;</span>
+        <mat-select formControlName="sepBillNo">
+          <mat-option *ngFor="let val of sepBillNoList" [value]="val.SepBillNo">
+            {{val.SepBillNo}}
+          </mat-option>
+        </mat-select>
+
+        <button matSuffix mat-raised-button (click)="printSeqBill()">
+          <mat-icon>print</mat-icon>
+          指定印刷
+        </button>
+      </mat-form-field>
+    </mat-card>
+
+    <mat-card fxLayout="column">
+      <mat-form-field class="example-full-width1">
+        <div>お名前</div>
+        <input matInput formControlName="name">
+        <div *ngIf="billForm.controls['name'].invalid && (billForm.controls['name'].touched || billForm.controls['name'].dirty)">
+          <small *ngIf="billForm.controls['name'].hasError('maxlength')" class="mat-text-warn  msg-error">{{msgmaxLengthName}}</small>
+        </div>
+      </mat-form-field>
+    </mat-card>
+
+    <mat-card fxLayout="column">
+      <mat-form-field class="example-full-width1">
+        <div>部屋</div>
+        <input matInput formControlName="roomNo">
+        <div *ngIf="billForm.controls['roomNo'].invalid && (billForm.controls['roomNo'].touched || billForm.controls['roomNo'].dirty)">
+          <small *ngIf="billForm.controls['roomNo'].hasError('maxlength')" class="mat-text-warn">{{msgmaxLengthRoomNo}}</small>
+        </div>
+      </mat-form-field>
+    </mat-card>
+
+    <mat-card fxLayout="column">
+      <mat-form-field class="example-full-width1">
+        <div>但し書き</div>
+        <input matInput formControlName="proviso">
+        <div *ngIf="billForm.controls['proviso'].invalid && (billForm.controls['proviso'].touched || billForm.controls['proviso'].dirty)">
+          <small *ngIf="billForm.controls['proviso'].hasError('maxlength')" class="mat-text-warn">{{msgmaxLengthProviso}}</small>
+        </div>
+      </mat-form-field>
+    </mat-card>
+
+  </div>
+
+  <mat-card fxLayout="column">
+    &nbsp;&nbsp;&nbsp;
+    <button mat-raised-button color="primary" (click)="printAllBill()">
+      <mat-icon>print</mat-icon>
+      一括印刷
+    </button>
+  </mat-card>
+</div>

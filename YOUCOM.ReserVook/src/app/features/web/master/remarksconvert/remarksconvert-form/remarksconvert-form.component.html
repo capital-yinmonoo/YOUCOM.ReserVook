@@ -1,0 +1,62 @@
+<div fxLayout="row" fxLayoutAlign="center start">
+  <div fxFlex.gt-sm="40" fxFlex="100">
+    <mat-card class="pa-0">
+      <mat-tab-group >
+        <mat-tab>
+          <ng-template matTabLabel>WEB連携 - 備考変換マスタ</ng-template>
+            <mat-card-content class="pa-1">
+              <form fxLayout="column" [formGroup]="remarksConvertForm">
+
+                <mat-form-field class="mb-1">
+                  <mat-select placeholder="サイトコントローラー名" [disabled]="true" class="readonly" formControlName="scCd" required>
+                    <mat-option *ngFor="let op of codes" [value]="op.scSegCd">{{ op.content1 }}
+                    </mat-option>
+                  </mat-select>
+                  <div *ngIf="remarksConvertForm.controls['scCd'].invalid && (remarksConvertForm.controls['scCd'].touched || remarksConvertForm.controls['scCd'].dirty)">
+                    <small *ngIf="remarksConvertForm.controls['scCd'].hasError('required')" class="mat-text-warn">{{msgRequid}}</small>
+                  </div>
+                </mat-form-field>
+
+                <mat-form-field class="mb-1">
+                  <input matInput placeholder="XML項目名" [readonly]="true" class="readonly" formControlName="scXClmn" required>
+                    <div *ngIf="remarksConvertForm.controls['scXClmn'].invalid && (remarksConvertForm.controls['scXClmn'].touched || remarksConvertForm.controls['scXClmn'].dirty)">
+                      <small *ngIf="remarksConvertForm.controls['scXClmn'].hasError('required')" class="mat-text-warn">{{msgRequid}}</small>
+                    </div>
+                </mat-form-field>
+
+                <mat-form-field class="mb-1">
+                  <input matInput placeholder="XML項目名(漢字)" [readonly]="true" class="readonly" formControlName="scXClmnKanji" required>
+                    <div *ngIf="remarksConvertForm.controls['scXClmnKanji'].invalid && (remarksConvertForm.controls['scXClmnKanji'].touched || remarksConvertForm.controls['scXClmnKanji'].dirty)">
+                      <small *ngIf="remarksConvertForm.controls['scXClmnKanji'].hasError('required')" class="mat-text-warn">{{msgRequid}}</small>
+                    </div>
+                </mat-form-field>
+
+                <mat-form-field class="mb-1">
+                  <input matInput placeholder="設定順" type="number" formControlName="scRemarksSetLocation" required>
+                  <div *ngIf="remarksConvertForm.controls['scRemarksSetLocation'].invalid && (remarksConvertForm.controls['scRemarksSetLocation'].touched || remarksConvertForm.controls['scRemarksSetLocation'].dirty)">
+                    <small *ngIf="remarksConvertForm.controls['scRemarksSetLocation'].hasError('max')" class="mat-text-warn">{{msgMaxDigits9}}</small>
+                    <small *ngIf="remarksConvertForm.controls['scRemarksSetLocation'].hasError('min')" class="mat-text-warn">{{msgMinDigits0}}</small>
+                    <small *ngIf="remarksConvertForm.controls['scRemarksSetLocation'].hasError('required')" class="mat-text-warn">{{msgRequid}}</small>
+                  </div>
+                </mat-form-field>
+
+                <mat-form-field class="mb-1">
+                  <input matInput placeholder="優先順" type="number" formControlName="scRemarksPriorityOdr" required>
+                  <div *ngIf="remarksConvertForm.controls['scRemarksPriorityOdr'].invalid && (remarksConvertForm.controls['scRemarksPriorityOdr'].touched || remarksConvertForm.controls['scRemarksPriorityOdr'].dirty)">
+                    <small *ngIf="remarksConvertForm.controls['scRemarksPriorityOdr'].hasError('max')" class="mat-text-warn">{{msgMaxDigits9999}}</small>
+                    <small *ngIf="remarksConvertForm.controls['scRemarksPriorityOdr'].hasError('min')" class="mat-text-warn">{{msgMinDigits0}}</small>
+                    <small *ngIf="remarksConvertForm.controls['scRemarksPriorityOdr'].hasError('required')" class="mat-text-warn">{{msgRequid}}</small>
+                  </div>
+                </mat-form-field>
+
+              </form>
+            </mat-card-content>
+          </mat-tab>
+        </mat-tab-group>
+      <mat-card-actions class="pa-1">
+        <button mat-raised-button color="primary"(click)="onSubmit()"[disabled]="remarksConvertForm.invalid">保存</button>
+        <button mat-raised-button color="accent" (click)="cancel()">中止</button>
+      </mat-card-actions>
+    </mat-card>
+  </div>
+</div>

@@ -1,0 +1,142 @@
+.main-header{
+  display: flex;
+  .right{
+    margin-left: auto;
+  }
+}
+
+.mat-toolbar.mat-primary {
+  height: 50px;
+}
+mat-toolbar.main-header .branding {
+  display: flex;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  margin: auto 0;
+  line-height: 50px;
+  width: 50px;
+  padding: 0 16px 0 16px;
+}
+
+mat-toolbar.main-header .logo {
+  background-image: url(/assets/images/favicon.png);
+  background-repeat: no-repeat;
+  background-position: center;
+  min-width: 45px;
+  height: 45px;
+  -webkit-background-size: 45px 45px;
+  background-size: 45px 45px;
+  // margin-top: -25px;
+  background-size: auto 100%;
+  background-repeat: no-repeat;
+  background-position: left top;
+}
+
+@keyframes anime1 {
+  0% {
+    display: none;
+    opacity: 0;
+  }
+  100% {
+    display: inline;
+    opacity: 1;
+  }
+}
+
+/* ↓2020/5/1 Add S.Uchida used by master menu list. */
+a.datamenu:hover {
+  .multicolomn-content {
+    animation-name: anime1;
+    animation-duration: 0.2s;
+    display: inline;
+  }
+}
+
+.multicolomn-content {
+  display: none;
+  position: absolute;
+  background-color: white;
+  padding: 0px 0px 0px 0px;
+  margin-top: 36px;
+  left: 0;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+  z-index: 1;
+}
+
+.multicolomn-content.master{
+  width: 600px;
+}
+.multicolomn-content.report{
+  width: 180px;
+}
+.multicolomn-content.reserve{
+  width: 110px;
+}
+
+.multicolomn-content .headtitle{
+  text-align: left;
+  padding-left: 5px;
+  font-weight: bold;
+}
+
+.multicolomn:hover .multicolomn-content {
+  display: block;
+}
+
+/* Three equal columns that floats next to each other */
+.column {
+  float: left;
+  padding: 0px 0px 0px 0px;
+  color: black;
+  background-color: white;
+}
+.multicolomn-content.assignfacility .column{
+  width: 120px;
+  height: 90px;
+}
+.multicolomn-content.report .column{
+  width: 180px;
+  height: 135px;
+}
+.multicolomn-content.master .column{
+  width: 200px;
+  height: 350px;
+}
+
+.column a {
+  float: none;
+  color: black;
+  padding: 0px 0px 0px 15px;
+  height: 45px;
+  text-decoration: none;
+  display: block;
+  text-align: left;
+}
+
+.column a:hover {
+  background-color: rgb(245, 245, 245);
+}
+
+/* Clear floats after the columns */
+.row:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+/* ↑2020/5/1 Add S.Uchida used by master menu list. */
+
+::ng-deep.mat-menu-panel {
+  max-width: none !important;
+}
+
+.master-header {
+  font-weight: bold;
+  padding-left: 5px;
+}
+
+mat-select.companySelect{
+  width: 175px;
+  background-color: white;
+  color: black;
+}

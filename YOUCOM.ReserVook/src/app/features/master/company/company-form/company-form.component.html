@@ -1,0 +1,159 @@
+<div fxLay fxLayout="row wrap" fxLayoutAlign="center start">
+  <div id="editP" fxFlex.gt-sm="40" fxFlex="100" >
+    <mat-card class="mat-card-top pa-0">
+
+      <mat-tab-group>
+        <mat-tab>
+          <ng-template matTabLabel>{{masterTitle}}</ng-template>
+          <mat-card-content class="pa-1">
+            <form fxLayout="column" [formGroup]="companyForm">
+
+              <mat-form-field class="mb-1" *ngIf="SystemAdminFlg">
+                <input matInput placeholder="会社番号" formControlName="companyNo" [readonly]="updateFlg" [ngClass]="{'readonly':updateFlg}" required>
+                <div *ngIf="companyForm.controls['companyNo'].invalid && (companyForm.controls['companyNo'].touched || companyForm.controls['companyNo'].dirty)">
+                  <small *ngIf="companyForm.controls['companyNo'].hasError('required')" class="mat-text-warn">{{msgRequid}}</small>
+                  <small *ngIf="companyForm.controls['companyNo'].hasError('pattern')" class="mat-text-warn">{{msgPatternNumber}}</small>
+                  <small *ngIf="companyForm.controls['companyNo'].hasError('maxlength')" class="mat-text-warn">{{msgMaxLengthCompanyNo}}</small>
+                </div>
+              </mat-form-field>
+
+              <mat-form-field class="mb-1">
+                <input matInput placeholder="施設名" formControlName="companyName" required>
+                <div *ngIf="companyForm.controls['companyName'].invalid && (companyForm.controls['companyName'].touched || companyForm.controls['companyName'].dirty)">
+                  <small *ngIf="companyForm.controls['companyName'].hasError('required')" class="mat-text-warn">{{msgRequid}}</small>
+                  <small *ngIf="companyForm.controls['companyName'].hasError('maxlength')" class="mat-text-warn">{{msgMaxLengthText}}</small>
+                </div>
+              </mat-form-field>
+
+              <mat-form-field class="mb-1">
+                <input matInput placeholder="郵便番号" formControlName="zipCode">
+                <div *ngIf="companyForm.controls['zipCode'].invalid && (companyForm.controls['zipCode'].touched || companyForm.controls['zipCode'].dirty)">
+                  <small *ngIf="companyForm.controls['zipCode'].hasError('pattern')" class="mat-text-warn">{{msgPatternZip}}</small>
+                </div>
+              </mat-form-field>
+
+              <mat-form-field class="mb-1">
+                <input matInput placeholder="住所" formControlName="address">
+                <div *ngIf="companyForm.controls['address'].invalid && (companyForm.controls['address'].touched || companyForm.controls['address'].dirty)">
+                  <small *ngIf="companyForm.controls['address'].hasError('maxlength')" class="mat-text-warn">{{msgMaxLengthText}}</small>
+                </div>
+              </mat-form-field>
+
+              <mat-form-field class="mb-1">
+                <input matInput placeholder="電話番号" formControlName="phoneNo">
+                <div *ngIf="companyForm.controls['phoneNo'].invalid && (companyForm.controls['phoneNo'].touched || companyForm.controls['phoneNo'].dirty)">
+                  <small *ngIf="companyForm.controls['phoneNo'].hasError('pattern')" class="mat-text-warn">{{msgPatternNumber}}</small>
+                  <small *ngIf="companyForm.controls['phoneNo'].hasError('maxlength')" class="mat-text-warn">{{msgMaxLengthPhone}}</small>
+                </div>
+              </mat-form-field>
+
+              <mat-form-field class="mb-1">
+                <input matInput placeholder="請求先" formControlName="billingAddress">
+                <div *ngIf="companyForm.controls['billingAddress'].invalid && (companyForm.controls['billingAddress'].touched || companyForm.controls['billingAddress'].dirty)">
+                  <small *ngIf="companyForm.controls['billingAddress'].hasError('maxlength')" class="mat-text-warn">{{msgMaxLengthBillingAddress}}</small>
+                </div>
+              </mat-form-field>
+
+              <mat-form-field class="mb-1">
+                <input matInput placeholder="サービス料率" formControlName="serviceRate" required>
+                <div *ngIf="companyForm.controls['serviceRate'].invalid && (companyForm.controls['serviceRate'].touched || companyForm.controls['serviceRate'].dirty)">
+                  <small *ngIf="companyForm.controls['serviceRate'].hasError('required')" class="mat-text-warn">{{msgRequid}}</small>
+                  <small *ngIf="companyForm.controls['serviceRate'].hasError('pattern')" class="mat-text-warn">{{msgPatternNumber}}</small>
+                  <small *ngIf="companyForm.controls['serviceRate'].hasError('max')" class="mat-text-warn">{{msgMaxServiceRate}}</small>
+                </div>
+              </mat-form-field>
+
+              <mat-form-field class="mb-1">
+                <input matInput placeholder="最終予約番号" formControlName="lastReserveNo" [readonly]="!SystemAdminFlg" [ngClass]="{'readonly':!SystemAdminFlg}" required>
+                <div *ngIf="companyForm.controls['lastReserveNo'].invalid && (companyForm.controls['lastReserveNo'].touched || companyForm.controls['lastReserveNo'].dirty)">
+                  <small *ngIf="companyForm.controls['lastReserveNo'].hasError('required')" class="mat-text-warn">{{msgRequid}}</small>
+                  <small *ngIf="companyForm.controls['lastReserveNo'].hasError('pattern')" class="mat-text-warn">{{msgPatternNumber}}</small>
+                  <small *ngIf="companyForm.controls['lastReserveNo'].hasError('maxlength')" class="mat-text-warn">{{msgMaxLengthLastReserveNo}}</small>
+                </div>
+              </mat-form-field>
+
+              <mat-form-field class="mb-1" *ngIf="false">
+                <input matInput placeholder="最終顧客番号" formControlName="lastCustomerNo" required >
+                <div *ngIf="companyForm.controls['lastCustomerNo'].invalid && (companyForm.controls['lastCustomerNo'].touched || companyForm.controls['lastCustomerNo'].dirty)">
+                  <small *ngIf="companyForm.controls['lastCustomerNo'].hasError('required')" class="mat-text-warn">{{msgRequid}}</small>
+                  <small *ngIf="companyForm.controls['lastCustomerNo'].hasError('pattern')" class="mat-text-warn">{{msgPatternNumber}}</small>
+                  <small *ngIf="companyForm.controls['lastCustomerNo'].hasError('maxlength')" class="mat-text-warn">{{msgMaxLengthLastCustomerNo}}</small>
+                </div>
+              </mat-form-field>
+
+              <mat-form-field class="mb-1">
+                <input matInput placeholder="最終ビル番号" formControlName="lastBillNo" [readonly]="!SystemAdminFlg" [ngClass]="{'readonly':!SystemAdminFlg}" required>
+                <div *ngIf="companyForm.controls['lastBillNo'].invalid && (companyForm.controls['lastBillNo'].touched || companyForm.controls['lastBillNo'].dirty)">
+                  <small *ngIf="companyForm.controls['lastBillNo'].hasError('required')" class="mat-text-warn">{{msgRequid}}</small>
+                  <small *ngIf="companyForm.controls['lastBillNo'].hasError('pattern')" class="mat-text-warn">{{msgPatternNumber}}</small>
+                  <small *ngIf="companyForm.controls['lastBillNo'].hasError('maxlength')" class="mat-text-warn">{{msgMaxLengthLastBillNo}}</small>
+                </div>
+              </mat-form-field>
+
+              <mat-form-field class="mb-1" *ngIf="SystemAdminFlg">
+                <mat-select placeholder="清掃・忘れ物管理使用" formControlName="lostFlg" required>
+                  <mat-option *ngFor="let op of lostFlgs" [value]="op.code">{{ op.codeName }}</mat-option>
+                </mat-select>
+                <div *ngIf="companyForm.controls['lostFlg'].invalid && (companyForm.controls['lostFlg'].touched || companyForm.controls['lostFlg'].dirty)">
+                  <small *ngIf="companyForm.controls['lostFlg'].hasError('required')" class="mat-text-warn">{{msgRequid}}</small>
+                </div>
+              </mat-form-field>
+
+              <mat-form-field class="mb-1" *ngIf="SystemAdminFlg">
+                <input matInput placeholder="保存期間(年)" formControlName="savePeriod" required>
+                <div *ngIf="companyForm.controls['savePeriod'].invalid && (companyForm.controls['savePeriod'].touched || companyForm.controls['savePeriod'].dirty)">
+                  <small *ngIf="companyForm.controls['savePeriod'].hasError('required')" class="mat-text-warn">{{msgRequid}}</small>
+                  <small *ngIf="companyForm.controls['savePeriod'].hasError('maxlength')" class="mat-text-warn">{{msgMaxLengtSavePeriod}}</small>
+                </div>
+              </mat-form-field>
+
+              <mat-form-field class="mb-1" *ngIf="SystemAdminFlg">
+                <mat-select placeholder="TrustYou連携区分" formControlName="trustyouConnectDiv" required>
+                  <mat-option *ngFor="let div of trustyouConnectDivs" [value]="div.code">{{ div.codeName }}</mat-option>
+                </mat-select>
+                <div *ngIf="companyForm.controls['trustyouConnectDiv'].invalid && (companyForm.controls['trustyouConnectDiv'].touched || companyForm.controls['trustyouConnectDiv'].dirty)">
+                  <small *ngIf="companyForm.controls['trustyouConnectDiv'].hasError('required')" class="mat-text-warn">{{msgRequid}}</small>
+                </div>
+              </mat-form-field>
+
+              <mat-form-field class="mb-1" *ngIf="SystemAdminFlg">
+                <mat-select placeholder="会社グループ名" formControlName="companyGroupId">
+                  <mat-option *ngFor="let value of M_CompanyGroup" [value]="value.companyGroupId">{{ value.companyGroupName }}</mat-option>
+                </mat-select>
+              </mat-form-field>
+
+              <small>明細書ロゴ</small>
+              <div fxLayout="row">
+                <input type="file" style="display: none" #fileInput accept="image/*" (change)="onChangeFileInput($event)" />
+                <button mat-raised-button color="primary" class="file-select-button" (click)="onClickFileSelectButton()">
+                 <mat-icon>attach_file</mat-icon>
+                  ファイルを選択
+                </button>
+
+                <div fxLayout="column">
+                  <div>　※明細書印字の推奨画像サイズ：270×80px</div>
+                  <div>　未指定の場合、明細書に施設名、住所、電話番号が印字されます</div>
+                </div>
+              </div>
+
+              <div class="file-name" *ngIf="!file; else fileName">ファイルが選択されていません</div>
+              <ng-template #fileName>
+                <div class="file-name">{{ file?.name }}</div>
+              </ng-template>
+
+              <img [src]=imageSrc alt="" width="500" height="150">
+
+            </form>
+          </mat-card-content>
+        </mat-tab>
+      </mat-tab-group>
+
+      <mat-card-actions class="pa-1">
+        <button mat-raised-button color="primary" (click)="onSubmit()"  [disabled]="companyForm.invalid">保存</button>
+        <button mat-raised-button color="accent" (click)="cancel()">中止</button>
+      </mat-card-actions>
+
+    </mat-card>
+
+  </div>
+</div>

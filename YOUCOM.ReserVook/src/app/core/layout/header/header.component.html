@@ -1,0 +1,219 @@
+<mat-toolbar id="header" class="main-header" color="primary" *ngIf="header.visible">
+
+  <div class="branding">
+    <div class="logo"></div>
+  </div>
+
+  <!-- スーパー管理者用ヘッダメニュー -->
+  <div *ngIf="isSuperAdmin">
+    <a mat-button [routerLink]="'/master/company/list'"> 会社管理 </a>
+    <a mat-button [routerLink]="'/master/companygroup/list'"> 会社グループ管理 </a>
+    <a mat-button [routerLink]="'/company/staffs/list'"> ユーザー管理 </a>
+  </div>
+
+  <!-- 管理者・一般ユーザー用ヘッダメニュー -->
+  <div fxFlex="grow" fxLayout ="row" *ngIf="!isSuperAdmin">
+
+    <!-- 複数施設切替メニュー -->
+    <mat-select *ngIf="header.changeableCompany" class="companySelect" [(ngModel)]="dispCompany" (selectionChange)="changeCompany($event)" matTooltip="{{getToolTipDEata(dispCompany)}}"  >
+      <mat-option *ngFor="let value of M_CompanyGroups" [value]="value.companyNo">{{ value.companyName }}</mat-option>
+    </mat-select>
+
+    <mat-select *ngIf="!header.changeableCompany" class="companySelect" [(ngModel)]="dispCompany" matTooltip="{{getToolTipDEata(dispCompany)}}" >
+      <mat-option *ngFor="let value of M_MyCompanyList" [value]="value.companyNo">{{ value.companyName }}</mat-option>
+    </mat-select>
+
+    <ng-container *ngIf="!hideMenu()">
+      <a mat-button [matMenuTriggerFor]="situation">
+        <span>アサイン・会場状況</span><mat-icon>arrow_drop_down</mat-icon>
+      </a>
+
+      <a mat-button [routerLink]="'/company/reserve'"> 予約登録 </a>
+      <a mat-button [routerLink]="'/company/ledger'"> 台帳 </a>
+      <a mat-button [routerLink]="'/company/confirmincome'"> 入金点検 </a>
+      <a mat-button [routerLink]="'/company/webreserves'"> WEB予約一覧 </a>
+
+      <a mat-button [matMenuTriggerFor]="datamanagement">
+        <span>データ連携</span><mat-icon>arrow_drop_down</mat-icon>
+      </a>
+
+      <a mat-button [matMenuTriggerFor]="option" *ngIf="loggedInCompany.lostFlg==enumLostFlg.Used.toString() || trustyouFlg">
+        <span>オプション機能</span><mat-icon>arrow_drop_down</mat-icon>
+      </a>
+
+      <a mat-button [matMenuTriggerFor]="report">
+        <span>帳票管理</span><mat-icon>arrow_drop_down</mat-icon>
+      </a>
+
+      <a mat-button [matMenuTriggerFor]="masterWide" *ngIf="loggedInUser.roleDivision == enumRole.Admin.toString()">
+        <span>マスタ管理</span><mat-icon>arrow_drop_down</mat-icon>
+      </a>
+
+    </ng-container>
+
+    <!-- メニューボタン -->
+    <ng-container *ngIf="hideMenu()">
+      <button [matMenuTriggerFor]="matMenus" mat-icon-button class="ml-xs">
+        <span>メニュー</span><mat-icon>arrow_drop_down</mat-icon>
+        <!-- <mat-icon>menu</mat-icon> -->
+      </button>
+
+      <mat-menu #matMenus="matMenu" x-position="before">
+        <button mat-menu-item [matMenuTriggerFor]="situation">アサイン・会場状況</button>
+        <button mat-menu-item [routerLink]="'/company/reserve'"> 予約登録 </button>
+        <button mat-menu-item [routerLink]="'/company/ledger'"> 台帳 </button>
+        <button mat-menu-item [routerLink]="'/company/confirmincome'"> 入金点検 </button>
+        <button mat-menu-item [matMenuTriggerFor]="datamanagement">データ連携</button>
+        <button mat-menu-item [routerLink]="'/company/webreserves'"> WEB予約一覧 </button>
+        <button mat-menu-item [matMenuTriggerFor]="option"*ngIf="loggedInCompany.lostFlg==enumLostFlg.Used.toString() || trustyouFlg">オプション機能</button>
+        <button mat-menu-item [matMenuTriggerFor]="report">帳票管理</button>
+        <button mat-menu-item [matMenuTriggerFor]="masterNarrow"
+          *ngIf="loggedInUser.roleDivision == enumRole.Admin.toString()" >マスタ管理</button>
+
+      </mat-menu>
+
+    </ng-container>
+  </div>
+
+  <div fxFlexOffset="auto" class="right">
+
+    <button *ngIf="!isSuperAdmin" (click)="toNameSearch()" mat-icon-button>
+      <mat-icon>search</mat-icon>
+    </button>
+
+    <button (click)="fullScreenToggle()" mat-icon-button>
+      <span [hidden]="isFullScreen()"><mat-icon style="vertical-align: middle;" matTooltip="全画面表示にします。">fullscreen</mat-icon></span>
+      <span [hidden]="!isFullScreen()"><mat-icon style="vertical-align: middle;" matTooltip="全画面表示を終了します。">fullscreen_exit</mat-icon></span>
+    </button>
+
+    <button [matMenuTriggerFor]="user" mat-button>
+      {{loggedInUser.userName}}
+      <mat-icon>person</mat-icon>
+    </button>
+    <mat-menu #user="matMenu" x-position="before">
+      <button mat-menu-item *ngIf="!isSuperAdmin" (click)="toAccountSettings()">
+        <mat-icon>settings</mat-icon>
+        アカウント設定
+      </button>
+      <button mat-menu-item (click)="logout()">
+        <mat-icon>exit_to_app</mat-icon>
+        ログアウト
+      </button>
+    </mat-menu>
+
+  </div>
+
+  <!-- メニュー -->
+  <mat-menu #situation="matMenu">
+    <a mat-menu-item [routerLink]="'/company/rooms'"> アサイン状況 </a>
+    <a mat-menu-item [routerLink]="'/company/nonassign'"> 未アサイン一覧 </a>
+    <a mat-menu-item [routerLink]="'/company/bookings'"> 連泊状況 </a>
+    <a mat-menu-item [routerLink]="'/company/facility/assign'"> 会場状況 </a>
+  </mat-menu>
+
+  <mat-menu #datamanagement="matMenu">
+    <a mat-menu-item [routerLink]="'/company/dataimport'"> データインポート </a>
+    <a mat-menu-item [routerLink]="'/company/dataexport'"> データエクスポート </a>
+  </mat-menu>
+
+  <mat-menu #option="matMenu">
+    <ng-container *ngIf="loggedInCompany.lostFlg==enumLostFlg.Used.toString()">
+      <a mat-menu-item [routerLink]="'/company/lostitemlist/list'"> 忘れ物一覧 </a>
+    </ng-container>
+    <ng-container *ngIf="trustyouFlg">
+      <a mat-menu-item [routerLink]="'/company/trustyou'"> TrustYou連携 </a>
+    </ng-container>
+  </mat-menu>
+
+  <mat-menu #report="matMenu">
+    <a mat-menu-item [routerLink]="'/company/salesreport/daily'"> 売上日報 </a>
+    <a mat-menu-item [routerLink]="'/company/salesreport/monthly'"> 売上月報 </a>
+    <a mat-menu-item [routerLink]="'/company/cleanings'"> クリーニングレポート  </a>
+    <a mat-menu-item [routerLink]="'/company/dishreport'"> 料理日報  </a>
+  </mat-menu>
+
+  <mat-menu #masterWide="matMenu" style="width: auto; overflow: none;">
+    <div fxLayout="row">
+
+      <div fxLayout="column">
+        <div class="master-header">各種マスタ</div>
+        <a mat-menu-item [routerLink]="'/master/item/list'"> 商品マスタ </a>
+        <a mat-menu-item [routerLink]="'/master/setitem/list'"> セット商品マスタ </a>
+        <a mat-menu-item [routerLink]="'/master/agent/list'"> エージェントマスタ</a>
+        <a mat-menu-item [routerLink]="'/master/denomination/list'"> 金種マスタ </a>
+        <a mat-menu-item [routerLink]="'/master/customer/list'"> 顧客マスタ </a>
+      </div>
+
+      <div fxLayout="column">
+        <div class="master-header">施設関係マスタ</div>
+        <a mat-menu-item [routerLink]="['/master/company/list']"> システムマスタ</a>
+        <a mat-menu-item [routerLink]="['/master/codename/list/', divisionCode_Floor]"> フロアマスタ </a>
+        <a mat-menu-item [routerLink]="['/master/codename/list/', divisionCode_Roomtype]"> 部屋タイプマスタ </a>
+        <a mat-menu-item [routerLink]="'/master/rooms/list'"> 部屋マスタ </a>
+        <a mat-menu-item [routerLink]="'/master/facility/list'"> 会場マスタ </a>
+      </div>
+
+      <div fxLayout="column">
+        <div class="master-header">WEB連携</div>
+        <a mat-menu-item [routerLink]="'/master/sitecontroller/list'"> 基本マスタ </a>
+        <a mat-menu-item [routerLink]="'/master/siteconvert/list'"> サイト変換マスタ </a>
+        <a mat-menu-item [routerLink]="'/master/planconvert/list'"> プラン変換マスタ </a>
+        <a mat-menu-item [routerLink]="'/master/roomtypeconvert/list'"> 部屋タイプ変換マスタ </a>
+        <a mat-menu-item [routerLink]="'/master/paymentconvert/list'"> 支払方法変換マスタ </a>
+        <a mat-menu-item [routerLink]="'/master/pointconvert/list'"> ポイント変換マスタ </a>
+        <a mat-menu-item [routerLink]="'/master/remarksconvert/list'"> 備考変換マスタ </a>
+      </div>
+
+      <div fxLayout="column" *ngIf="loggedInCompany.lostFlg==enumLostFlg.Used.toString()">
+        <div class="master-header">忘れ物管理</div>
+        <a mat-menu-item [routerLink]="'/master/loststate/list'">　状態設定マスタ </a>
+        <a mat-menu-item [routerLink]="['/master/codename/list',divisionCode_State]">　場所分類設定マスタ </a>
+        <a mat-menu-item [routerLink]="['/master/codename/list',divisionCode_Strage]">　保管分類設定マスタ </a>
+      </div>
+    </div>
+
+  </mat-menu>
+
+  <mat-menu #masterNarrow="matMenu">
+    <a mat-menu-item [matMenuTriggerFor]="MEtc">各種マスタ</a>
+    <a mat-menu-item [matMenuTriggerFor]="MCEtc">施設関係マスタ</a>
+    <a mat-menu-item [matMenuTriggerFor]="MWeb">WEB連携</a>
+    <a mat-menu-item [matMenuTriggerFor]="MCL" *ngIf="loggedInCompany.lostFlg==enumLostFlg.Used.toString()">忘れ物管理</a>
+  </mat-menu>
+
+  <mat-menu #MEtc="matMenu">
+    <a mat-menu-item [routerLink]="'/master/item/list'"> 商品マスタ </a>
+    <a mat-menu-item [routerLink]="'/master/setitem/list'"> セット商品マスタ </a>
+    <a mat-menu-item [routerLink]="'/master/agent/list'"> エージェントマスタ</a>
+    <a mat-menu-item [routerLink]="'/master/denomination/list'"> 金種マスタ </a>
+    <a mat-menu-item [routerLink]="'/master/customer/list'"> 顧客マスタ </a>
+  </mat-menu>
+
+  <mat-menu #MCEtc="matMenu">
+    <a mat-menu-item [routerLink]="['/master/company/list']"> システムマスタ</a>
+    <a mat-menu-item [routerLink]="['/master/codename/list/', divisionCode_Floor]"> フロアマスタ </a>
+    <a mat-menu-item [routerLink]="['/master/codename/list/', divisionCode_Roomtype]"> 部屋タイプマスタ </a>
+    <a mat-menu-item [routerLink]="'/master/rooms/list'"> 部屋マスタ </a>
+    <a mat-menu-item [routerLink]="'/master/facility/list'"> 会場マスタ </a>
+  </mat-menu>
+
+  <mat-menu #MWeb="matMenu">
+    <a mat-menu-item [routerLink]="'/master/sitecontroller/list'"> 基本マスタ </a>
+    <a mat-menu-item [routerLink]="'/master/siteconvert/list'"> サイト変換マスタ </a>
+    <a mat-menu-item [routerLink]="'/master/planconvert/list'"> プラン変換マスタ </a>
+    <a mat-menu-item [routerLink]="'/master/roomtypeconvert/list'"> 部屋タイプ変換マスタ </a>
+    <a mat-menu-item [routerLink]="'/master/paymentconvert/list'"> 支払方法変換マスタ </a>
+    <a mat-menu-item [routerLink]="'/master/pointconvert/list'"> ポイント変換マスタ </a>
+    <a mat-menu-item [routerLink]="'/master/remarksconvert/list'"> 備考変換マスタ </a>
+  </mat-menu>
+
+  <mat-menu #MCL="matMenu">
+    <a mat-menu-item [routerLink]="'/master/loststate/list'"> 状態設定マスタ </a>
+    <a mat-menu-item [routerLink]="['/master/codename/list/',divisionCode_State]"> 場所分類設定マスタ </a>
+    <a mat-menu-item [routerLink]="['/master/codename/list/',divisionCode_Strage]"> 保管分類設定マスタ </a>
+  </mat-menu>
+
+
+</mat-toolbar>
+
+

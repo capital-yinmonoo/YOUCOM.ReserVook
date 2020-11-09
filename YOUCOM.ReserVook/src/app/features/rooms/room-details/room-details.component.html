@@ -1,0 +1,154 @@
+<div id="container" fxLayout="column" fxLayoutAlign="start start" >
+
+  <!-- ヘッダ部 -->
+  <div id="header" fxFlex fxFill style="padding-top: 20px; padding-left: 20px; padding-right: 20px; height: auto;">
+    <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="5px">
+      <!-- Title -->
+      <div class="left" style="font-size: 24px;font-weight: bold;">部屋割詳細</div>
+      &nbsp;&nbsp;
+
+      <!-- ReserveNo -->
+      <div class="center midium" *ngIf="reserveNo != null">予約番号:{{reserveNo}} </div>
+
+      &nbsp;&nbsp;
+
+      <!-- SaveBtn -->
+      <div fxFlexOffset="auto">
+        <button mat-raised-button color="primary" [disabled]="CheckInvalid()" (click)="save()" >保存</button>
+        &nbsp;
+        <button mat-raised-button color="accent" (click)="goBack()" >戻る</button>
+      </div>
+
+    </div>
+  </div>
+
+  <div id="body" fxFlex fxLayout="column" fxLayoutAlign="start start" fxLayoutGap="5px" style="margin-top: 10px;">
+
+    <div id="condition" fxFlex >
+      <div fxLayout="row" fxLayoutAlign="start center" style="padding-left: 20px;">
+        <!-- DatePicker -->
+        <mat-form-field class="UseDateField">
+          <span matPrefix class="Prefix">利用日:</span>
+          <input matInput class="UseDate" [disabled]="CheckInvalid()" [min]="minUseDate" [max]="maxUseDate" [matDatepicker]="picker" [(ngModel)]="inputDate" (dateInput)="fillterByUseDate()">
+          <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+          <mat-datepicker #picker></mat-datepicker>
+        </mat-form-field>
+
+        &nbsp;&nbsp;
+
+        <!-- DatePickerBtn -->
+        <div class="con-float datetool-parent">
+          <fieldset [disabled]="CheckInvalid()" style="border: none; padding: 0px;">
+            <datetool [CurrDate]="inputDate" [MinDate]="minUseDate" [MaxDate]="maxUseDate" (DateChange)="onChangeDate($event)"></datetool>
+          </fieldset>
+        </div>
+
+        &nbsp;&nbsp;
+        &nbsp;&nbsp;
+
+        <!-- 泊数 -->
+        <div class="midium" fxLayoutAlign="center center" style="width: auto;">{{currentNight}}</div>
+
+      </div>
+    </div>
+
+    <!-- Views -->
+    <div id="view" class="view" fxFlex [formGroup]="assignForm">
+      <ng-container [formArrayName]="assignFormListName">
+        <ngx-datatable class="material roomDetails" [rows]="assignForm.get(assignFormListName).value" [columnMode]="'ColumnMode.standard'" [count]=""
+          [scrollbarV]="false" [scrollbarH]="true" [headerHeight]="50"  [footerHeight]="'auto'" [rowHeight]="'auto'" [messages]="ngx_table_messages">
+
+          <ngx-datatable-column *ngFor="let col of assignListHeaderColumns" [name]="col.name" [prop]="col.prop" [width]="col.width" [frozenLeft]="col.flozenleft">
+
+            <!-- Column Header -->
+            <ng-template ngx-datatable-header-template>
+              <div [ngClass]="col.required ? 'required' : ''">{{col.name}}</div>
+            </ng-template>
+
+            <!-- Details -->
+            <ng-template let-value="value" let-row="row" let-rowIndex="rowIndex" ngx-datatable-cell-template>
+
+              <ng-container class="column" *ngIf="col.type == 'label'">
+                <div [ngStyle]="{'text-align': col.textalign}" [formGroupName]="rowIndex">
+                  <span>{{value}}</span>
+                </div>
+              </ng-container>
+
+              <ng-container class="column" *ngIf="col.type =='text'">
+                <div [formGroupName]="rowIndex">
+                  <mat-form-field [ngStyle]="{'text-align': col.textalign}">
+                    <input matInput type="text" [value]="value" (change)="changeValue($event, rowIndex, col.type, col.prop)" [formControlName]="col.prop">
+                  </mat-form-field>
+                </div>
+              </ng-container>
+
+              <ng-container class="column" *ngIf="col.type == 'number'">
+                <div [formGroupName]="rowIndex">
+                  <mat-form-field [ngStyle]="{'text-align': col.textalign}">
+                    <input matInput type="number" [value]="value" (change)="changeValue($event, rowIndex, col.type, col.prop)" [formControlName]="col.prop">
+                  </mat-form-field>
+                </div>
+              </ng-container>
+
+              <ng-container class="column" *ngIf="col.type =='button'">
+                <div *ngIf="CheckStayDays()" [ngStyle]="{'text-align': col.textalign}" [formGroupName]="rowIndex">
+                  <ng-container [ngSwitch]="col.prop">
+                    <button *ngSwitchCase="'copy1'" class="button" mat-stroked-button color="basic" [disabled]="CheckInvalid()" (click)="copyTo(row, true)">翌日にコピー</button>
+                    <button *ngSwitchCase="'copy2'" class="button" mat-stroked-button color="basic" [disabled]="CheckInvalid()" (click)="copyTo(row, false)">翌日以降にコピー</button>
+                  </ng-container>
+                </div>
+              </ng-container>
+
+
+            </ng-template>
+
+          </ngx-datatable-column>
+
+          <!-- Footer (Validate) -->
+          <ngx-datatable-footer>
+            <ng-template ngx-datatable-footer-template>
+              <div style="padding: 5px 10px">
+
+                <div *ngFor="let form of assignFormGroupList; let rowIndex = index">
+                  <ngx-datatable-column *ngFor="let col of assignListHeaderColumns" [name]="col.name" [prop]="col.prop" [width]="col.width" >
+
+                    <div *ngIf="form.controls[col.prop].invalid && (form.controls[col.prop].touched || form.controls[col.prop].dirty)">
+                      <div *ngIf="form.controls[col.prop].hasError('required')" class="mat-text-warn msg-error">{{rowIndex + 1}}{{msgLine}} {{col.name}}{{msgIs}}{{msgRequid}}</div>
+                      <div *ngIf="form.controls[col.prop].hasError('pattern')" class="mat-text-warn msg-error">{{rowIndex + 1}}{{msgLine}} {{col.name}}{{msgIs}}{{col.pattern}}</div>
+                      <div *ngIf="form.controls[col.prop].hasError('maxlength')" class="mat-text-warn msg-error">{{rowIndex + 1}}{{msgLine}} {{col.name}}{{msgIs}}{{col.max}}</div>
+                      <div *ngIf="form.controls[col.prop].hasError('min')" class="mat-text-warn msg-error">{{rowIndex + 1}}{{msgLine}} {{col.name}}{{msgIs}}{{col.min}}</div>
+                      <div *ngIf="form.controls[col.prop].hasError('max')" class="mat-text-warn msg-error">{{rowIndex + 1}}{{msgLine}} {{col.name}}{{msgIs}}{{col.max}}</div>
+                    </div>
+
+                  </ngx-datatable-column>
+                </div>
+
+              </div>
+            </ng-template>
+          </ngx-datatable-footer>
+
+        </ngx-datatable>
+      </ng-container>
+    </div>
+
+    <!-- total -->
+    <div id="total" fxFlex [style.width]="'auto'">
+      <ngx-datatable class="material roomDetails" [rows]="totalList" [columnMode]="'ColumnMode.standard'"
+        [scrollbarV]="false" [scrollbarH]="false" [headerHeight]="0"  [footerHeight]="0" [rowHeight]="50" [messages]="ngx_table_messages" >
+
+        <ngx-datatable-column *ngFor="let col of assignListHeaderColumns" [name]="col.name" [prop]="col.prop" [width]="col.width">
+          <ng-template let-value="value" let-row="row" let-rowIndex="rowIndex" ngx-datatable-cell-template>
+
+            <ng-container class="column" *ngIf="col.total">
+              <div [ngStyle]="{'text-align': col.textalign}">
+                {{value}}
+              </div>
+            </ng-container>
+
+          </ng-template>
+        </ngx-datatable-column>
+
+      </ngx-datatable>
+    </div>
+  </div>
+</div>

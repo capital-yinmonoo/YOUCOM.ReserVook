@@ -1,0 +1,388 @@
+/* 印刷時の用紙設定 */
+@page {
+  size: A4 !important; /* 用紙サイズ */
+  margin: 0 !important;/* ヘッダー・フッダーを無効化 */
+}
+
+/* 要素の初期化 */
+* {
+  margin: 0mm;
+  padding: 0mm;
+
+  /* デフォルトのフォント */
+  color: #000000;
+  font-family: "游ゴシック Medium", "Yu Gothic Medium", "游ゴシック体", YuGothic, sans-serif;
+  font-size: 10pt;
+  font-weight: normal;
+
+  /* 背景色・背景画像を印刷する（Chromeのみで有効） */
+  -webkit-print-color-adjust: exact;
+
+  /* 空白を印字する */
+  white-space: pre;
+}
+
+/* リスト初期化 */
+ul {
+  list-style: none;
+  padding-left: 0;
+}
+
+/* ページレイアウト (section.sheet を１ページとする) */
+.sheet {
+  overflow: hidden;
+  position: relative;
+  box-sizing: border-box;
+  page-break-after: always;
+
+  /* 用紙サイズ A4 */
+  height: 297mm;
+  width: 210mm;
+
+  /* 余白サイズ */
+  padding-top: 10mm;
+  padding-left: 10mm;
+  padding-right: 10mm;
+}
+
+/* プレビュー用のスタイル */
+@media screen {
+  body {
+    background: #e0e0e0;
+    size: 80%;
+  }
+  .sheet {
+    background: white; /* 背景を白く */
+    box-shadow: 0 0.5mm 2mm rgba(0, 0, 0, 0.3); /* ドロップシャドウ */
+    margin: 5mm auto;
+  }
+
+}
+
+/* 汎用クラス */
+.text-left {
+  text-align: left !important;
+}
+.text-center {
+  text-align: center !important;
+}
+.text-right {
+  text-align: right !important;
+}
+.clear-element {
+  clear: both;
+}
+hr{
+  background-color: black;
+}
+
+/* 大枠の指定 */
+/* ヘッダタイトル*/
+div.row_header {
+  height: 20mm;
+}
+div.row_header div.col_1 {
+  width: 33.3%;
+  float: left;
+}
+div.row_header div.col_2 {
+  position: relative;
+  width: 33.3%;
+  float: left;
+}
+div.row_header div.col_3 {
+  position: relative;
+  width: 33.3%;
+  float: left;
+}
+
+/* ヘッダ基本情報*/
+div.row_header_info {
+  height: 25mm;
+}
+div.row_header_info div.col_1 {
+  width: 120mm;
+  float: left;
+}
+div.row_header_info div.col_2 {
+  position: relative;
+  width: 70mm;
+  float: left;
+}
+
+/* 明細*/
+div.row_details {
+  height: 131mm;
+}
+
+/* フッタ*/
+div.row_fotter {
+  height: 16mm;
+}
+div.row_fotter div.col_1 {
+  width: 105mm;
+  float: left;
+}
+div.row_fotter div.col_2 {
+  position: relative;
+  text-align: right;
+  width: 85mm;
+  float: left;
+}
+div.row_fotter div.note{
+  font-size: xx-small;
+}
+
+div.row_fotter_2{
+  height: 30mm;
+}
+
+/* 領収書 ヘッダタイトル*/
+div.row_receipt_header {
+  height: 18mm;
+}
+div.row_receipt_header div.col_1 {
+  width: 33.3%;
+  float: left;
+}
+div.row_receipt_header div.col_2 {
+  position: relative;
+  width: 33.3%;
+  float: left;
+}
+div.row_receipt_header div.col_3 {
+  position: relative;
+  width: 33.3%;
+  float: left;
+}
+
+/* 領収書 ボディ*/
+div.row_receipt_body {
+  height: 50mm;
+}
+div.row_receipt_body div.col_1 {
+  margin-left: 3mm;
+  width: 105mm;
+  float: left;
+}
+div.row_receipt_body div.col_2 {
+  position: relative;
+  margin-top: 15mm;
+  margin-left: 2mm;
+  width: 23mm;
+  float: left;
+}
+div.row_receipt_body div.col_3 {
+  position: relative;
+  margin-top: 15mm;
+  margin-left: 2mm;
+  width: 52mm;
+  float: left;
+}
+
+.company{
+  display : table;
+  table-layout : fixed;
+  width : inherit ;
+}
+
+.break{
+  display : table-cell;
+  word-wrap : break-word;
+  overflow-wrap : break-word;
+  /* 空白を印字する */
+  white-space: pre-line !important;
+}
+
+/* 個別のスタイル指定 */
+/* タイトル */
+h1 {
+  font-size: 20px;
+  font-weight: normal;
+  letter-spacing: 10px;
+}
+
+/* 領収金額 */
+h2 {
+  font-size: 20px;
+  font-weight: normal;
+}
+
+/* 顧客名 */
+.customer_name {
+  display : table-cell;
+  border-bottom: 1px solid black;
+  min-width : 80mm;
+}
+
+/* 会社名 */
+.firm {
+  display : table-cell;
+  border-bottom: 1px solid black;
+  min-width : 110mm;
+}
+
+// .company{
+//   display : table;
+//   table-layout : fixed;
+//   width : 100% ;
+// }
+
+// .break{
+//   width: 200px;
+//   min-width: 200px;
+//   max-width: 200px;
+//   display : table-cell;
+//   word-wrap : break-word;
+//   overflow-wrap : break-word;
+//   /* 空白を印字する */
+//   white-space: pre-line !important;
+// }
+
+/* ロゴ */
+img.logo{
+  position: absolute;
+  z-index: 1;
+  top: 10mm;
+  left: 48mm;
+  height: 17mm;
+  width: 17mm;
+}
+
+/* 印紙 */
+div.stamp{
+  width: 21mm;
+  height: 25mm;
+  border: 1;
+  border-style: dotted;
+  border-width: 1px;
+}
+
+/* 領収書 */
+.receipt{
+  background: #bebebe;
+  width: 105mm;
+}
+
+/* テーブル */
+/* お名前 */
+table.underline,
+table.underline tr,
+table.underline td {
+  border: none;
+  border-bottom: 1px solid black;
+}
+
+table.underline td.HeaderBillName {
+  width: 120mm;
+  text-align: left;
+  font-weight: bolder;
+}
+
+table.underline td.ReceiptBillName {
+  width: 105mm;
+  text-align: left;
+  font-weight: bolder;
+}
+
+/* 税率毎金額 明細部 */
+table.tax td.taxrate {
+  width: 15mm;
+}
+table.tax td.includeTaxAmount {
+  width: 20mm;
+}
+table.tax td.conTax {
+  width: 32mm;
+}
+table.tax td.consumptionTax {
+  width: 18mm;
+}
+table.tax,
+table.tax td {
+  border: 0;
+  border-collapse: unset;
+  padding: 0;
+}
+
+/* 税率毎金額 領収部*/
+table.tax2 td.taxrate {
+  width: 12mm;
+  height: 2mm;
+}
+table.tax2 td.includeTaxAmount {
+  width: 15mm;
+  height: 2mm;
+}
+table.tax2 td.conTax {
+  width: 25mm;
+  height: 2mm;
+}
+table.tax2 td.consumptionTax {
+  width: 15mm;
+  height: 2mm;
+}
+table.tax2,
+table.tax2 td {
+  border: 0;
+  border-collapse: unset;
+  padding: 0;
+  font-size: xx-small;
+  line-height: 0.5;
+  height: 2mm;
+}
+
+/* テーブル　共通 */
+table,
+th,
+td {
+  border: 1px #000000 solid;
+  border-collapse: collapse;
+  padding: 1px 2px;
+}
+table th {
+  background: #bebebe;
+  font-weight: normal;
+}
+table td {
+  text-align: right;
+}
+
+/* テーブル 総額欄 */
+table.summary th {
+  font-size: 14pt;
+  width: 32mm;
+}
+table.summary td {
+  font-size: 14pt;
+  width: 40mm;
+}
+
+/* テーブル 明細欄 */
+table.detail {
+  width: 100%;
+}
+table.detail tr {
+  height: 6mm;
+}
+table.detail th.date {
+  width: 18mm;
+}
+table.detail th.description {
+  width: 70mm;
+}
+table.detail th.price {
+  width: 20mm;
+}
+table.detail th.qty {
+  width: 18mm;
+}
+table.detail th.charges {
+  width: 26mm;
+}
+table.detail th.paid {
+  width: 22mm;
+}
+
+
+

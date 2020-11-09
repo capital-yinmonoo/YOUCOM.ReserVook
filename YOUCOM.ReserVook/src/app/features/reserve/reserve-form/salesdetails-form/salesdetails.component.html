@@ -1,0 +1,26 @@
+
+<!-- ページング関連 -->
+<!-- <mat-paginator [length]="length" [pageSize]="pageSize" [pageSizeOptions]="pageSizeOptions" (page)="getPaginatorData($event)"></mat-paginator>
+<li *ngFor="let day of StayDays| slice: limit: offset" style="list-style: none;"> -->
+
+<li *ngFor="let day of StayDays" style="list-style: none;">
+  <mat-card fxLayoutGap="10px">
+    <div class="goods" fxLayout="column" style="width: 100%;">
+      <!-- 泊数 -->
+      <table style="width:200px; font-size: large;">
+        <tr><td><span>{{ day }} 泊目</span></td></tr>
+      </table>
+      &nbsp;
+      <items [Days]="day" [UseDate]="setUseDate(day)" [MasterInfo]="MasterInfo" [SalesDetailsList]="setSalesDetails(day)" [DisabledFlag]="DisabledFlag" [MaxSetItemSeq]="MaxSetItemSeq"></items>
+    </div>
+  </mat-card>
+</li>
+
+<div style="height: 10px;"></div>
+
+<span class="Message">
+  小計: ¥{{salesSubTotal  | number}} &nbsp;&nbsp;
+  外サービス料: ¥{{outsideService  | number}} &nbsp;&nbsp;
+  合計: ¥{{salesTotal  | number}} &nbsp;&nbsp;
+  内消費税: ¥{{insideTax  | number}}
+</span>

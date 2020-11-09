@@ -1,0 +1,72 @@
+mat-icon{
+  display: inline-flex;
+  vertical-align: middle;
+}
+
+#rooms-list {
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+
+  // アサインテーブル
+  .left {
+    width: 80%;
+    .rows {
+      width: 100%;
+      display: flex;
+    }
+    .list-horizontal {
+      float: right;
+    }
+    .rooms { /*部屋パネル*/
+      margin: 1px;
+      height: 80px;
+      width: 120px;
+      position: relative;
+      border:1px solid #ffffff;
+
+      .roominfo { /*存在する部屋*/
+        height: 80px;
+        width: 120px;
+        display: inline-block;
+        -webkit-appearance: button;
+      }
+
+      .roomHighlight{ /*DnDの枠線*/
+        border:2px solid #ffb6c1;
+      }
+
+      .dragwrapper { /*DnD*/
+        top: 0px;
+        left: 0px;
+        height: 80px;
+        width: 120px;
+        position: absolute;
+        z-index: 10;
+      }
+
+    }
+
+  }
+
+  // 未アサイン一覧
+  .right {
+    width: 20%;
+  }
+
+  .noSettingList{
+    .button { /*未アサインカード*/
+      margin-top: 0px !important;
+      display: inline-block;
+      -webkit-appearance: button;
+      padding: 5px 10px 5px 10px;
+      font-size: 13px;
+      position: relative;
+      cursor: context-menu;
+      width: 250px;
+      background-color: #dddddd;
+      border: 2px solid #aaaaaa;
+      z-index: 100;
+    }
+  }
+}

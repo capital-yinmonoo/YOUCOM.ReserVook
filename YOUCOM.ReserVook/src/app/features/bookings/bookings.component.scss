@@ -1,0 +1,144 @@
+#container {
+  height: calc(100vh - 65px);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+#search {
+  flex: 0 0 auto;
+  height: 50px;
+  width: 100%;
+  margin-bottom: 12px;
+}
+
+#table {
+  flex: 1 1 auto;
+  width: 100%;
+  position: relative;
+}
+
+#table-container {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  overflow: auto;
+}
+
+#table-container table {
+  width: 100%;
+}
+
+.con-header {
+  height: 50px;
+}
+
+.con-title-font {
+  margin-top: 15px;
+  font-size: 24px;
+  font-weight: bold;
+  margin-right: 10px;
+  float: left;
+}
+
+.Prefix{
+  padding-right: 10px;
+}
+
+.con-dropdown {
+  width: 150px;
+}
+
+.con-checkbox {
+  margin-top: 15px;
+}
+
+.con-float {
+  margin-left: 10px;
+  float: left;
+}
+
+.table-top {
+  margin-top: 10px;
+  clear: both;
+}
+
+table {
+  width: 100%;
+}
+
+.datetool-parent {
+  height: 100%;
+}
+
+.table-container {
+  /* height: 400px; */
+  width: 100%;
+  overflow: auto;
+}
+table {
+  /* row spacing / margin */
+  border-spacing: 0 0px !important;
+  border-collapse: collapse;
+}
+th.mat-header-cell,
+td.mat-cell {
+  text-align: center;
+  font-weight: bold;
+}
+
+th.mat-header-cell,
+td.mat-cell {
+  /* row padding */
+  padding: 0px 0px;
+  /* row border */
+  border-top: 1px solid #dddddd;
+  border-right: 1px solid #dddddd;
+  border-bottom: 1px solid #dddddd;
+  border-left: 1px solid #dddddd;
+}
+
+td.mat-cell:first-of-type
+, td.mat-footer-cell:first-of-type
+, th.mat-header-cell:first-of-type {
+  padding-left: 0px;
+}
+
+td.mat-cell:last-child {
+  /* row border */
+  border-right: 1px solid #dddddd;
+  border-bottom: 1px solid #dddddd;
+}
+
+td.mat-cell:last-of-type,
+td.mat-footer-cell:last-of-type,
+th.mat-header-cell:last-of-type {
+  padding-right: 0px;
+}
+
+/* assign back color */
+td.mat-cell.selected {
+  background-color: #add8e6;
+}
+
+.menu {
+  position: absolute;
+  width: 150px;
+  min-height: 20px;
+  z-index: 99;
+  background-color: white;
+  border: 1px solid black;
+  padding: 10px;
+  .menu-group {
+    border-bottom: 1px solid grey;
+    padding-bottom: 10px;
+    > div {
+      height: 40px;
+      text-align: left;
+      line-height: 40px;
+      cursor: pointer;
+    }
+  }
+}
